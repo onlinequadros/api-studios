@@ -3,10 +3,9 @@ import { Client } from '../../tenant/clients/entities/client.entity';
 import { Address } from '../../tenant/address/entities/address.entity';
 import { User } from '../../tenant/users/entities/user.entity';
 import { Category } from 'src/modules/tenant/categories/entities/category.entity';
-import { Product } from 'src/modules/tenant/products/entities/product.entity';
-import { AlbumPhoto } from 'src/modules/tenant/album_photos/entities/album.entity';
-import { PhotoAlbumProduct } from 'src/modules/tenant/photos_album_product/entities/photo-album-product.entity';
-import { PhotoProduct } from 'src/modules/tenant/photos_product/entities/photo-product.entity';
+import { ProductStudio } from 'src/modules/tenant/product_studio/entity/product-studio.entity';
+import { ProductArtist } from 'src/modules/tenant/product_artist/entity/product-artist.entity';
+import { ProductStudioPhoto } from 'src/modules/tenant/product_studio_photos/entities/product-studio-photo.entity';
 
 export class DatabaseProvider {
   async getConnection(database: string, isTenant = false) {
@@ -24,10 +23,9 @@ export class DatabaseProvider {
             Address,
             User,
             Category,
-            Product,
-            AlbumPhoto,
-            PhotoAlbumProduct,
-            PhotoProduct,
+            ProductStudio,
+            ProductArtist,
+            ProductStudioPhoto,
           ]
         : [],
       ssl: false,

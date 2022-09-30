@@ -11,6 +11,11 @@ export class ClientController {
     return this.clientService.findAll();
   }
 
+  @Get('/segment')
+  async findSegment(): Promise<{ segment: string }> {
+    return this.clientService.findSegment();
+  }
+
   @Post()
   async create(@Body() client: CreateClientDto): Promise<ReadClientDto> {
     return this.clientService.create(client);

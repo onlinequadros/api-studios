@@ -95,6 +95,7 @@ export class CreateCompanyDto {
 
   @IsString()
   @IsNotEmpty()
+  @IsIn(['Admin', 'Studio'])
   @ApiProperty({ default: 'Segmento' })
   segment: string;
 
@@ -125,4 +126,5 @@ export class CreateCompanyDto {
   plan_recurrence?: string;
   plan_id?: string;
   is_active?: string;
+  deleted_at?: Date;
 }

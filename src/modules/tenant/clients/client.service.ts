@@ -7,6 +7,7 @@ import { TenantProvider } from '../tenant.provider';
 import { ClientRepository } from './repository/client.repository';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
+
 @Injectable({ scope: Scope.REQUEST })
 export class ClientService {
   private clientConnectionRepository: Repository<Client>;
@@ -20,6 +21,7 @@ export class ClientService {
 
   constructor(private readonly clientRepository: ClientRepository) {}
 
+  // RETORNA TODAS AS INFORMAÇÕES DO CLIENT
   async findAll(): Promise<ReadClientDto[]> {
     this.getConnectionClient();
     const clients = await this.clientConnectionRepository.find();
@@ -29,6 +31,14 @@ export class ClientService {
     });
   }
 
+  // FAZ O GET NA TABELA RETORNANDO SOMENTE O SEGMENT
+  async findSegment(): Promise<{ segment: string }> {
+    this.getConnectionClient();
+    const clients = await this.clientConnectionRepository.find();
+    return { segment: clients?.[0].segment };
+  }
+
+  // CRIA UM CLIENT
   async create(client: CreateClientDto): Promise<ReadClientDto> {
     this.getConnectionClient();
     const createdUser = await this.clientConnectionRepository.save(client);
@@ -36,6 +46,7 @@ export class ClientService {
     return plainToClass(ReadClientDto, createdUser);
   }
 
+  // ATUALIZA UM CLIENT
   async update(id: string, client: CreateClientDto): Promise<ReadClientDto> {
     this.getConnectionClient();
 

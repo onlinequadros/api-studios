@@ -20,13 +20,12 @@ import { TenantProvider } from '../../tenant/tenant.provider';
 import { TenantService } from 'src/modules/tenant/tenant.service';
 import { DatabaseProvider } from 'src/modules/shared/database/database.provider';
 import { AddressService } from 'src/modules/tenant/address/address.service';
-import { AlbumPhoto } from 'src/modules/tenant/album_photos/entities/album.entity';
 import { Category } from 'src/modules/tenant/categories/entities/category.entity';
-import { PhotoAlbumProduct } from 'src/modules/tenant/photos_album_product/entities/photo-album-product.entity';
-import { PhotoProduct } from 'src/modules/tenant/photos_product/entities/photo-product.entity';
-import { Product } from 'src/modules/tenant/products/entities/product.entity';
 import { forwardRef } from '@nestjs/common';
 import { ClientModule } from 'src/modules/tenant/clients/client.module';
+import { ProductStudio } from 'src/modules/tenant/product_studio/entity/product-studio.entity';
+import { ProductArtist } from 'src/modules/tenant/product_artist/entity/product-artist.entity';
+import { ProductStudioPhoto } from 'src/modules/tenant/product_studio_photos/entities/product-studio-photo.entity';
 
 @Module({
   imports: [
@@ -93,10 +92,9 @@ export class CompaniesModule {
               Address,
               User,
               Category,
-              Product,
-              AlbumPhoto,
-              PhotoAlbumProduct,
-              PhotoProduct,
+              ProductStudio,
+              ProductStudioPhoto,
+              ProductArtist,
             ], // TODO -> adiciona as entidades do tenant
             ssl: false,
             synchronize: false,

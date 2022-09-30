@@ -18,7 +18,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   async findAll(
     @Query('limit') limit: number,
     @Query('page') page: number,
@@ -32,7 +32,7 @@ export class UserController {
   }
 
   @Get('/system')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   async findAllSystem(): Promise<ReadUserDto[]> {
     return this.userService.findAllSystem();
   }

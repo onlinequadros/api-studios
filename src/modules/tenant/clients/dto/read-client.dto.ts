@@ -157,4 +157,7 @@ export class ReadClientDto {
 
   @Expose()
   readonly is_active?: string;
+
+  @Expose()
+  readonly deleted_at?: Date;
 }

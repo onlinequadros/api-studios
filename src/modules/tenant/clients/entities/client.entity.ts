@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
-@Entity('clients')
+@Entity('companies')
 export class Client {
   @PrimaryColumn()
   id: string;
@@ -63,7 +63,7 @@ export class Client {
   @Column()
   complement: string;
 
-  @Column()
+  @Column({ type: 'enum', enum: ['Studio', 'Artista'] })
   segment: string;
 
   @Column()
@@ -78,7 +78,7 @@ export class Client {
   @Column({ nullable: true })
   validate_access?: boolean;
 
-  @Column()
+  @Column({ unique: true })
   tenant_company: string;
 
   @Column()
@@ -101,6 +101,9 @@ export class Client {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @Column({ nullable: true })
+  deleted_at?: Date;
 
   constructor() {
     if (!this.id) this.id = uuidv4();

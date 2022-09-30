@@ -10,11 +10,10 @@ import { ForgotPasswordModule } from './modules/master/forgot-password/forgot-pa
 import { UserModule } from './modules/tenant/users/user.module';
 import { AddressModule } from './modules/tenant/address/address.module';
 import { AuthModuleTenant } from './modules/tenant/auth/auth.module';
-import { ProductModule } from './modules/tenant/products/product.module';
 import { CategoryModule } from './modules/tenant/categories/address.module';
-import { AlbumPhotoModule } from './modules/tenant/album_photos/album-photo.module';
-import { PhotoProductModule } from './modules/tenant/photos_product/photo-product.module';
-import { PhotoAlbumProductModule } from './modules/tenant/photos_album_product/photo-album-product.module';
+import { ProductStudioModule } from './modules/tenant/product_studio/product-studio.module';
+import { ProductArtistModule } from './modules/tenant/product_artist/product-studio.module';
+import { ProductStudioPhotoModule } from './modules/tenant/product_studio_photos/product-studio-photo.module';
 @Module({
   imports: [
     CompaniesModule,
@@ -40,11 +39,10 @@ import { PhotoAlbumProductModule } from './modules/tenant/photos_album_product/p
     ClientModule,
     UserModule,
     AddressModule,
-    ProductModule,
+    ProductStudioModule,
+    ProductArtistModule,
+    ProductStudioPhotoModule,
     CategoryModule,
-    AlbumPhotoModule,
-    PhotoProductModule,
-    PhotoAlbumProductModule,
   ],
   controllers: [],
   providers: [],

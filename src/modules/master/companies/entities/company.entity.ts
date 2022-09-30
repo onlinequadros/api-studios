@@ -63,7 +63,7 @@ export class Company {
   @Column()
   complement: string;
 
-  @Column()
+  @Column({ type: 'enum', enum: ['Studio', 'Artista'] })
   segment: string;
 
   @Column()
@@ -101,6 +101,9 @@ export class Company {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @Column({ nullable: true })
+  deleted_at?: Date;
 
   constructor() {
     if (!this.id) this.id = uuidv4();
