@@ -314,7 +314,7 @@ export class CompaniesService {
     const updateAccount = await this.companyRepository.create(codeExists);
 
     if (updateAccount) {
-      return true;
+      return { validation: true, studio: codeExists.tenant_company };
     }
     return false;
   }

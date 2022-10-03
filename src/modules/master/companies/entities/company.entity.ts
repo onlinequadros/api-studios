@@ -60,8 +60,8 @@ export class Company {
   @Column()
   cep: string;
 
-  @Column()
-  complement: string;
+  @Column({ nullable: true })
+  complement?: string;
 
   @Column({ type: 'enum', enum: ['Studio', 'Artista'] })
   segment: string;

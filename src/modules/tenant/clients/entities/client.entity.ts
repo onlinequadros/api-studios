@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
-@Entity('companies')
+@Entity('client')
 export class Client {
   @PrimaryColumn()
   id: string;
@@ -60,8 +60,8 @@ export class Client {
   @Column()
   cep: string;
 
-  @Column()
-  complement: string;
+  @Column({ nullable: true })
+  complement?: string;
 
   @Column({ type: 'enum', enum: ['Studio', 'Artista'] })
   segment: string;

@@ -91,10 +91,9 @@ export class HeadCompanyDto {
   @ApiProperty({ default: 'CEP do endereço' })
   cep: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({ default: 'Complemento' })
-  complement: string;
+  complement?: string;
 
   @IsString()
   @IsNotEmpty()

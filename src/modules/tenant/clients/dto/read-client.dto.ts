@@ -109,11 +109,10 @@ export class ReadClientDto {
   @Expose()
   readonly cep: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({ default: 'Complemento' })
   @Expose()
-  readonly complement: string;
+  readonly complement?: string;
 
   @IsString()
   @IsNotEmpty()
