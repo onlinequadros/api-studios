@@ -31,7 +31,7 @@ export class MailsService {
       const transporter = nodemailer.createTransport(config);
 
       const info = await transporter.sendMail({
-        from: `Versalize <${process.env.SMTP_EMAIL}>`, // sender address
+        from: `Online Quadros <${process.env.SMTP_EMAIL}>`, // sender address
         to: email,
         subject,
         html,

@@ -106,7 +106,7 @@ export class CompaniesService {
 
       await this.mailsService.sendEmail(
         createCompanyDto.email,
-        'confirmação-cadastro Versalize',
+        'confirmação-cadastro Online Quadros',
         variables,
         templatePath,
       );

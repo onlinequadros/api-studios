@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import Handlebars from 'handlebars';
 import * as fs from 'fs';
-
-import nodemailer from 'nodemailer';
+import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class MailsService {
@@ -31,7 +30,7 @@ export class MailsService {
       const transporter = nodemailer.createTransport(config);
 
       const info = await transporter.sendMail({
-        from: `Versalize <${process.env.SMTP_EMAIL}>`, // sender address
+        from: `Online Quadros <${process.env.SMTP_EMAIL}>`, // sender address
         to: email,
         subject,
         html,

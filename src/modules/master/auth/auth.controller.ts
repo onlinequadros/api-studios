@@ -65,6 +65,7 @@ export class AuthController {
     @Body(new ValidationPipe())
     resendEmailDto: ResendValidationEmailDto,
   ) {
+    console.log('aqui vai o email ', resendEmailDto.email);
     return await this.authService.resendEmail(resendEmailDto.email);
   }
 }
