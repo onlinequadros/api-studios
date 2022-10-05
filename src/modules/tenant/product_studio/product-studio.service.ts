@@ -37,7 +37,7 @@ export class ProductStudioService {
   async findAll({
     limit = 10,
     page = 1,
-    search,
+    search = '',
   }: IReadProductsStudioParams): Promise<IResponseProductStudioData> {
     const where = [];
 
