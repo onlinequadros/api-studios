@@ -38,8 +38,8 @@ export class ProductStudio {
   @Column()
   active_deadline: boolean;
 
-  @Column()
-  deadline: Date;
+  @Column({ nullable: true })
+  deadline?: Date;
 
   @Column()
   amount_photos: number;

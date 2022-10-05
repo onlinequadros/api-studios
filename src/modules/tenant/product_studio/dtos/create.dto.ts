@@ -60,11 +60,10 @@ export class CreateProductStudioDto {
   @Expose()
   readonly active_deadline: boolean;
 
-  @IsDate()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({ default: 'Disponível até' })
   @Expose()
-  readonly deadline_date: Date;
+  readonly deadline?: string;
 
   @IsNumber()
   @IsNotEmpty()
