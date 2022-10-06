@@ -1,6 +1,8 @@
 import {
   BadGatewayException,
+  BadRequestException,
   Injectable,
+  NotFoundException,
   Scope,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -66,11 +68,16 @@ export class ProductStudioService {
   }
 
   // FUNÇÃO PARA BUSCAR UM PRODUTO
-  async findOneProduct(product_id: string): Promise<ReadProductStudioDto> {
+  async findOneProduct(slug: string): Promise<ReadProductStudioDto> {
     this.getProductStudioRepository();
     const product = await this.productStudioRepository.findOne({
-      where: { id: product_id },
+      where: { slug },
     });
+
+    if (!product) {
+      throw new NotFoundException('Nada encontrado');
+    }
+
     return plainToClass(ReadProductStudioDto, product);
   }
 
@@ -97,5 +104,21 @@ export class ProductStudioService {
     } catch (err) {
       throw new BadGatewayException(err.message);
     }
+  }
+
+  async validateSlugIsUnique(slug: string): Promise<{ available: boolean }> {
+    this.getProductStudioRepository();
+    const slugExists = await this.productStudioDinamicRepository.verifySlug(
+      slug,
+    );
+
+    if (slugExists)
+      throw new BadRequestException({
+        statusCode: 400,
+        message: 'Slug já em uso.',
+        available: false,
+      });
+
+    return { available: true };
   }
 }

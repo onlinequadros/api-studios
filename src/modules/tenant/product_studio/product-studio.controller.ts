@@ -26,12 +26,10 @@ export class ProductStudioController {
     return this.productStudioService.findAll({ limit, page, search });
   }
 
-  @Get(':product_id')
+  @Get(':slug')
   // @UseGuards(JwtAuthGuard)
-  async findOne(
-    @Param('product_id') product_id: string,
-  ): Promise<ReadProductStudioDto> {
-    return this.productStudioService.findOneProduct(product_id);
+  async findOne(@Param('slug') slug: string): Promise<ReadProductStudioDto> {
+    return this.productStudioService.findOneProduct(slug);
   }
 
   @Post()
@@ -40,5 +38,13 @@ export class ProductStudioController {
     @Body() product: CreateProductStudioDto,
   ): Promise<ReadProductStudioDto> {
     return this.productStudioService.create(product);
+  }
+
+  @Get('/slug/:slug')
+  // @UseGuards(JwtAuthGuard)
+  async verifySlugExists(
+    @Param('slug') slug: string,
+  ): Promise<{ available: boolean }> {
+    return this.productStudioService.validateSlugIsUnique(slug);
   }
 }
