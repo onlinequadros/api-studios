@@ -2,10 +2,13 @@ import {
   BadGatewayException,
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
   Scope,
 } from '@nestjs/common';
-import { hash } from 'bcryptjs';
+import * as aws from 'aws-sdk';
+import { compare, hash } from 'bcryptjs';
+import { validate as uuidValidate } from 'uuid';
 import { plainToClass, plainToInstance } from 'class-transformer';
 import { validationCPF } from 'src/modules/utils/validationsCPF';
 import { ILike, Repository } from 'typeorm';
@@ -116,12 +119,18 @@ export class UserService {
       where: { id: user_id },
       relations: ['address'],
     });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+
     delete user.password;
     return plainToClass(ReadUserDto, user);
   }
 
   // FUNÇÃO PARA CRIAR UM USUÁRIO
   async create(user: CreateUserDto): Promise<ReadUserDto> {
+    this.getUserRepository();
     try {
       await this.validateUser(user);
       const userCreatted = Object.assign(user, {
@@ -139,6 +148,111 @@ export class UserService {
 
   // FUNÇÃO PARA BUSCAR UM USUÁRIO POR E-MAIL
   async findByEmail(email: string) {
+    this.getUserRepository();
     return await this.userRepository.findOne({ where: { email } });
+  }
+
+  // FUNÇÃO PARA ATUALIZAR UM USUÁRIO
+  async updateProfile(
+    id: string,
+    profile: CreateUserDto,
+  ): Promise<ReadUserDto> {
+    this.getUserRepository();
+
+    if (!uuidValidate(id)) {
+      throw new BadRequestException('Id informado não é válido.');
+    }
+
+    const userExists = await this.userRepository.findOne({
+      where: { id },
+    });
+
+    if (!userExists) {
+      throw new NotFoundException('Identificador do usuário não encontrado');
+    }
+
+    const updateUser = Object.assign(userExists, profile);
+    const updateUserProfile = await this.userRepository.save(updateUser);
+
+    delete updateUserProfile.password;
+
+    return plainToInstance(ReadUserDto, updateUserProfile);
+  }
+
+  // FUNÇÃO PARA ATUALIZAR UMA SENHA DO USUÁRIO
+  async updateProfilePassword(
+    id: string,
+    passwordInfoOld: string,
+    passwordInfoNew: string,
+  ): Promise<ReadUserDto> {
+    this.getUserRepository();
+
+    if (!uuidValidate(id)) {
+      throw new BadRequestException('Id informado não é válido.');
+    }
+
+    const userExists = await this.userRepository.findOne({
+      where: { id },
+    });
+
+    if (!userExists) {
+      throw new NotFoundException('Identificador do usuário não encontrado');
+    }
+
+    const oldPassword = userExists.password;
+    const verifyPassword = await compare(passwordInfoOld, oldPassword);
+
+    if (!verifyPassword) {
+      throw new BadRequestException(
+        'Senha antiga não comfere com a que já está cadastrada.',
+      );
+    }
+
+    userExists.password = await hash(passwordInfoNew, 8);
+    const updateUserProfile = await this.userRepository.save(userExists);
+
+    delete updateUserProfile.password;
+
+    return plainToInstance(ReadUserDto, updateUserProfile);
+  }
+
+  async uploadAvatar(file: any) {
+    this.getUserRepository();
+
+    const { originalname, mimetype } = file;
+    const bucketS3 = process.env.ACCESS_S3_BUCKET;
+
+    // const url: { Location?: string } = await this.uploadS3(
+    await this.uploadS3(
+      file.buffer,
+      bucketS3,
+      mimetype,
+      originalname.replaceAll(' ', '-'),
+    );
+
+    // console.log('url ', url.Location);
+  }
+
+  async uploadS3(file: string, bucket: any, mimetype: string, name: string) {
+    const s3 = new aws.S3({
+      accessKeyId: process.env.ACCESS_S3_ID,
+      secretAccessKey: process.env.ACCESS_S3_SECRET,
+    });
+
+    const params = {
+      Bucket: bucket,
+      Key: String(name),
+      Body: file,
+      ContentType: mimetype,
+    };
+    return new Promise((resolve, reject) => {
+      s3.upload(params, (err, data) => {
+        if (err) {
+          Logger.error(err);
+          reject(err.message);
+        }
+        resolve(data);
+      });
+    });
   }
 }

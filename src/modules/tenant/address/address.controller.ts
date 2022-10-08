@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { AddressService } from './address.service';
 import { CreateAddressDto, ReadAddressDto } from './dto';
 
@@ -14,5 +14,13 @@ export class AddressController {
   @Post()
   async create(@Body() address: CreateAddressDto): Promise<ReadAddressDto> {
     return this.addressService.create(address);
+  }
+
+  @Put('/:id')
+  async UpdateAddress(
+    @Param('id') id: string,
+    @Body() address: CreateAddressDto,
+  ): Promise<ReadAddressDto> {
+    return this.addressService.updateAddress(id, address);
   }
 }

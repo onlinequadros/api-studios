@@ -4,14 +4,19 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
+  Put,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, ReadUserDto } from './dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { IResponseUserData } from './interface/read-user-pagination';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 export class UserController {
@@ -52,5 +57,35 @@ export class UserController {
   @Post()
   async create(@Body() client: CreateUserDto): Promise<ReadUserDto> {
     return this.userService.create(client);
+  }
+
+  @Post('upload-avatar')
+  @UseInterceptors(FileInterceptor('file'))
+  async upload(@UploadedFile() file) {
+    return await this.userService.uploadAvatar(file);
+  }
+
+  @Put('update-profile/:id')
+  async UpdateProfile(
+    @Param('id') id: string,
+    @Body() profile: CreateUserDto,
+  ): Promise<ReadUserDto> {
+    return this.userService.updateProfile(id, profile);
+  }
+
+  @Patch('update-profile-pass/:id')
+  async UpdateProfilePassword(
+    @Param('id') id: string,
+    @Body()
+    {
+      passwordInfoOld,
+      passwordInfoNew,
+    }: { passwordInfoOld: string; passwordInfoNew: string },
+  ): Promise<ReadUserDto> {
+    return this.userService.updateProfilePassword(
+      id,
+      passwordInfoOld,
+      passwordInfoNew,
+    );
   }
 }
