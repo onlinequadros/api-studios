@@ -38,6 +38,9 @@ export class User {
   @Column()
   password: string;
 
+  @Column({ nullable: true })
+  avatar?: string;
+
   @Column()
   role: 'Admin' | 'Studio' | 'Fotografo' | 'Artista' | 'Client';
 

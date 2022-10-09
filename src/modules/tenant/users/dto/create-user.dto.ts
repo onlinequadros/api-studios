@@ -66,6 +66,10 @@ export class CreateUserDto {
   @Expose()
   readonly password: string;
 
+  @IsOptional()
+  @Expose()
+  readonly avatar?: string;
+
   @IsString()
   @IsNotEmpty()
   @IsIn(['Admin', 'Studio', 'Fotografo', 'Artista', 'Client'])

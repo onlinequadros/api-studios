@@ -61,7 +61,7 @@ export class UserController {
 
   @Post('upload-avatar')
   @UseInterceptors(FileInterceptor('file'))
-  async upload(@UploadedFile() file) {
+  async upload(@UploadedFile() file): Promise<{ url: string }> {
     return await this.userService.uploadAvatar(file);
   }
 

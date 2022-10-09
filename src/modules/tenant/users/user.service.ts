@@ -2,7 +2,6 @@ import {
   BadGatewayException,
   BadRequestException,
   Injectable,
-  Logger,
   NotFoundException,
   Scope,
 } from '@nestjs/common';
@@ -216,43 +215,45 @@ export class UserService {
     return plainToInstance(ReadUserDto, updateUserProfile);
   }
 
-  async uploadAvatar(file: any) {
-    this.getUserRepository();
+  // FUNÇÃO PARA O UPLOAD DO AVATAR
+  async uploadAvatar(file) {
+    const { originalname } = file;
+    const AWS_S3_BUCKET = process.env.ACCESS_S3_BUCKET;
 
-    const { originalname, mimetype } = file;
-    const bucketS3 = process.env.ACCESS_S3_BUCKET;
-
-    // const url: { Location?: string } = await this.uploadS3(
-    await this.uploadS3(
+    const responseImage = await this.s3_upload(
       file.buffer,
-      bucketS3,
-      mimetype,
-      originalname.replaceAll(' ', '-'),
+      AWS_S3_BUCKET,
+      originalname,
+      file.mimetype,
     );
 
-    // console.log('url ', url.Location);
+    return { url: responseImage };
   }
 
-  async uploadS3(file: string, bucket: any, mimetype: string, name: string) {
+  // FUNÇÃO PARA O PREPARO DO S3
+  async s3_upload(file, bucket, name, mimetype) {
+    const params = {
+      Bucket: bucket,
+      Key: String(name),
+      Body: file,
+      ACL: 'public-read',
+      ContentType: mimetype,
+      ContentDisposition: 'inline',
+      CreateBucketConfiguration: {
+        LocationConstraint: 'ap-south-1',
+      },
+    };
+
     const s3 = new aws.S3({
       accessKeyId: process.env.ACCESS_S3_ID,
       secretAccessKey: process.env.ACCESS_S3_SECRET,
     });
 
-    const params = {
-      Bucket: bucket,
-      Key: String(name),
-      Body: file,
-      ContentType: mimetype,
-    };
-    return new Promise((resolve, reject) => {
-      s3.upload(params, (err, data) => {
-        if (err) {
-          Logger.error(err);
-          reject(err.message);
-        }
-        resolve(data);
-      });
-    });
+    try {
+      const s3Response = await s3.upload(params).promise();
+      return s3Response.Location;
+    } catch (e) {
+      throw new BadRequestException('Falha ao realizar o upload.' + e);
+    }
   }
 }

@@ -9,6 +9,7 @@ import {
   IsIn,
   IsNotEmpty,
   Length,
+  IsOptional,
 } from 'class-validator';
 
 export class ReadUserDto {
@@ -55,6 +56,10 @@ export class ReadUserDto {
   @ApiProperty({ default: '1990-01-01' })
   @Expose()
   readonly birth_date: string;
+
+  @IsOptional()
+  @Expose()
+  readonly avatar?: string;
 
   @IsString()
   @IsNotEmpty()
