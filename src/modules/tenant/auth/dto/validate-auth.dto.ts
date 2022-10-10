@@ -6,6 +6,7 @@ export class ValidateAuthDto {
   email: string;
   phone: string;
   sex: string;
+  avatar?: string;
   birth_date: string;
   role: string;
   permissions: string[];

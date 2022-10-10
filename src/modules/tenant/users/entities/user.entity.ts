@@ -41,6 +41,9 @@ export class User {
   @Column({ nullable: true })
   avatar?: string;
 
+  @Column({ nullable: true })
+  slug?: string;
+
   @Column()
   role: 'Admin' | 'Studio' | 'Fotografo' | 'Artista' | 'Client';
 
