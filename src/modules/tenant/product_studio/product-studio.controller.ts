@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -46,5 +47,10 @@ export class ProductStudioController {
     @Param('slug') slug: string,
   ): Promise<{ available: boolean }> {
     return this.productStudioService.validateSlugIsUnique(slug);
+  }
+
+  @Delete(':id')
+  async deleteProductStudio(@Param('id') id: string): Promise<boolean> {
+    return this.productStudioService.deleteProduct(id);
   }
 }

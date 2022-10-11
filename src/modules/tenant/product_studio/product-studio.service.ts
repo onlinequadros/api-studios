@@ -121,4 +121,20 @@ export class ProductStudioService {
 
     return { available: true };
   }
+
+  async deleteProduct(id: string): Promise<boolean> {
+    this.getProductStudioRepository();
+
+    const product = await this.productStudioRepository.delete(id);
+
+    if (!product.affected) {
+      throw new BadRequestException({
+        statusCode: 400,
+        message: 'Não foi possível remover o álbum.',
+        available: false,
+      });
+    }
+
+    return true;
+  }
 }
