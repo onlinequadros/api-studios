@@ -26,6 +26,8 @@ import { ClientModule } from 'src/modules/tenant/clients/client.module';
 import { ProductStudio } from 'src/modules/tenant/product_studio/entity/product-studio.entity';
 import { ProductArtist } from 'src/modules/tenant/product_artist/entity/product-artist.entity';
 import { ProductStudioPhoto } from 'src/modules/tenant/product_studio_photos/entities/product-studio-photo.entity';
+import { BucketS3Service } from '../../../bucket-s3/bucket-s3.service';
+import { EncryptedService } from '../../../modules/utils/encrypted.service';
 
 @Module({
   imports: [
@@ -40,6 +42,8 @@ import { ProductStudioPhoto } from 'src/modules/tenant/product_studio_photos/ent
     AddressService,
     TenantService,
     DatabaseProvider,
+    BucketS3Service,
+    EncryptedService
   ],
   exports: [CompaniesService, CompanyRepository],
 })

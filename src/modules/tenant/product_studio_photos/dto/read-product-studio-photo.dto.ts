@@ -10,12 +10,12 @@ export class ReadProductStudioPhotoDto {
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ default: 'Nome da foto' })
+  @ApiProperty({ default: 'Photos' })
   @Expose()
-  readonly photo: string;
+  readonly photo: [];
 
-  @IsBoolean()
-  @ApiProperty()
-  @Expose()
-  readonly feature_photo?: boolean;
+  // @IsBoolean()
+  // @ApiProperty()
+  // @Expose()
+  // readonly feature_photo?: boolean;
 }

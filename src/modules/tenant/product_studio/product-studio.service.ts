@@ -68,7 +68,7 @@ export class ProductStudioService {
   }
 
   // FUNÇÃO PARA BUSCAR UM PRODUTO
-  async findOneProduct(slug: string): Promise<ReadProductStudioDto> {
+  async findOne(slug: string): Promise<ReadProductStudioDto> {
     this.getProductStudioRepository();
     const product = await this.productStudioRepository.findOne({
       where: { slug },
@@ -79,6 +79,17 @@ export class ProductStudioService {
     }
 
     return plainToClass(ReadProductStudioDto, product);
+  }
+
+  // FUNÇÃO PARA BUSCAR UM PRODUTO E RELAÇÕES
+  async findOneProduct(id) {
+    this.getProductStudioRepository();
+    return await this.productStudioRepository.findOne({
+      where: {
+        id: id,
+      },
+      relations: ['product_studio_photo'],
+    });
   }
 
   // FUNÇÃO PARA CRIAR UM PRODUTO
@@ -122,10 +133,17 @@ export class ProductStudioService {
     return { available: true };
   }
 
+  async update(id: string, photos: []) {
+    this.getProductStudioRepository();
+
+  }
+
   async deleteProduct(id: string): Promise<boolean> {
     this.getProductStudioRepository();
 
-    const product = await this.productStudioRepository.delete(id);
+    const product = await this.productStudioRepository.softDelete({
+      id: id,
+    });
 
     if (!product.affected) {
       throw new BadRequestException({

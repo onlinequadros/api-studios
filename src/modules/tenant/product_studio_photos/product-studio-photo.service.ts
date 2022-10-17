@@ -1,9 +1,11 @@
 import { BadGatewayException, Injectable, Scope } from '@nestjs/common';
 import { plainToClass, plainToInstance } from 'class-transformer';
+import { BucketS3Service } from '../../../bucket-s3/bucket-s3.service';
 import { Repository } from 'typeorm';
 import { TenantProvider } from '../tenant.provider';
 import { CreateProductStudioPhotoDto, ReadProductStudioPhotoDto } from './dto';
 import { ProductStudioPhoto } from './entities/product-studio-photo.entity';
+import { EncryptedService } from '../../../modules/utils/encrypted.service';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 @Injectable({ scope: Scope.REQUEST })
@@ -17,7 +19,7 @@ export class ProductStudioPhotoService {
     }
   }
 
-  constructor() {
+  constructor(private readonly awsS3Service: BucketS3Service, private readonly encryptedService: EncryptedService) {
     this.getProductStudioPhotoRepository();
   }
 
@@ -33,11 +35,66 @@ export class ProductStudioPhotoService {
     productStudioPhoto: CreateProductStudioPhotoDto,
   ): Promise<ReadProductStudioPhotoDto> {
     this.getProductStudioPhotoRepository();
+
+    let createPhotoStudioPhoto;
     try {
-      const newProductStudioPhoto =
-        this.productStudioPhotoRepository.create(productStudioPhoto);
-      const createPhotoStudioPhoto =
-        await this.productStudioPhotoRepository.save(newProductStudioPhoto);
+      productStudioPhoto.photos.forEach((element) => {
+        
+        const newProductStudioPhoto =
+        this.productStudioPhotoRepository.create({
+           photo: element.image,
+           feature_photo: element.feature_photo,
+           url: '123456789',
+           product_photo_id: {
+            id: productStudioPhoto.products_id
+           }
+        });
+
+        createPhotoStudioPhoto =
+         this.productStudioPhotoRepository.save(newProductStudioPhoto);
+      });
+
+      console.log(await createPhotoStudioPhoto);
+      
+
+      //return;
+     
+      
+      return plainToClass(ReadProductStudioPhotoDto, createPhotoStudioPhoto);
+    } catch (err) {
+      throw new BadGatewayException(err.message);
+    }
+  }
+
+  async uploadImages(images, products_id, category, company) {
+    this.getProductStudioPhotoRepository();
+
+    let createPhotoStudioPhoto;
+    try {
+      images['images'].forEach(async (element) => {
+
+      const encryptedImageName = await this.encryptedService.encryptedImageName(element.originalname);
+           
+      const s3 = await this.awsS3Service.uploadImage(
+        company,
+        category,
+        element,
+        encryptedImageName
+      );      
+      
+      const newProductStudioPhoto = await this.productStudioPhotoRepository.create({
+        photo: encryptedImageName,
+        feature_photo: false,
+        url:s3,
+        product_photo_id: {
+          id: products_id,
+        },
+      });
+
+        createPhotoStudioPhoto =
+         this.productStudioPhotoRepository.save(newProductStudioPhoto);
+       });
+
       return plainToClass(ReadProductStudioPhotoDto, createPhotoStudioPhoto);
     } catch (err) {
       throw new BadGatewayException(err.message);

@@ -30,7 +30,13 @@ export class ProductStudioController {
   @Get(':slug')
   // @UseGuards(JwtAuthGuard)
   async findOne(@Param('slug') slug: string): Promise<ReadProductStudioDto> {
-    return this.productStudioService.findOneProduct(slug);
+    return this.productStudioService.findOne(slug);
+  }
+
+  @Get('/product/:id')
+  // @UseGuards(JwtAuthGuard)
+  async findOneProduct(@Param('id') id: string) {
+    return this.productStudioService.findOneProduct(id);
   }
 
   @Post()

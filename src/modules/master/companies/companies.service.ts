@@ -12,6 +12,7 @@ import { Client } from 'src/modules/tenant/clients/entities/client.entity';
 import { TenantProvider } from '../../tenant/tenant.provider';
 import { Repository } from 'typeorm';
 import { TenantService } from 'src/modules/tenant/tenant.service';
+import { BucketS3Service } from 'src/bucket-s3/bucket-s3.service';
 
 @Injectable()
 export class CompaniesService {
@@ -27,6 +28,7 @@ export class CompaniesService {
     private readonly companyRepository: CompanyRepository,
     private readonly mailsService: MailsService,
     private readonly clientService: TenantService,
+    private readonly s3Service: BucketS3Service,
   ) {
     this.getClientRepository();
   }
@@ -90,6 +92,9 @@ export class CompaniesService {
         createCompany.tenant_company,
         createCompany,
       );
+
+      //CRIA O FOLDER DO TENANT NO AWS BUCKET S3
+      await this.s3Service.createFolderS3Bucket(createCompany.tenant_company);
 
       delete createCompany.password;
 

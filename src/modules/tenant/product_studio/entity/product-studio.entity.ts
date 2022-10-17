@@ -1,6 +1,7 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   OneToMany,
   PrimaryColumn,
@@ -75,8 +76,9 @@ export class ProductStudio {
     () => ProductStudioPhoto,
     (studioPhoto) => studioPhoto.product_photo_id,
     {
-      cascade: true,
+      //cascade: true,
       nullable: true,
+      onDelete: "CASCADE"
     },
   )
   product_studio_photo?: ProductStudioPhoto[];
@@ -86,6 +88,9 @@ export class ProductStudio {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @DeleteDateColumn()
+  deleted_at: Date;
 
   constructor() {
     if (!this.id) this.id = uuidv4();

@@ -4,14 +4,22 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsBoolean } from 'class-validator';
 
 export class CreateProductStudioPhotoDto {
-  @IsString()
+  readonly products_id: string;
+  readonly category: string;
+
   @IsNotEmpty()
   @ApiProperty({ default: 'Nome da foto' })
   @Expose()
-  readonly photo: string;
+  readonly photos: [
+    {
+      image: string,
+      feature_photo: boolean
+    }
+  ]
 
-  @IsBoolean()
-  @ApiProperty()
-  @Expose()
-  readonly feature_photo?: boolean;
+  // @IsBoolean()
+  // @ApiProperty()
+  // @Expose()
+  // @IsNotEmpty()
+  // readonly feature_photo?: boolean;
 }

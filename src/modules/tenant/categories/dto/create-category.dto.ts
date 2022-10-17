@@ -9,4 +9,10 @@ export class CreateCategoryDto {
   @ApiProperty({ default: 'Nome da categoria' })
   @Expose()
   readonly name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: 'Nome do studio' })
+  @Expose()
+  readonly studio: string;
 }

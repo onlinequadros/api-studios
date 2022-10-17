@@ -10,10 +10,11 @@ import { ForgotPasswordModule } from './modules/master/forgot-password/forgot-pa
 import { UserModule } from './modules/tenant/users/user.module';
 import { AddressModule } from './modules/tenant/address/address.module';
 import { AuthModuleTenant } from './modules/tenant/auth/auth.module';
-import { CategoryModule } from './modules/tenant/categories/address.module';
+import { CategoryModule } from './modules/tenant/categories/category.module';
 import { ProductStudioModule } from './modules/tenant/product_studio/product-studio.module';
 import { ProductArtistModule } from './modules/tenant/product_artist/product-studio.module';
 import { ProductStudioPhotoModule } from './modules/tenant/product_studio_photos/product-studio-photo.module';
+import { BucketS3Module } from './bucket-s3/bucket-s3.module';
 @Module({
   imports: [
     CompaniesModule,
@@ -43,6 +44,7 @@ import { ProductStudioPhotoModule } from './modules/tenant/product_studio_photos
     ProductArtistModule,
     ProductStudioPhotoModule,
     CategoryModule,
+    BucketS3Module,
   ],
   controllers: [],
   providers: [],

@@ -9,6 +9,7 @@ import {
   IsNumber,
   IsBoolean,
   IsDate,
+  IsArray,
 } from 'class-validator';
 
 export class CreateProductStudioDto {
@@ -31,7 +32,7 @@ export class CreateProductStudioDto {
   readonly category: string;
 
   @IsOptional()
-  @IsString()
+  @IsArray()
   @ApiProperty()
   @Expose()
   readonly client_user: string[];
@@ -124,10 +125,4 @@ export class CreateProductStudioDto {
   @ApiProperty({ default: 'Quantidade de fotos reservadas' })
   @Expose()
   readonly amount_receivable: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({ default: 'Identificador do producto relacionado' })
-  @Expose()
-  readonly product_id: string;
 }
