@@ -94,7 +94,7 @@ export class CompaniesService {
       );
 
       //CRIA O FOLDER DO TENANT NO AWS BUCKET S3
-      await this.s3Service.createFolderS3Bucket(createCompany.tenant_company);
+      await this.s3Service.createCompanyFolder(createCompany.tenant_company);
 
       delete createCompany.password;
 

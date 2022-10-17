@@ -10,14 +10,8 @@ export class BucketS3Service {
   private readonly region;
   constructor(private readonly encryptedService: EncryptedService) {
     this.region = process.env.AWS_REGION || '';
-    // Set the Region
-    //AWS.config.update({region: this.region});
     config.getCredentials(function (err) {
-      if (err) console.log(err.stack);
-      // credentials not loaded
-      else {
-        console.log('AWS credentials:', config.credentials);
-      }
+      err ? console.log(err.stack) : console.log('AWS credentials:', config.credentials);
     });
     this.s3 = new S3();
   }
@@ -57,7 +51,7 @@ export class BucketS3Service {
     }
   }
 
-  async createFolderS3Bucket(tenantCompany: string) {
+  async createCompanyFolder(tenantCompany: string) {
     const bucketParams = {
       Bucket: process.env.AWS_BUCKET,
       Key: `${tenantCompany}/`,
@@ -74,13 +68,14 @@ export class BucketS3Service {
     }
   }
 
-  async createFolderCategoriesS3Bucket(
+  async createCategoryFolder(
     tenancyCompany: string,
     category: string,
   ) {
+       
     const bucketParams = {
       Bucket: process.env.AWS_BUCKET,
-      Key: `${tenancyCompany}/${category}`,
+      Key: `${tenancyCompany}/${category}/`,
     };
 
     try {

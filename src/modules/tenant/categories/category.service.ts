@@ -32,8 +32,7 @@ export class CategoryService {
     const newCategory = this.categoryRepository.create(category);
     const createdCategory = await this.categoryRepository.save(newCategory);
 
-    await this.s3Service.createFolderCategoriesS3Bucket(studio, name);
-
+    await this.s3Service.createCategoryFolder(studio, name);
     return plainToInstance(ReadCategoryDto, createdCategory);
   }
 }

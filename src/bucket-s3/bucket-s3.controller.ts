@@ -7,6 +7,6 @@ export class BucketS3Controller {
 
     @Post()
     async createS3Bucket(@Body() tenancyCompany: object) {
-        return await this.s3Service.createFolderS3Bucket(tenancyCompany['tenancyCompany']);
+        return await this.s3Service.createCompanyFolder(tenancyCompany['tenancyCompany']);
     }
 }
