@@ -17,6 +17,8 @@ import {
   IResponseProductStudioData,
 } from './interfaces/product-studio.interface';
 import { ProductStudioDinamicRepository } from './repositories/product-studio.repository';
+import { MessagesHelper } from '../../../helpers/messages.helpers';
+import { checkCompany } from '../../../modules/utils/checkCompany';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 @Injectable({ scope: Scope.REQUEST })
@@ -32,7 +34,7 @@ export class ProductStudioService {
 
   constructor(
     private readonly productStudioDinamicRepository: ProductStudioDinamicRepository,
-    private readonly s3Service: BucketS3Service
+    private readonly s3Service: BucketS3Service,
   ) {
     this.getProductStudioRepository();
   }
@@ -77,7 +79,7 @@ export class ProductStudioService {
     });
 
     if (!product) {
-      throw new NotFoundException('Nada encontrado');
+      throw new NotFoundException(MessagesHelper.PRODUCT_NOT_FOUND);
     }
 
     return plainToClass(ReadProductStudioDto, product);
@@ -95,17 +97,17 @@ export class ProductStudioService {
   }
 
   // FUNÇÃO PARA CRIAR UM PRODUTO
-  async create(product: CreateProductStudioDto): Promise<ReadProductStudioDto> {
+  async create(request, product: CreateProductStudioDto): Promise<ReadProductStudioDto> {
     this.getProductStudioRepository();
+
+    const company = await checkCompany(request);    
 
     const slug = await this.productStudioDinamicRepository.verifySlug(
       product.slug.toLowerCase().trim(),
     );
 
     if (slug) {
-      throw new UnauthorizedException(
-        'Slug já em uso, por favor escolha outro.',
-      );
+      throw new UnauthorizedException(MessagesHelper.SLUG_ALREADY_IN_USE);
     }
 
     try {
@@ -113,7 +115,11 @@ export class ProductStudioService {
       const createdProduct = await this.productStudioRepository.save(
         newProducStudio,
       );
-      await this.s3Service.createProductFolder(product.company, product.category, product.slug);
+      await this.s3Service.createProductFolder(
+        company,
+        product.category,
+        product.slug,
+      );
       return plainToClass(ReadProductStudioDto, createdProduct);
     } catch (err) {
       throw new BadGatewayException(err.message);
@@ -138,13 +144,14 @@ export class ProductStudioService {
 
   async update(id: string, photos: []) {
     this.getProductStudioRepository();
-
   }
 
-  async deleteProduct(id: string): Promise<boolean> {
+  async deleteProduct(request, id: string): Promise<boolean> {
     this.getProductStudioRepository();
 
-    const productName = await this.productStudioRepository.findOne({
+    const company = await checkCompany(request);
+
+    const { category, slug } = await this.productStudioRepository.findOne({
       id: id,
     });
 
@@ -155,14 +162,12 @@ export class ProductStudioService {
     if (!product.affected) {
       throw new BadRequestException({
         statusCode: 400,
-        message: 'Não foi possível remover o álbum.',
+        message: MessagesHelper.UNABLE_TO_REMOVE_ALBUM,
         available: false,
       });
     }
 
-    await this.s3Service.deleteProductFolder('photovida', productName.category, productName.slug);
-    
-
+    await this.s3Service.deleteProductFolder(company, category, slug);
     return true;
   }
 }

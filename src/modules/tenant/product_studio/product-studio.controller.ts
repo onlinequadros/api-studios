@@ -6,12 +6,14 @@ import {
   Param,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateProductStudioDto, ReadProductStudioDto } from './dtos';
 import { IResponseProductStudioData } from './interfaces/product-studio.interface';
 import { ProductStudioService } from './product-studio.service';
+import {Request} from 'express';
 
 @Controller('products-studio')
 export class ProductStudioController {
@@ -43,8 +45,9 @@ export class ProductStudioController {
   // @UseGuards(JwtAuthGuard)
   async create(
     @Body() product: CreateProductStudioDto,
+    @Req() request: Request,
   ): Promise<ReadProductStudioDto> {
-    return this.productStudioService.create(product);
+    return this.productStudioService.create(request, product);
   }
 
   @Get('/slug/:slug')
@@ -56,7 +59,7 @@ export class ProductStudioController {
   }
 
   @Delete(':id')
-  async deleteProductStudio(@Param('id') id: string): Promise<boolean> {
-    return this.productStudioService.deleteProduct(id);
+  async deleteProductStudio(@Param('id') id: string, @Req() request: Request): Promise<boolean> {
+    return this.productStudioService.deleteProduct(request, id);
   }
 }
