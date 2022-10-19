@@ -55,11 +55,10 @@ export class ProductStudioPhotoController {
 
   @Patch('set-cover-photo/:id')
   async setCoverPhoto(
-    @Req() request: Request,
     @Param('id') id: string,
     @Body() data: SetCoverPhotoDTO,
   ) {
-    return await this.productStudioPhotoService.setCoverPhoto(request, id, data);
+    return await this.productStudioPhotoService.setCoverPhoto(id, data);
   }
 
   @Delete(':id')

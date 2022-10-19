@@ -114,10 +114,10 @@ export class ProductStudioPhotoService {
     }
   }
 
-  async setCoverPhoto(request, id: string, data: SetCoverPhotoDTO) {
+  async setCoverPhoto(id: string, data: SetCoverPhotoDTO) {
     this.getProductStudioPhotoRepository();
 
-    const product = await this.productStudio.findOneProduct(data['productId']);
+    const product = await this.productStudio.findOneProduct(data.productId);
 
     product.product_studio_photo.forEach(async (image) => {
         if (image.feature_photo == true) {
@@ -127,7 +127,7 @@ export class ProductStudioPhotoService {
     })    
     
     let image = await this.productStudioPhotoRepository.findOne(id);
-    image.feature_photo = data['isCover'];
+    image.feature_photo = data.isActive;
 
     return await this.productStudioPhotoRepository.save(image);
   }
