@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { TenantProvider } from '../tenant.provider';
 import { CreateCategoryDto, ReadCategoryDto } from './dto';
 import { Category } from './entities/category.entity';
+import { checkCompany } from '../../../modules/utils/checkCompany';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 @Injectable({ scope: Scope.REQUEST })
@@ -26,13 +27,33 @@ export class CategoryService {
     );
   }
 
-  async create(category: CreateCategoryDto): Promise<ReadCategoryDto> {
-    const { name, studio } = category;
+  async create(request, category: CreateCategoryDto): Promise<ReadCategoryDto> {
+    
+    const { name } = category;
+    const company = await checkCompany(request);
+
     this.categoryRepository = TenantProvider.connection.getRepository(Category);
     const newCategory = this.categoryRepository.create(category);
     const createdCategory = await this.categoryRepository.save(newCategory);
 
-    await this.s3Service.createCategoryFolder(studio, name);
+    await this.s3Service.createCategoryFolder(company, name);
     return plainToInstance(ReadCategoryDto, createdCategory);
+  }
+
+  async delete(request, id) {
+    this.categoryRepository = TenantProvider.connection.getRepository(Category);
+    const company = await checkCompany(request);
+
+    const { name } = await this.categoryRepository.findOne({
+      id:id
+    });
+
+    const category = this.categoryRepository.delete({
+      id: id
+    });
+
+    await this.s3Service.deleteCategoryFolder(company, name);
+
+    return category;
   }
 }

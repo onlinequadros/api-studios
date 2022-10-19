@@ -80,6 +80,7 @@ export class BucketS3Service {
     const key = company + '/' + category + '/';
     return await this.deleteFolder(key);
   }
+  
   async deleteCompanyFolder(company: string) {
     const key = company + '/';
     return await this.deleteFolder(key);
