@@ -85,6 +85,19 @@ export class ProductStudioService {
     return plainToClass(ReadProductStudioDto, product);
   }
 
+  async findById(id: string): Promise<ReadProductStudioDto> {
+    this.getProductStudioRepository();
+    const product = await this.productStudioRepository.findOne({
+      where: { id: id },
+    });
+
+    if (!product) {
+      throw new NotFoundException(MessagesHelper.PRODUCT_NOT_FOUND);
+    }
+
+    return plainToClass(ReadProductStudioDto, product);
+  }
+
   // FUNÇÃO PARA BUSCAR UM PRODUTO E RELAÇÕES
   async findOneProduct(id) {
     this.getProductStudioRepository();

@@ -12,13 +12,14 @@ export class BucketS3Service {
     this.s3 = new S3();
   }
 
-  async uploadImage(company, category, image, encryptedName) {
+  async uploadImage(company, category, product, image, encryptedName) {
     const { buffer, mimetype } = image;
 
     const s3 = await this.s3Upload(
       company,
       category,
       buffer,
+      product,
       encryptedName,
       mimetype,
     );
@@ -26,8 +27,8 @@ export class BucketS3Service {
     return s3;
   }
 
-  async s3Upload(company, category, buffer, originalname, mimetype) {
-    const key = company + '/' + category + '/' + originalname;
+  async s3Upload(company, category, buffer, product, originalname, mimetype) {
+    const key = company + '/' + category + '/' + product + '/' + originalname;
     const params = {
       Bucket: process.env.AWS_BUCKET,
       Key: key,
