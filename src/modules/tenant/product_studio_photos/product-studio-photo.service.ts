@@ -9,6 +9,7 @@ import { EncryptedService } from '../../../modules/utils/encrypted.service';
 import { checkCompany } from '../../../modules/utils/checkCompany';
 import { ProductStudioService } from '../product_studio/product-studio.service';
 import { ReadProductStudioDto } from '../product_studio/dtos';
+import { SetCoverPhotoDTO } from '../product_studio/dtos/setCoverPhoto.dto';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 @Injectable({ scope: Scope.REQUEST })
@@ -113,7 +114,7 @@ export class ProductStudioPhotoService {
     }
   }
 
-  async setCoverPhoto(request, id: string, data: object) {
+  async setCoverPhoto(request, id: string, data: SetCoverPhotoDTO) {
     this.getProductStudioPhotoRepository();
 
     const product = await this.productStudio.findOneProduct(data['productId']);
