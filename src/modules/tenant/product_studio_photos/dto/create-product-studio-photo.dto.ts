@@ -8,12 +8,12 @@ export class CreateProductStudioPhotoDto {
   readonly category: string;
 
   @IsNotEmpty()
-  @ApiProperty({ default: 'Nome da foto' })
+  @ApiProperty({ default: 'Multiplas imagens' })
   @Expose()
   readonly photos: [
     {
       image: string,
-      feature_photo: boolean
+      feature_photo?: boolean,
     }
   ]
 
