@@ -21,6 +21,12 @@ export class CreateProductStudioDto {
 
   @IsString()
   @IsNotEmpty()
+  @ApiProperty({ default: 'Nome do Tenancy' })
+  @Expose()
+  readonly company: string;
+
+  @IsString()
+  @IsNotEmpty()
   @ApiProperty({ default: 'Nome do produto' })
   @Expose()
   readonly name: string;

@@ -76,9 +76,8 @@ export class ProductStudio {
     () => ProductStudioPhoto,
     (studioPhoto) => studioPhoto.product_photo_id,
     {
-      //cascade: true,
+      cascade: true,
       nullable: true,
-      onDelete: "CASCADE"
     },
   )
   product_studio_photo?: ProductStudioPhoto[];
@@ -90,7 +89,7 @@ export class ProductStudio {
   updated_at: Date;
 
   @DeleteDateColumn()
-  deleted_at: Date;
+  delete_at: Date;
 
   constructor() {
     if (!this.id) this.id = uuidv4();

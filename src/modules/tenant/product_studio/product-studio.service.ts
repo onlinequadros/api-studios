@@ -7,6 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
+import { BucketS3Service } from '../../../bucket-s3/bucket-s3.service';
 import { ILike, Repository } from 'typeorm';
 import { TenantProvider } from '../tenant.provider';
 import { CreateProductStudioDto, ReadProductStudioDto } from './dtos';
@@ -31,6 +32,7 @@ export class ProductStudioService {
 
   constructor(
     private readonly productStudioDinamicRepository: ProductStudioDinamicRepository,
+    private readonly s3Service: BucketS3Service
   ) {
     this.getProductStudioRepository();
   }
@@ -111,6 +113,7 @@ export class ProductStudioService {
       const createdProduct = await this.productStudioRepository.save(
         newProducStudio,
       );
+      await this.s3Service.createProductFolder(product.company, product.category, product.slug);
       return plainToClass(ReadProductStudioDto, createdProduct);
     } catch (err) {
       throw new BadGatewayException(err.message);
@@ -141,6 +144,10 @@ export class ProductStudioService {
   async deleteProduct(id: string): Promise<boolean> {
     this.getProductStudioRepository();
 
+    const productName = await this.productStudioRepository.findOne({
+      id: id,
+    });
+
     const product = await this.productStudioRepository.softDelete({
       id: id,
     });
@@ -152,6 +159,9 @@ export class ProductStudioService {
         available: false,
       });
     }
+
+    await this.s3Service.deleteProductFolder('photovida', productName.category, productName.slug);
+    
 
     return true;
   }

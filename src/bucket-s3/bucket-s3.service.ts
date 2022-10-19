@@ -1,17 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { config, S3 } from 'aws-sdk';
 import { MessagesHelper } from '../helpers/messages.helpers';
-import { v4 as uuidv4 } from 'uuid';
-import { EncryptedService } from '../modules/utils/encrypted.service';
 
 @Injectable()
 export class BucketS3Service {
   private readonly s3;
-  private readonly region;
-  constructor(private readonly encryptedService: EncryptedService) {
-    this.region = process.env.AWS_REGION || '';
+  constructor() {
     config.getCredentials(function (err) {
-      err ? console.log(err.stack) : console.log('AWS credentials:', config.credentials);
+      if (err) console.log(err.stack);
     });
     this.s3 = new S3();
   }
@@ -20,20 +16,21 @@ export class BucketS3Service {
     const { buffer, mimetype } = image;
 
     const s3 = await this.s3Upload(
-       company,
-       category,
-       buffer,
-       encryptedName,
-       mimetype,
-     );
+      company,
+      category,
+      buffer,
+      encryptedName,
+      mimetype,
+    );
 
-   return s3;
+    return s3;
   }
 
-  async s3Upload( company, category, buffer, originalname, mimetype) {
+  async s3Upload(company, category, buffer, originalname, mimetype) {
+    const key = company + '/' + category + '/' + originalname;
     const params = {
       Bucket: process.env.AWS_BUCKET,
-      Key: `${company}/${category}/${originalname}`,
+      Key: key,
       Body: buffer,
       ACL: 'public-read',
       ContentType: mimetype,
@@ -46,44 +43,77 @@ export class BucketS3Service {
     try {
       const s3Response = await this.s3.upload(params).promise();
       return s3Response.Location;
-    } catch (e) {
-      throw new BadRequestException(MessagesHelper.S3_FAILED_UPLOAD_IMAGE, e);
+    } catch (error) {
+      throw new BadRequestException(MessagesHelper.FAILED_UPLOAD_IMAGE, error);
     }
   }
 
-  async createCompanyFolder(tenantCompany: string) {
-    const bucketParams = {
+  async createCompanyFolder(company: string) {
+    const key = company + '/';
+    return await this.createFolder(key);
+  }
+
+  async createCategoryFolder(company: string, category: string) {
+    const key = company + '/' + category + '/';
+    return await this.createFolder(key);
+  }
+
+  async createProductFolder(company: string, category: string, title: string) {
+    let product;
+    product = title.toLowerCase();
+    product = product.split(' ').join('-');
+
+    const key = company + '/' + category + '/' + product + '/';
+    return await this.createFolder(key);
+  }
+
+  async deleteProductFolder(
+    company: string,
+    category: string,
+    product: string,
+  ) {
+    const key = company + '/' + category + '/' + product + '/';
+    return await this.deleteFolder(key);
+  }
+
+  async deleteCategoryFolder(company: string, category: string) {
+    const key = company + '/' + category + '/';
+    return await this.deleteFolder(key);
+  }
+  async deleteCompanyFolder(company: string) {
+    const key = company + '/';
+    return await this.deleteFolder(key);
+  }
+
+  async createFolder(key: string) {
+    const params = {
       Bucket: process.env.AWS_BUCKET,
-      Key: `${tenantCompany}/`,
+      Key: `${key}`,
     };
 
     try {
-      const response = await this.s3.putObject(bucketParams).promise();
+      const response = await this.s3.putObject(params).promise();
       return response.Location;
     } catch (error) {
       throw new BadRequestException(
-        MessagesHelper.S3_FAILED_TO_CREATE_FOLDER,
+        MessagesHelper.FAILED_TO_CREATE_FOLDER,
         error.stack,
       );
     }
   }
 
-  async createCategoryFolder(
-    tenancyCompany: string,
-    category: string,
-  ) {
-       
-    const bucketParams = {
+  async deleteFolder(key: string) {
+    const params = {
       Bucket: process.env.AWS_BUCKET,
-      Key: `${tenancyCompany}/${category}/`,
+      Key: `${key}`,
     };
 
     try {
-      const response = await this.s3.putObject(bucketParams).promise();
+      const response = await this.s3.deleteObject(params).promise();
       return response.Location;
     } catch (error) {
       throw new BadRequestException(
-        MessagesHelper.S3_FAILED_CREATE_FOLDER_CATEGORY,
+        MessagesHelper.FAILED_REMOVED_FOLDER,
         error.stack,
       );
     }

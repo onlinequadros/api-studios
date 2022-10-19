@@ -218,7 +218,7 @@ export class UserService {
   // FUNÇÃO PARA O UPLOAD DO AVATAR
   async uploadAvatar(file) {
     const { originalname } = file;
-    const AWS_S3_BUCKET = process.env.ACCESS_S3_BUCKET;
+    const AWS_S3_BUCKET = process.env.AWS_BUCKET;
 
     const responseImage = await this.s3_upload(
       file.buffer,
@@ -245,8 +245,8 @@ export class UserService {
     };
 
     const s3 = new aws.S3({
-      accessKeyId: process.env.ACCESS_S3_ID,
-      secretAccessKey: process.env.ACCESS_S3_SECRET,
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     });
 
     try {
