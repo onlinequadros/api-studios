@@ -38,7 +38,7 @@ export class CreateProductStudioDto {
   readonly client_user: string[];
 
   @IsOptional()
-  @IsString()
+  @IsArray()
   @ApiProperty()
   @Expose()
   readonly tags: string[];
