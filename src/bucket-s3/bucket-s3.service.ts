@@ -122,21 +122,14 @@ export class BucketS3Service {
   }
 
   async deleteImages(images) {
-    console.log(images);
-    
+    const objects = images.map((key) => ({ Key: key }));
+
     const params = {
       Bucket: process.env.AWS_BUCKET,
       Delete: {
-        Objects: [
-          {
-            key: 'photovida/casamento/wesley-e-andressa/5531bf47-91e3-49a2-ad12-b3ab42e6c97b.jpg',
-           },
-           {
-            key: 'photovida/casamento/wesley-e-andressa/1ca5640d-c4b2-4aa4-beed-22c96292519a.jpg',
-           }
-        ]
+        Objects: objects,
       },
-    };      
+    };
 
     try {
       const response = await this.s3.deleteObjects(params).promise();

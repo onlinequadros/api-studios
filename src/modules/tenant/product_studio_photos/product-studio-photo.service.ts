@@ -150,11 +150,11 @@ export class ProductStudioPhotoService {
 
     data.images.forEach((image)=>{
       images.push(image.id)
-      imagesKey.push({key: company + '/' + data.category + '/' + product.slug + '/' + image.photo})
+      imagesKey.push(company + '/' + data.category + '/' + product.slug + '/' + image.photo)
     })
 
-    //const imagesDatabase = await this.productStudioPhotoRepository.delete(images);
-    const imagesBucket = await this.awsS3Service.deleteImages(imagesKey);
+    await this.productStudioPhotoRepository.delete(images);
+    await this.awsS3Service.deleteImages(imagesKey);
 
     return true;
   }
