@@ -10,6 +10,7 @@ import { checkCompany } from '../../../modules/utils/checkCompany';
 import { ProductStudioService } from '../product_studio/product-studio.service';
 import { ReadProductStudioDto } from '../product_studio/dtos';
 import { SetCoverPhotoDTO } from '../product_studio/dtos/setCoverPhoto.dto';
+import { RemoveImagesDTO } from './dto/remove-images.dto';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 @Injectable({ scope: Scope.REQUEST })
@@ -24,10 +25,10 @@ export class ProductStudioPhotoService {
   }
 
   constructor(
-    private readonly awsS3Service: BucketS3Service, 
+    private readonly awsS3Service: BucketS3Service,
     private readonly encryptedService: EncryptedService,
-    private readonly productStudio: ProductStudioService
-    ) {
+    private readonly productStudio: ProductStudioService,
+  ) {
     this.getProductStudioPhotoRepository();
   }
 
@@ -47,27 +48,24 @@ export class ProductStudioPhotoService {
     let createPhotoStudioPhoto;
     try {
       productStudioPhoto.photos.forEach((element) => {
-        
-        const newProductStudioPhoto =
-        this.productStudioPhotoRepository.create({
-           photo: element.image,
-           feature_photo: false,
-           url: '123456789',
-           product_photo_id: {
-            id: productStudioPhoto.products_id
-           }
+        const newProductStudioPhoto = this.productStudioPhotoRepository.create({
+          photo: element.image,
+          feature_photo: false,
+          url: '123456789',
+          product_photo_id: {
+            id: productStudioPhoto.products_id,
+          },
         });
 
-        createPhotoStudioPhoto =
-         this.productStudioPhotoRepository.save(newProductStudioPhoto);
+        createPhotoStudioPhoto = this.productStudioPhotoRepository.save(
+          newProductStudioPhoto,
+        );
       });
 
       console.log(await createPhotoStudioPhoto);
-      
 
       //return;
-     
-      
+
       return plainToClass(ReadProductStudioPhotoDto, createPhotoStudioPhoto);
     } catch (err) {
       throw new BadGatewayException(err.message);
@@ -77,36 +75,38 @@ export class ProductStudioPhotoService {
   async uploadImages(images, products_id, category, request) {
     this.getProductStudioPhotoRepository();
 
-    const company = await checkCompany(request);    
+    const company = await checkCompany(request);
 
-    const { slug } = await this.productStudio.findById(products_id);    
+    const { slug } = await this.productStudio.findById(products_id);
 
     let createPhotoStudioPhoto;
     try {
       images['images'].forEach(async (element) => {
+        const encryptedImageName =
+          await this.encryptedService.encryptedImageName(element.originalname);
 
-      const encryptedImageName = await this.encryptedService.encryptedImageName(element.originalname);
-           
-      const s3 = await this.awsS3Service.uploadImage(
-        company,
-        category,
-        slug,
-        element,
-        encryptedImageName
-      );      
-      
-      const newProductStudioPhoto = await this.productStudioPhotoRepository.create({
-        photo: encryptedImageName,
-        feature_photo: false,
-        url:s3,
-        product_photo_id: {
-          id: products_id,
-        },
+        const s3 = await this.awsS3Service.uploadImage(
+          company,
+          category,
+          slug,
+          element,
+          encryptedImageName,
+        );
+
+        const newProductStudioPhoto =
+          await this.productStudioPhotoRepository.create({
+            photo: encryptedImageName,
+            feature_photo: false,
+            url: s3,
+            product_photo_id: {
+              id: products_id,
+            },
+          });
+
+        createPhotoStudioPhoto = this.productStudioPhotoRepository.save(
+          newProductStudioPhoto,
+        );
       });
-
-        createPhotoStudioPhoto =
-         this.productStudioPhotoRepository.save(newProductStudioPhoto);
-       });
 
       return plainToClass(ReadProductStudioPhotoDto, createPhotoStudioPhoto);
     } catch (err) {
@@ -120,12 +120,12 @@ export class ProductStudioPhotoService {
     const product = await this.productStudio.findOneProduct(data.productId);
 
     product.product_studio_photo.forEach(async (image) => {
-        if (image.feature_photo == true) {
-          await this.desableCoverPhoto(image.id);
-          return;        
-        }        
-    })    
-    
+      if (image.feature_photo == true) {
+        await this.desableCoverPhoto(image.id);
+        return;
+      }
+    });
+
     let image = await this.productStudioPhotoRepository.findOne(id);
     image.feature_photo = data.isActive;
 
@@ -136,6 +136,26 @@ export class ProductStudioPhotoService {
     this.getProductStudioPhotoRepository();
     let image = await this.productStudioPhotoRepository.findOne(id);
     image.feature_photo = false;
-    await this.productStudioPhotoRepository.save(image);  
+    await this.productStudioPhotoRepository.save(image);
+  }
+
+  async delete(request, data: RemoveImagesDTO) {
+    this.getProductStudioPhotoRepository();
+    let images = [];
+    let imagesKey = [];
+
+    const company = await checkCompany(request);
+
+    const product = await this.productStudio.findById(data.productId);
+
+    data.images.forEach((image)=>{
+      images.push(image.id)
+      imagesKey.push({key: company + '/' + data.category + '/' + product.slug + '/' + image.photo})
+    })
+
+    //const imagesDatabase = await this.productStudioPhotoRepository.delete(images);
+    const imagesBucket = await this.awsS3Service.deleteImages(imagesKey);
+
+    return true;
   }
 }

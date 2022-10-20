@@ -19,6 +19,7 @@ import { CreateProductStudioPhotoDto, ReadProductStudioPhotoDto } from './dto';
 import { ProductStudioPhotoService } from './product-studio-photo.service';
 import { Request } from 'express';
 import { SetCoverPhotoDTO } from '../product_studio/dtos/setCoverPhoto.dto';
+import { RemoveImagesDTO } from './dto/remove-images.dto';
 
 @Controller('product-studio-photo')
 export class ProductStudioPhotoController {
@@ -61,6 +62,8 @@ export class ProductStudioPhotoController {
     return await this.productStudioPhotoService.setCoverPhoto(id, data);
   }
 
-  @Delete(':id')
-  async delete(@Param('id') id: string) {}
+  @Delete()
+  async delete(@Req() request: Request, @Body() data: RemoveImagesDTO) {
+    return await this.productStudioPhotoService.delete(request, data);    
+  }
 }

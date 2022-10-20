@@ -11,6 +11,7 @@ import {
   IsNotEmpty,
   Length,
   IsOptional,
+  IsArray,
 } from 'class-validator';
 
 export class CreateUserDto {
@@ -78,7 +79,7 @@ export class CreateUserDto {
   readonly role: 'Admin' | 'Studio' | 'Fotografo' | 'Artista' | 'Client';
 
   @IsOptional()
-  @IsString()
+  @IsArray()
   @ApiProperty()
   @Expose()
   readonly permissions: string[];
