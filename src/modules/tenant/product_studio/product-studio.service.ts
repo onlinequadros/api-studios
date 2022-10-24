@@ -54,26 +54,22 @@ export class ProductStudioService {
     }
 
     this.getProductStudioRepository();
-    const [products, count] = await this.productStudioRepository.findAndCount({
-      //where,
+    var [products, count] = await this.productStudioRepository.findAndCount({
+      where,
       order: {
         created_at: 'DESC',
       },
       take: limit, // aqui pega a quantidade
       skip: (page - 1) * limit,
-      join: {
-        alias: 'productstudio',
-        innerJoinAndSelect: {
-          product_studio_photo: 'productstudio.product_studio_photo'
-        },
-      },
-
-      where: (qb) => {
-        qb.where('product_studio_photo.feature_photo = :feature_photo', {
-          feature_photo: true
-        });
-      }
+      relations: ['product_studio_photo'],
     });
+    products.map((element) => {
+      element.product_studio_photo = element.product_studio_photo.filter(
+        (item) => item.feature_photo == true,
+      );
+    });
+    
+    
     return {
       count,
       totalPages: Math.ceil(count / limit),
