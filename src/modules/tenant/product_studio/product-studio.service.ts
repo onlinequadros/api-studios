@@ -55,12 +55,24 @@ export class ProductStudioService {
 
     this.getProductStudioRepository();
     const [products, count] = await this.productStudioRepository.findAndCount({
-      where,
+      //where,
       order: {
         created_at: 'DESC',
       },
       take: limit, // aqui pega a quantidade
       skip: (page - 1) * limit,
+      join: {
+        alias: 'productstudio',
+        innerJoinAndSelect: {
+          product_studio_photo: 'productstudio.product_studio_photo'
+        },
+      },
+
+      where: (qb) => {
+        qb.where('product_studio_photo.feature_photo = :feature_photo', {
+          feature_photo: true
+        });
+      }
     });
     return {
       count,
@@ -111,10 +123,13 @@ export class ProductStudioService {
   }
 
   // FUNÇÃO PARA CRIAR UM PRODUTO
-  async create(request, product: CreateProductStudioDto): Promise<ReadProductStudioDto> {
+  async create(
+    request,
+    product: CreateProductStudioDto,
+  ): Promise<ReadProductStudioDto> {
     this.getProductStudioRepository();
 
-    const company = await checkCompany(request);    
+    const company = await checkCompany(request);
 
     const slug = await this.productStudioDinamicRepository.verifySlug(
       product.slug.toLowerCase().trim(),
