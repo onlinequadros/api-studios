@@ -5,6 +5,7 @@ import { CreateClientDto, ReadClientDto } from './dto';
 import { Client } from './entities/client.entity';
 import { TenantProvider } from '../tenant.provider';
 import { ClientRepository } from './repository/client.repository';
+import { UpdateClientDTO } from './dto/updateClient.dto';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 
@@ -47,7 +48,7 @@ export class ClientService {
   }
 
   // ATUALIZA UM CLIENT
-  async update(id: string, client: CreateClientDto): Promise<ReadClientDto> {
+  async update(id: string, updateClientDTO: UpdateClientDTO): Promise<ReadClientDto> {
     this.getConnectionClient();
 
     const clientExists = await this.clientRepository.fincClient(id);
@@ -56,7 +57,7 @@ export class ClientService {
       throw new NotFoundException('Client não encontrado');
     }
 
-    const objectClientUpdate = Object.assign(clientExists, client);
+    const objectClientUpdate = Object.assign(clientExists, updateClientDTO);
 
     const createdUser = await this.clientConnectionRepository.save(
       objectClientUpdate,
