@@ -43,6 +43,7 @@ export class AuthServiceTenant {
         permissions,
         is_active,
         user_type,
+        slug,
       } = user;
 
       const resultValidate: ValidateAuthDto = {
@@ -60,6 +61,7 @@ export class AuthServiceTenant {
         permissions,
         is_active,
         user_type,
+        slug,
       };
 
       return resultValidate;
