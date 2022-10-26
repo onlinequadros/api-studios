@@ -13,7 +13,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto, ReadUserDto } from './dto';
+import { CreateUserDto, ReadUserDto, UpdateUserDto } from './dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { IResponseUserData } from './interface/read-user-pagination';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -68,7 +68,7 @@ export class UserController {
   @Put('update-profile/:id')
   async UpdateProfile(
     @Param('id') id: string,
-    @Body() profile: CreateUserDto,
+    @Body() profile: UpdateUserDto,
   ): Promise<ReadUserDto> {
     return this.userService.updateProfile(id, profile);
   }
