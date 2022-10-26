@@ -12,7 +12,7 @@ import { plainToClass, plainToInstance } from 'class-transformer';
 import { validationCPF } from 'src/modules/utils/validationsCPF';
 import { ILike, Repository } from 'typeorm';
 import { TenantProvider } from '../tenant.provider';
-import { CreateUserDto, ReadUserDto } from './dto';
+import { CreateUserDto, ReadUserDto, UpdateUserDto } from './dto';
 import { IResponseUserData } from './interface/read-user-pagination';
 import { User } from './entities/user.entity';
 import { IReadUsersParams } from './interface/get-all-users-params';
@@ -116,7 +116,7 @@ export class UserService {
     this.getUserRepository();
     const user = await this.userRepository.findOne({
       where: { id: user_id },
-      relations: ['address','products', 'products.product_studio_photo'],
+      relations: ['address', 'products', 'products.product_studio_photo'],
     });
 
     if (!user) {
@@ -154,7 +154,7 @@ export class UserService {
   // FUNÇÃO PARA ATUALIZAR UM USUÁRIO
   async updateProfile(
     id: string,
-    profile: CreateUserDto,
+    profile: UpdateUserDto,
   ): Promise<ReadUserDto> {
     this.getUserRepository();
 
@@ -170,7 +170,10 @@ export class UserService {
       throw new NotFoundException('Identificador do usuário não encontrado');
     }
 
-    const updateUser = Object.assign(userExists, profile);
+    const updateUser = Object.assign(userExists, {
+      ...profile,
+      password: userExists.password,
+    });
     const updateUserProfile = await this.userRepository.save(updateUser);
 
     delete updateUserProfile.password;

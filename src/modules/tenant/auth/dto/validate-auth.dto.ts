@@ -12,5 +12,6 @@ export class ValidateAuthDto {
   permissions: string[];
   is_active: boolean;
   user_type: string;
+  slug?: string;
   created_at: Date;
 }
