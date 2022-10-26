@@ -19,6 +19,7 @@ import {
 import { ProductStudioDinamicRepository } from './repositories/product-studio.repository';
 import { MessagesHelper } from '../../../helpers/messages.helpers';
 import { checkCompany } from '../../../modules/utils/checkCompany';
+import { UpdateProductStudioDTO } from './dtos/updateProduct.dto';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 @Injectable({ scope: Scope.REQUEST })
@@ -197,7 +198,7 @@ export class ProductStudioService {
   }
 
   async update( request,
-    product: CreateProductStudioDto,): Promise<ReadProductStudioDto> {
+    product: UpdateProductStudioDTO,): Promise<ReadProductStudioDto> {
     try {
       //const productLinked = this.productStudioRepository.update(product);
       const updatedProduct = await this.productStudioRepository.save(
