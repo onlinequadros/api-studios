@@ -85,7 +85,7 @@ export class ProductStudioService {
     this.getProductStudioRepository();
     const product = await this.productStudioRepository.findOne({
       where: { slug },
-      relations: ['product_studio_photo'],
+      relations: ['product_studio_photo', 'users'],
     });
 
     if (!product) {
