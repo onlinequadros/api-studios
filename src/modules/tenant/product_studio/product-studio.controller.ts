@@ -15,6 +15,7 @@ import { CreateProductStudioDto, ReadProductStudioDto } from './dtos';
 import { IResponseProductStudioData } from './interfaces/product-studio.interface';
 import { ProductStudioService } from './product-studio.service';
 import {Request} from 'express';
+import { UpdateProductStudioDTO } from './dtos/updateProduct.dto';
 
 @Controller('products-studio')
 export class ProductStudioController {
@@ -54,7 +55,7 @@ export class ProductStudioController {
   @Patch()
   // @UseGuards(JwtAuthGuard)
   async update(
-    @Body() product: CreateProductStudioDto,
+    @Body() product: UpdateProductStudioDTO,
     @Req() request: Request,
   ): Promise<ReadProductStudioDto> {
     return this.productStudioService.update(request, product);
