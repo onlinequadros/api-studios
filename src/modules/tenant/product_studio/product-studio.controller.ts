@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   Req,
@@ -48,6 +49,15 @@ export class ProductStudioController {
     @Req() request: Request,
   ): Promise<ReadProductStudioDto> {
     return this.productStudioService.create(request, product);
+  }
+
+  @Patch()
+  // @UseGuards(JwtAuthGuard)
+  async update(
+    @Body() product: CreateProductStudioDto,
+    @Req() request: Request,
+  ): Promise<ReadProductStudioDto> {
+    return this.productStudioService.update(request, product);
   }
 
   @Get('/slug/:slug')

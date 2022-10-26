@@ -116,7 +116,7 @@ export class UserService {
     this.getUserRepository();
     const user = await this.userRepository.findOne({
       where: { id: user_id },
-      relations: ['address'],
+      relations: ['address','products', 'products.product_studio_photo'],
     });
 
     if (!user) {

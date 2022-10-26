@@ -114,7 +114,7 @@ export class ProductStudioService {
       where: {
         id: id,
       },
-      relations: ['product_studio_photo'],
+      relations: ['product_studio_photo','users'],
     });
   }
 
@@ -167,9 +167,9 @@ export class ProductStudioService {
     return { available: true };
   }
 
-  async update(id: string, photos: []) {
-    this.getProductStudioRepository();
-  }
+  // async update(id: string, photos: []) {
+  //   this.getProductStudioRepository();
+  // }
 
   async deleteProduct(request, id: string): Promise<boolean> {
     this.getProductStudioRepository();
@@ -194,5 +194,18 @@ export class ProductStudioService {
 
     await this.s3Service.deleteProductFolder(company, category, slug);
     return true;
+  }
+
+  async update( request,
+    product: CreateProductStudioDto,): Promise<ReadProductStudioDto> {
+    try {
+      //const productLinked = this.productStudioRepository.update(product);
+      const updatedProduct = await this.productStudioRepository.save(
+        product,
+      );
+      return plainToClass(ReadProductStudioDto, updatedProduct);
+    } catch (err) {
+      throw new BadGatewayException(err.message);
+    }
   }
 }

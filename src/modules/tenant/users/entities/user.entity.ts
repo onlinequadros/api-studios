@@ -2,12 +2,15 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { Address } from '../../address/entities/address.entity';
+import { ProductStudio } from '../../product_studio/entity/product-studio.entity';
 
 @Entity('users')
 export class User {
@@ -61,6 +64,9 @@ export class User {
     nullable: true,
   })
   address?: Address[];
+
+  @ManyToMany(() => ProductStudio, (product) => product.users)
+  products?: ProductStudio[];
 
   @CreateDateColumn()
   created_at: Date;

@@ -3,12 +3,15 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { ProductStudioPhoto } from '../../product_studio_photos/entities/product-studio-photo.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity('productstudio')
 export class ProductStudio {
@@ -24,8 +27,12 @@ export class ProductStudio {
   @Column()
   category: string;
 
-  @Column({ type: String, array: true, nullable: true })
-  client_user?: string[];
+  @ManyToMany(() => User, (user) => user.products)
+  @JoinTable()
+  users?: User[];
+
+  // @Column({ type: String, array: true, nullable: true })
+  // client_user?: string[];
 
   @Column()
   sku_father: string;
