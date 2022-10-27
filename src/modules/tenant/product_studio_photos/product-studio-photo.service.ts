@@ -103,7 +103,7 @@ export class ProductStudioPhotoService {
             },
           });
 
-        createPhotoStudioPhoto = this.productStudioPhotoRepository.save(
+        createPhotoStudioPhoto = await this.productStudioPhotoRepository.save(
           newProductStudioPhoto,
         );
       });
