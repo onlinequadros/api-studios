@@ -69,8 +69,7 @@ export class ProductStudioService {
         (item) => item.feature_photo == true,
       );
     });
-    
-    
+
     return {
       count,
       totalPages: Math.ceil(count / limit),
@@ -115,7 +114,7 @@ export class ProductStudioService {
       where: {
         id: id,
       },
-      relations: ['product_studio_photo','users'],
+      relations: ['product_studio_photo', 'users'],
     });
   }
 
@@ -197,12 +196,22 @@ export class ProductStudioService {
     return true;
   }
 
-  async update( request,
-    product: UpdateProductStudioDTO,): Promise<ReadProductStudioDto> {
+  async update(
+    updateProductDTO: UpdateProductStudioDTO,
+  ): Promise<ReadProductStudioDto> {
     try {
-      //const productLinked = this.productStudioRepository.update(product);
+      const product = await this.findOneProduct(updateProductDTO['id']);
+      const newProducts = updateProductDTO['users'][0]['id'];
+
+      product.users.forEach((user) => {
+        if (user.id == newProducts) {
+          return;
+        }
+        updateProductDTO['users'].push({ id: user.id });
+      });
+
       const updatedProduct = await this.productStudioRepository.save(
-        product,
+        updateProductDTO,
       );
       return plainToClass(ReadProductStudioDto, updatedProduct);
     } catch (err) {

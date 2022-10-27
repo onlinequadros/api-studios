@@ -55,10 +55,9 @@ export class ProductStudioController {
   @Patch()
   // @UseGuards(JwtAuthGuard)
   async update(
-    @Body() product: UpdateProductStudioDTO,
-    @Req() request: Request,
+    @Body() updateProductStudioDTO: UpdateProductStudioDTO,
   ): Promise<ReadProductStudioDto> {
-    return this.productStudioService.update(request, product);
+    return this.productStudioService.update(updateProductStudioDTO);
   }
 
   @Get('/slug/:slug')
@@ -70,7 +69,10 @@ export class ProductStudioController {
   }
 
   @Delete(':id')
-  async deleteProductStudio(@Param('id') id: string, @Req() request: Request): Promise<boolean> {
+  async deleteProductStudio(
+    @Param('id') id: string,
+    @Req() request: Request,
+  ): Promise<boolean> {
     return this.productStudioService.deleteProduct(request, id);
   }
 }
