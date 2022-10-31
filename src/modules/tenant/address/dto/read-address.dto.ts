@@ -49,4 +49,9 @@ export class ReadAddressDto {
   @ApiProperty({ default: 'Complemento' })
   @Expose()
   readonly complement: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @Expose()
+  readonly user_id: string;
 }

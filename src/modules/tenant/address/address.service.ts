@@ -28,10 +28,56 @@ export class AddressService {
 
   async findAll(): Promise<ReadAddressDto[]> {
     this.getUserRepository();
-    const address = await this.addressRepository.find();
+    const address = await this.addressRepository.find({
+      order: { created_at: 'ASC' },
+    });
     return address.map((addressDto) =>
       plainToInstance(ReadAddressDto, addressDto),
     );
+  }
+
+  async findAddressInUser(id: string): Promise<ReadAddressDto[]> {
+    this.getUserRepository();
+    const address = await this.addressRepository.find({
+      where: { user_id: id },
+    });
+
+    if (!address) {
+      throw new NotFoundException('Cadastre o seu endereço para continuar.');
+    }
+
+    return plainToInstance(ReadAddressDto, address);
+  }
+
+  async updateFavoriteAddress(
+    id_user: string,
+    idAddress: { select_address: string },
+  ): Promise<ReadAddressDto> {
+    this.getUserRepository();
+
+    const allAddress = await this.addressRepository.find({
+      where: { user_id: id_user },
+    });
+
+    const objAddress = allAddress.map(async (item) => {
+      if (item.favorite === true) {
+        item.favorite = false;
+        await this.addressRepository.save(item);
+      }
+      return item;
+    });
+
+    if (objAddress && objAddress.length) {
+      const address = await this.addressRepository.findOne({
+        where: {
+          id: idAddress.select_address,
+        },
+      });
+      address.favorite = true;
+      const updateAddress = await this.addressRepository.save(address);
+
+      return plainToInstance(ReadAddressDto, updateAddress);
+    }
   }
 
   async create(address: CreateAddressDto): Promise<ReadAddressDto> {
@@ -64,5 +110,35 @@ export class AddressService {
     const createdAddress = await this.addressRepository.save(newAddress);
 
     return plainToInstance(ReadAddressDto, createdAddress);
+  }
+
+  async deleteAddress(address_id: string): Promise<boolean> {
+    this.getUserRepository();
+
+    if (!uuidValidate(address_id)) {
+      throw new BadRequestException('Id informado não é válido.');
+    }
+
+    const addressExists = await this.addressRepository.findOne({
+      where: { id: address_id },
+    });
+
+    if (!addressExists) {
+      throw new NotFoundException('Identificador do endereço não encontrado');
+    }
+
+    if (addressExists.favorite === true) {
+      throw new BadRequestException(
+        'Escolha outro endereço ou adicione um novo para deixar como favorito antes de remover.',
+      );
+    }
+
+    try {
+      await this.addressRepository.delete(addressExists.id);
+
+      return true;
+    } catch (err) {
+      return false;
+    }
   }
 }
