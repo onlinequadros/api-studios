@@ -55,7 +55,7 @@ export class ProductStudioService {
     }
 
     this.getProductStudioRepository();
-    var [products, count] = await this.productStudioRepository.findAndCount({
+    const [products, count] = await this.productStudioRepository.findAndCount({
       where,
       order: {
         created_at: 'DESC',
@@ -217,5 +217,27 @@ export class ProductStudioService {
     } catch (err) {
       throw new BadGatewayException(err.message);
     }
+  }
+
+  async updateOneProduct(
+    slug: string,
+    updateProductStudio: UpdateProductStudioDTO,
+  ): Promise<ReadProductStudioDto> {
+    this.getProductStudioRepository();
+    const product = await this.productStudioRepository.findOne({
+      where: { slug: slug },
+    });
+
+    if (!product) {
+      throw new NotFoundException(MessagesHelper.PRODUCT_NOT_FOUND);
+    }
+
+    const productModify = Object.assign(product, updateProductStudio);
+
+    const productUpdatted = await this.productStudioRepository.save(
+      productModify,
+    );
+
+    return plainToClass(ReadProductStudioDto, productUpdatted);
   }
 }

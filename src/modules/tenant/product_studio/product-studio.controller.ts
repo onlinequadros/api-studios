@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
@@ -14,7 +15,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateProductStudioDto, ReadProductStudioDto } from './dtos';
 import { IResponseProductStudioData } from './interfaces/product-studio.interface';
 import { ProductStudioService } from './product-studio.service';
-import {Request} from 'express';
+import { Request } from 'express';
 import { UpdateProductStudioDTO } from './dtos/updateProduct.dto';
 
 @Controller('products-studio')
@@ -58,6 +59,18 @@ export class ProductStudioController {
     @Body() updateProductStudioDTO: UpdateProductStudioDTO,
   ): Promise<ReadProductStudioDto> {
     return this.productStudioService.update(updateProductStudioDTO);
+  }
+
+  @Put('/:slug')
+  // @UseGuards(JwtAuthGuard)
+  async updateOneProduct(
+    @Param('slug') slug: string,
+    @Body() updateProductStudio: UpdateProductStudioDTO,
+  ) {
+    return this.productStudioService.updateOneProduct(
+      slug,
+      updateProductStudio,
+    );
   }
 
   @Get('/slug/:slug')

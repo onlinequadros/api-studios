@@ -65,6 +65,10 @@ export class UserService {
       where.push({
         email: ILike(`%${search}%`),
       });
+
+      where.push({
+        cpf: ILike(`%${search}%`),
+      });
     }
 
     this.getUserRepository();
