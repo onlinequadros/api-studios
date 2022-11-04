@@ -205,7 +205,7 @@ export class ProductStudioService {
 
       product.users.forEach((user) => {
         if (user.id == newProducts) {
-          return;
+          throw new BadRequestException('Usuário já vinculado ao studio.');
         }
         updateProductDTO['users'].push({ id: user.id });
       });
