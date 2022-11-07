@@ -6,6 +6,7 @@ import {
   Scope,
 } from '@nestjs/common';
 import * as aws from 'aws-sdk';
+import { v4 as uuidV4 } from 'uuid';
 import { compare, hash } from 'bcryptjs';
 import { validate as uuidValidate } from 'uuid';
 import { plainToClass, plainToInstance } from 'class-transformer';
@@ -223,25 +224,34 @@ export class UserService {
   }
 
   // FUNÇÃO PARA O UPLOAD DO AVATAR
-  async uploadAvatar(file) {
-    const { originalname } = file;
+  async uploadAvatar(file, id) {
+    const { mimetype } = file;
     const AWS_S3_BUCKET = process.env.AWS_BUCKET;
+    const newMimetype = mimetype.split('/')[1];
+    const nameImage = `${uuidV4()}.${newMimetype}`;
+
+    const imgAvatar = await this.userRepository.findOne({
+      where: { id: id },
+    });
+
+    const removeImageS3 = imgAvatar.avatar.split('profiles/')[1];
 
     const responseImage = await this.s3_upload(
       file.buffer,
       AWS_S3_BUCKET,
-      originalname,
+      nameImage,
       file.mimetype,
+      removeImageS3,
     );
 
     return { url: responseImage };
   }
 
   // FUNÇÃO PARA O PREPARO DO S3
-  async s3_upload(file, bucket, name, mimetype) {
+  async s3_upload(file, bucket, name, mimetype, removeImageS3) {
     const params = {
       Bucket: bucket,
-      Key: String(name),
+      Key: 'profiles/' + String(name),
       Body: file,
       ACL: 'public-read',
       ContentType: mimetype,
@@ -251,6 +261,11 @@ export class UserService {
       },
     };
 
+    const paramsRemoveImageS3 = {
+      Bucket: bucket,
+      Key: 'profiles/' + removeImageS3,
+    };
+
     const s3 = new aws.S3({
       accessKeyId: process.env.AWS_ACCESS_KEY_ID,
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -258,6 +273,7 @@ export class UserService {
 
     try {
       const s3Response = await s3.upload(params).promise();
+      await s3.deleteObject(paramsRemoveImageS3).promise();
       return s3Response.Location;
     } catch (e) {
       throw new BadRequestException('Falha ao realizar o upload.' + e);
