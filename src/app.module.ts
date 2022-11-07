@@ -15,6 +15,8 @@ import { ProductStudioModule } from './modules/tenant/product_studio/product-stu
 import { ProductArtistModule } from './modules/tenant/product_artist/product-studio.module';
 import { ProductStudioPhotoModule } from './modules/tenant/product_studio_photos/product-studio-photo.module';
 import { BucketS3Module } from './bucket-s3/bucket-s3.module';
+import { ProductsModule } from './modules/master/products/products.module';
+
 @Module({
   imports: [
     CompaniesModule,
@@ -35,7 +37,6 @@ import { BucketS3Module } from './bucket-s3/bucket-s3.module';
     UsersTokensModule,
     ForgotPasswordModule,
     ResetPasswordModule,
-
     AuthModuleTenant,
     ClientModule,
     UserModule,
@@ -45,6 +46,7 @@ import { BucketS3Module } from './bucket-s3/bucket-s3.module';
     ProductStudioPhotoModule,
     CategoryModule,
     BucketS3Module,
+    ProductsModule,
   ],
   controllers: [],
   providers: [],
