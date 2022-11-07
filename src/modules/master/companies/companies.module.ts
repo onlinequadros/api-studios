@@ -17,15 +17,15 @@ import { Client } from '../../tenant/clients/entities/client.entity';
 import { Address } from '../../tenant/address/entities/address.entity';
 import { User } from '../../tenant/users/entities/user.entity';
 import { TenantProvider } from '../../tenant/tenant.provider';
-import { TenantService } from 'src/modules/tenant/tenant.service';
-import { DatabaseProvider } from 'src/modules/shared/database/database.provider';
-import { AddressService } from 'src/modules/tenant/address/address.service';
-import { Category } from 'src/modules/tenant/categories/entities/category.entity';
+import { TenantService } from '../../../modules/tenant/tenant.service';
+import { DatabaseProvider } from '../../../modules/shared/database/database.provider';
+import { AddressService } from '../../../modules/tenant/address/address.service';
+import { Category } from '../../../modules/tenant/categories/entities/category.entity';
 import { forwardRef } from '@nestjs/common';
-import { ClientModule } from 'src/modules/tenant/clients/client.module';
-import { ProductStudio } from 'src/modules/tenant/product_studio/entity/product-studio.entity';
-import { ProductArtist } from 'src/modules/tenant/product_artist/entity/product-artist.entity';
-import { ProductStudioPhoto } from 'src/modules/tenant/product_studio_photos/entities/product-studio-photo.entity';
+import { ClientModule } from '../../../modules/tenant/clients/client.module';
+import { ProductStudio } from '../../../modules/tenant/product_studio/entity/product-studio.entity';
+import { ProductArtist } from '../../../modules/tenant/product_artist/entity/product-artist.entity';
+import { ProductStudioPhoto } from '../../../modules/tenant/product_studio_photos/entities/product-studio-photo.entity';
 import { BucketS3Service } from '../../../bucket-s3/bucket-s3.service';
 import { EncryptedService } from '../../../modules/utils/encrypted.service';
 
@@ -120,6 +120,8 @@ export class CompaniesModule {
         { path: '/api/companies', method: RequestMethod.ALL },
         { path: '/api/companies/:id', method: RequestMethod.ALL },
         { path: '/api/companies/:id', method: RequestMethod.ALL },
+        { path: '/api/products', method: RequestMethod.ALL },
+        { path: '/api/products/:id', method: RequestMethod.ALL },
         {
           path: '/api/companies/validation-cpf/:cpf',
           method: RequestMethod.ALL,
