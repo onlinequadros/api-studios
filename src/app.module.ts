@@ -16,6 +16,8 @@ import { ProductArtistModule } from './modules/tenant/product_artist/product-stu
 import { ProductStudioPhotoModule } from './modules/tenant/product_studio_photos/product-studio-photo.module';
 import { BucketS3Module } from './bucket-s3/bucket-s3.module';
 import { ProductsModule } from './modules/master/products/products.module';
+import { OrdersModule } from './modules/tenant/orders/orders.module';
+import { OrdersExtraItemsModule } from './modules/tenant/orders-extra-items/orders-extra-items.module';
 
 @Module({
   imports: [
@@ -47,6 +49,8 @@ import { ProductsModule } from './modules/master/products/products.module';
     CategoryModule,
     BucketS3Module,
     ProductsModule,
+    OrdersModule,
+    OrdersExtraItemsModule
   ],
   controllers: [],
   providers: [],
