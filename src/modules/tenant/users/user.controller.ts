@@ -17,6 +17,7 @@ import { CreateUserDto, ReadUserDto, UpdateUserDto } from './dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { IResponseUserData } from './interface/read-user-pagination';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @Controller('users')
 export class UserController {
@@ -90,5 +91,13 @@ export class UserController {
       passwordInfoOld,
       passwordInfoNew,
     );
+  }
+
+  // FAZ A PESQUISA E VERIRIFICA SE O EMAIL É VÁLIDO OU SE JÁ ESTÁ CADASTRADO
+  @Get('/validation-email/:email')
+  @ApiOperation({ summary: 'Verificar um email cadastrado no sistema.' })
+  @ApiBearerAuth()
+  async verifyEmail(@Param('email') email: string) {
+    return await this.userService.availableEmail(email);
   }
 }

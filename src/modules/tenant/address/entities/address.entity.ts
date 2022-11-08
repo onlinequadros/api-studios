@@ -33,8 +33,8 @@ export class Address {
   @Column()
   cep: string;
 
-  @Column()
-  complement: string;
+  @Column({ nullable: true })
+  complement?: string;
 
   @Column()
   favorite: boolean;
