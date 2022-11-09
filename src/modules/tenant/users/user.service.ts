@@ -256,6 +256,15 @@ export class UserService {
     userExists.password = await hash(objectForgotPassword.password, 8);
     const updateUserProfile = await this.userRepository.save(userExists);
 
+    if (updateUserProfile) {
+      const resetCodeForgotPassword = Object.assign(userExists, {
+        ...userExists,
+        forgot_password: null,
+      });
+
+      await this.userRepository.save(resetCodeForgotPassword);
+    }
+
     delete updateUserProfile.password;
 
     return true;
