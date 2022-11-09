@@ -76,6 +76,9 @@ export class Client {
   code_access?: string;
 
   @Column({ nullable: true })
+  cover?: string;
+
+  @Column({ nullable: true })
   validate_access?: boolean;
 
   @Column({ unique: true })
