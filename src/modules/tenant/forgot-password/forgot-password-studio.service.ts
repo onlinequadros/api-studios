@@ -35,7 +35,7 @@ export class ForgotPasswordStudioService {
     const variables = {
       name: user.name,
       code: token,
-      link: `${process.env.URL_PRINCIPAL}/${objectPassword.studio}/forgot-password?code=${token}`,
+      link: `${process.env.URL_PRINCIPAL}/${objectPassword.studio}/${process.env.URL_COMPLEMENT}${token}`,
     };
 
     try {
