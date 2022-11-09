@@ -61,6 +61,10 @@ export class ReadUserDto {
   @Expose()
   readonly avatar?: string;
 
+  @IsOptional()
+  @Expose()
+  readonly forgot_password?: string;
+
   @IsString()
   @IsNotEmpty()
   @IsIn(['Admin', 'Studio', 'Fotografo', 'Artista', 'Client'])

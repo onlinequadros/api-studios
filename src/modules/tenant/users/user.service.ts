@@ -18,6 +18,7 @@ import { IResponseUserData } from './interface/read-user-pagination';
 import { User } from './entities/user.entity';
 import { IReadUsersParams } from './interface/get-all-users-params';
 import { UserDinamicRepository } from './repositories/users.repositories';
+import { ForgotPassword } from './dto/forgot-password.dto';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 @Injectable({ scope: Scope.REQUEST })
@@ -236,6 +237,28 @@ export class UserService {
       });
 
     return { available: true };
+  }
+
+  // FUNÇÃO PARA RECUPERAR UMA SENHA DO USUÁRIO
+  async forgotProfilePassword(
+    objectForgotPassword: ForgotPassword,
+  ): Promise<boolean> {
+    this.getUserRepository();
+
+    const userExists = await this.userRepository.findOne({
+      where: { forgot_password: objectForgotPassword.forgot_password },
+    });
+
+    if (!userExists) {
+      throw new NotFoundException('Código validador inválido.');
+    }
+
+    userExists.password = await hash(objectForgotPassword.password, 8);
+    const updateUserProfile = await this.userRepository.save(userExists);
+
+    delete updateUserProfile.password;
+
+    return true;
   }
 
   // FUNÇÃO PARA O UPLOAD DO AVATAR

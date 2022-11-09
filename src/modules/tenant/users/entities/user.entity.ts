@@ -47,6 +47,9 @@ export class User {
   @Column({ nullable: true })
   slug?: string;
 
+  @Column({ nullable: true })
+  forgot_password?: string;
+
   @Column()
   role: 'Admin' | 'Studio' | 'Fotografo' | 'Artista' | 'Client';
 
@@ -57,7 +60,7 @@ export class User {
   is_active?: boolean;
 
   @Column({ type: 'enum', enum: ['client', 'system'] })
-  user_type?: string;
+  user_type?: 'client' | 'system';
 
   @OneToMany(() => Address, (address) => address.user_id, {
     cascade: true,

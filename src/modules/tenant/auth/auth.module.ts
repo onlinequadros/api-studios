@@ -5,7 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthControllerTenant } from './auth.controller';
 import { AuthServiceTenant } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { MailsModule } from '../mails/mail.module';
+import { MailsStudioModule } from '../mails/mail-studio.module';
 import { config } from 'src/config/configurations';
 import { UserModule } from '../users/user.module';
 import { LocaltenantStrategy } from './strategies/local.strategy';
@@ -14,7 +14,7 @@ import { LocaltenantStrategy } from './strategies/local.strategy';
   imports: [
     UserModule,
     PassportModule,
-    MailsModule,
+    MailsStudioModule,
 
     JwtModule.register({
       secret: config.JWT_CONSTANTS.secret,
