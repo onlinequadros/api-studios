@@ -28,6 +28,10 @@ import { ProductArtist } from '../../../modules/tenant/product_artist/entity/pro
 import { ProductStudioPhoto } from '../../../modules/tenant/product_studio_photos/entities/product-studio-photo.entity';
 import { BucketS3Service } from '../../../bucket-s3/bucket-s3.service';
 import { EncryptedService } from '../../../modules/utils/encrypted.service';
+import { Orders } from '../../../modules/tenant/orders/entities/orders.entity';
+import { OrdersExtraItem } from '../../../modules/tenant/orders-extra-items/entities/orders-extra-item.entity';
+import { OrdersExtraPhotos } from '../../../modules/tenant/orders-extra-photos/entities/orders_extra_photos.entity';
+
 
 @Module({
   imports: [
@@ -43,7 +47,7 @@ import { EncryptedService } from '../../../modules/utils/encrypted.service';
     TenantService,
     DatabaseProvider,
     BucketS3Service,
-    EncryptedService
+    EncryptedService,
   ],
   exports: [CompaniesService, CompanyRepository],
 })
@@ -99,9 +103,12 @@ export class CompaniesModule {
               ProductStudio,
               ProductStudioPhoto,
               ProductArtist,
+              Orders,
+              OrdersExtraItem,
+              OrdersExtraPhotos
             ], // TODO -> adiciona as entidades do tenant
             ssl: false,
-            synchronize: false,
+            synchronize: true,
           });
           if (createdConnection) {
             TenantProvider.connection = createdConnection;
@@ -122,6 +129,8 @@ export class CompaniesModule {
         { path: '/api/companies/:id', method: RequestMethod.ALL },
         { path: '/api/products', method: RequestMethod.ALL },
         { path: '/api/products/:id', method: RequestMethod.ALL },
+        { path: '/api/companies/orders', method: RequestMethod.ALL },
+        { path: '/api/companies/orders/:id', method: RequestMethod.ALL },
         {
           path: '/api/companies/validation-cpf/:cpf',
           method: RequestMethod.ALL,

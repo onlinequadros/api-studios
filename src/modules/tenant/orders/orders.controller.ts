@@ -25,4 +25,17 @@ export class OrdersController {
   async delete(@Param('id') id: string) {
     return this.ordersService.delete(id);
   }
+
+  @Get('/report/:option')
+  async ordersReport(@Param('option') option: string) {
+    return this.ordersService.ordersReport(option);
+  }
+
+  @Get('/report/:start/:end')
+  async ordersReportFilter(
+    @Param('start') start: string,
+    @Param('end') end: string,
+  ) {
+    return this.ordersService.ordersReportFilter(start, end);
+  }
 }

@@ -53,10 +53,11 @@ export class CreateOrdersDTO {
   @Expose()
   amount_photos: number;
 
-  @IsString()
-  @IsNotEmpty()
   @Expose()
-  items: string;
+  orders_extra_items: any;
+
+  @Expose()
+  orders_extra_photos: any;
 
   @IsString()
   @IsNotEmpty()

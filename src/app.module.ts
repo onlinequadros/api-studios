@@ -18,8 +18,10 @@ import { BucketS3Module } from './bucket-s3/bucket-s3.module';
 import { ProductsModule } from './modules/master/products/products.module';
 import { ForgotPasswordStudioModule } from './modules/tenant/forgot-password/forgot-password-studio.module';
 import { OrdersModule } from './modules/tenant/orders/orders.module';
-
+import { OrdersExtraItemsModule } from './modules/tenant/orders-extra-items/orders-extra-items.module';
+import { OrdersExtraPhotosModule } from './modules/tenant/orders-extra-photos/orders-extra-photos.module';
 @Module({
+
   imports: [
     CompaniesModule,
     ConfigModule.forRoot({ isGlobal: true }),
@@ -51,6 +53,9 @@ import { OrdersModule } from './modules/tenant/orders/orders.module';
     ProductsModule,
     ForgotPasswordStudioModule,
     OrdersModule,
+    OrdersExtraItemsModule,
+    OrdersExtraPhotosModule
+
   ],
   controllers: [],
   providers: [],

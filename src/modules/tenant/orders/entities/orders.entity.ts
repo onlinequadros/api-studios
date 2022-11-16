@@ -1,5 +1,7 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { v4 as uuidv4 } from 'uuid';
+import { OrdersExtraItem } from "../../orders-extra-items/entities/orders-extra-item.entity";
+import { OrdersExtraPhotos } from "../../orders-extra-photos/entities/orders_extra_photos.entity";
 
 @Entity('orders')
 export class Orders {
@@ -32,9 +34,6 @@ export class Orders {
   
   @Column()
   amount_photos: number;
-  
-  @Column()
-  items: string;
   
   @Column({ type: 'enum', enum: ['Credit Card', 'Pix'] })
   payment_type: string;
@@ -83,6 +82,20 @@ export class Orders {
 
   @Column({ nullable: true })
   deleted_at?: Date;
+
+  @OneToMany(() => OrdersExtraItem, (orderExtraItem) => orderExtraItem.order_id, {
+      cascade: true,
+      nullable: true,
+    },
+  ) 
+  extra_items?: OrdersExtraItem[]; 
+
+  @OneToMany(() => OrdersExtraPhotos, (orderExtraPhotos) => orderExtraPhotos.order_id, {
+    cascade: true,
+    nullable: true,
+  },
+) 
+  order_extra_photos?: OrdersExtraPhotos[]; 
 
   constructor() {
     if (!this.id) this.id = uuidv4();

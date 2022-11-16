@@ -2,10 +2,13 @@ import { createConnection } from 'typeorm';
 import { Client } from '../../tenant/clients/entities/client.entity';
 import { Address } from '../../tenant/address/entities/address.entity';
 import { User } from '../../tenant/users/entities/user.entity';
-import { Category } from 'src/modules/tenant/categories/entities/category.entity';
-import { ProductStudio } from 'src/modules/tenant/product_studio/entity/product-studio.entity';
-import { ProductArtist } from 'src/modules/tenant/product_artist/entity/product-artist.entity';
-import { ProductStudioPhoto } from 'src/modules/tenant/product_studio_photos/entities/product-studio-photo.entity';
+import { Category } from '../../../modules/tenant/categories/entities/category.entity';
+import { ProductStudio } from '../../../modules/tenant/product_studio/entity/product-studio.entity';
+import { ProductArtist } from '../../../modules/tenant/product_artist/entity/product-artist.entity';
+import { ProductStudioPhoto } from '../../../modules/tenant/product_studio_photos/entities/product-studio-photo.entity';
+import { Orders } from '../../../modules/tenant/orders/entities/orders.entity';
+import { OrdersExtraItem } from '../../../modules/tenant/orders-extra-items/entities/orders-extra-item.entity';
+import { OrdersExtraPhotos } from '../../../modules/tenant/orders-extra-photos/entities/orders_extra_photos.entity';
 
 export class DatabaseProvider {
   async getConnection(database: string, isTenant = false) {
@@ -26,6 +29,9 @@ export class DatabaseProvider {
             ProductStudio,
             ProductArtist,
             ProductStudioPhoto,
+            Orders,
+            OrdersExtraItem,
+            OrdersExtraPhotos
           ]
         : [],
       ssl: false,
