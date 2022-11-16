@@ -5,6 +5,8 @@ import { DatabaseProvider } from '../shared/database/database.provider';
 import { Client } from './clients/entities/client.entity';
 import { User } from './users/entities/user.entity';
 import { v4 as uuidV4 } from 'uuid';
+import { Category } from './categories/entities/category.entity';
+import { categories } from './categories/seeder/categories.seed';
 
 @Injectable()
 export class TenantService {
@@ -31,6 +33,7 @@ export class TenantService {
 
     const clientRepository = tenantConnection.getRepository(Client);
     const userRepositorory = tenantConnection.getRepository(User);
+    const categoriesRepository = tenantConnection.getRepository(Category);
 
     const userTenant = {
       id: uuidV4(),
@@ -50,6 +53,13 @@ export class TenantService {
 
     const client = await clientRepository.save(clientDto);
     await userRepositorory.save(userTenant);
+
+    categories.forEach(async(category) => {
+      await categoriesRepository.save(category)     
+    })
+
+
+
 
     this.connection.close();
 
