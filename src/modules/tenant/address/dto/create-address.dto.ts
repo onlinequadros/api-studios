@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateAddressDto {
   @IsString()
@@ -40,11 +40,9 @@ export class CreateAddressDto {
   @Expose()
   readonly cep: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({ default: 'Complemento' })
-  @Expose()
-  readonly complement: string;
+  readonly complement?: string;
 
   favorite?: boolean;
 }

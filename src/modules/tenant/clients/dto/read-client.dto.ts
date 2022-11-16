@@ -114,6 +114,11 @@ export class ReadClientDto {
   @Expose()
   readonly complement?: string;
 
+  @IsOptional()
+  @ApiProperty({ default: 'Capa' })
+  @Expose()
+  readonly cover?: string;
+
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ default: 'Segmento' })

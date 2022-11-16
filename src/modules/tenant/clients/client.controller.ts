@@ -1,4 +1,16 @@
-import { Body, Controller, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ClientService } from './client.service';
 import { CreateClientDto, ReadClientDto } from './dto';
 import { UpdateClientDTO } from './dto/updateClient.dto';
@@ -28,5 +40,14 @@ export class ClientController {
     @Body() updateClientDTO: UpdateClientDTO,
   ): Promise<ReadClientDto> {
     return this.clientService.update(id, updateClientDTO);
+  }
+
+  @Post('upload-cover')
+  @UseInterceptors(FileInterceptor('file'))
+  async upload(
+    @UploadedFile() file,
+    @Query('id') id: string,
+  ): Promise<{ url: string }> {
+    return await this.clientService.uploadCover(file, id);
   }
 }

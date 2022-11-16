@@ -18,6 +18,7 @@ import { IResponseUserData } from './interface/read-user-pagination';
 import { User } from './entities/user.entity';
 import { IReadUsersParams } from './interface/get-all-users-params';
 import { UserDinamicRepository } from './repositories/users.repositories';
+import { ForgotPassword } from './dto/forgot-password.dto';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 @Injectable({ scope: Scope.REQUEST })
@@ -223,18 +224,67 @@ export class UserService {
     return plainToInstance(ReadUserDto, updateUserProfile);
   }
 
+  // FUNÇÃO PARA VALIDAR E VERIFICAR UM E-MAIL
+  async availableEmail(email: string) {
+    const company = await this.userRepository.findOne({
+      where: { email: email },
+    });
+    if (company)
+      throw new BadRequestException({
+        statusCode: 400,
+        message: 'E-mail já em uso.',
+        available: false,
+      });
+
+    return { available: true };
+  }
+
+  // FUNÇÃO PARA RECUPERAR UMA SENHA DO USUÁRIO
+  async forgotProfilePassword(
+    objectForgotPassword: ForgotPassword,
+  ): Promise<boolean> {
+    this.getUserRepository();
+
+    const userExists = await this.userRepository.findOne({
+      where: { forgot_password: objectForgotPassword.forgot_password },
+    });
+
+    if (!userExists) {
+      throw new NotFoundException('Código validador inválido.');
+    }
+
+    userExists.password = await hash(objectForgotPassword.password, 8);
+    const updateUserProfile = await this.userRepository.save(userExists);
+
+    if (updateUserProfile) {
+      const resetCodeForgotPassword = Object.assign(userExists, {
+        ...userExists,
+        forgot_password: null,
+      });
+
+      await this.userRepository.save(resetCodeForgotPassword);
+    }
+
+    delete updateUserProfile.password;
+
+    return true;
+  }
+
   // FUNÇÃO PARA O UPLOAD DO AVATAR
   async uploadAvatar(file, id) {
     const { mimetype } = file;
     const AWS_S3_BUCKET = process.env.AWS_BUCKET;
     const newMimetype = mimetype.split('/')[1];
     const nameImage = `${uuidV4()}.${newMimetype}`;
+    let removeImageS3 = null;
 
     const imgAvatar = await this.userRepository.findOne({
       where: { id: id },
     });
 
-    const removeImageS3 = imgAvatar.avatar.split('profiles/')[1];
+    if (imgAvatar.avatar !== null) {
+      removeImageS3 = imgAvatar.avatar.split('profiles/')[1];
+    }
 
     const responseImage = await this.s3_upload(
       file.buffer,
@@ -273,7 +323,9 @@ export class UserService {
 
     try {
       const s3Response = await s3.upload(params).promise();
-      await s3.deleteObject(paramsRemoveImageS3).promise();
+      if (removeImageS3 !== null) {
+        await s3.deleteObject(paramsRemoveImageS3).promise();
+      }
       return s3Response.Location;
     } catch (e) {
       throw new BadRequestException('Falha ao realizar o upload.' + e);

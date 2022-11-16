@@ -17,6 +17,8 @@ import { CreateUserDto, ReadUserDto, UpdateUserDto } from './dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { IResponseUserData } from './interface/read-user-pagination';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ForgotPassword } from './dto/forgot-password.dto';
 
 @Controller('users')
 export class UserController {
@@ -90,5 +92,18 @@ export class UserController {
       passwordInfoOld,
       passwordInfoNew,
     );
+  }
+
+  @Patch('forgot-password')
+  async ForgotPassword(@Body() forgotPass: ForgotPassword): Promise<boolean> {
+    return this.userService.forgotProfilePassword(forgotPass);
+  }
+
+  // FAZ A PESQUISA E VERIRIFICA SE O EMAIL É VÁLIDO OU SE JÁ ESTÁ CADASTRADO
+  @Get('/validation-email/:email')
+  @ApiOperation({ summary: 'Verificar um email cadastrado no sistema.' })
+  @ApiBearerAuth()
+  async verifyEmail(@Param('email') email: string) {
+    return await this.userService.availableEmail(email);
   }
 }

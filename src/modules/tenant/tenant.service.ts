@@ -8,6 +8,22 @@ import { v4 as uuidV4 } from 'uuid';
 import { Category } from './categories/entities/category.entity';
 import { categories } from './categories/seeder/categories.seed';
 
+interface ITenantUserService {
+  id: string;
+  name: string;
+  lastname: string;
+  cpf: string;
+  email: string;
+  phone: string;
+  sex: 'Masculino' | 'Feminino';
+  birth_date: string;
+  password: string;
+  role: 'Admin' | 'Studio' | 'Fotografo' | 'Artista';
+  permissions: string[];
+  is_active: boolean;
+  user_type: 'client' | 'system';
+}
+
 @Injectable()
 export class TenantService {
   private connection: Connection;
@@ -35,7 +51,7 @@ export class TenantService {
     const userRepositorory = tenantConnection.getRepository(User);
     const categoriesRepository = tenantConnection.getRepository(Category);
 
-    const userTenant = {
+    const userTenant: ITenantUserService = {
       id: uuidV4(),
       name: clientDto.name,
       lastname: clientDto.lastname,
