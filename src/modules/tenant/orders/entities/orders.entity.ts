@@ -1,7 +1,8 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { v4 as uuidv4 } from 'uuid';
-import { OrdersExtraItem } from "../../orders-extra-items/entities/orders-extra-item.entity";
-import { OrdersExtraPhotos } from "../../orders-extra-photos/entities/orders_extra_photos.entity";
+import { OrdersExtraItem } from "./orders-extra-item.entity";
+import { OrdersPhotos } from "./ordersPhotos.entity";
+import { OrdersExtraPhotos } from "./orders_extra_photos.entity";
 
 @Entity('orders')
 export class Orders {
@@ -36,43 +37,43 @@ export class Orders {
   amount_photos: number;
   
   @Column({ type: 'enum', enum: ['Credit Card', 'Pix'] })
-  payment_type: string;
+  payment_type?: string;
   
   @Column()
-  installment: string;
+  installment?: string;
   
   @Column()
-  subtotal: number;
+  subtotal?: number;
   
   @Column()
-  discount: number;
+  discount?: number;
   
   @Column()
-  total_amount: number;
+  total_amount?: number;
   
   @Column()
-  notes: string;
+  notes?: string;
   
   @Column()
-  salesman: string;
+  salesman?: string;
   
   @Column()
-  shipping_address: string;
+  shipping_address?: string;
   
   @Column()
-  shipping_method: string;
+  shipping_method?: string;
   
   @Column()
-  delivery_deadline: string;
+  delivery_deadline?: string;
   
   @Column()
-  shipping_value: number;
+  shipping_value?: number;
   
   @Column()
-  external_transaction_id: string;
+  external_transaction_id?: string;
   
   @Column()
-  status: 'APPROVED' | 'RECUSED';
+  status?: 'APPROVED' | 'RECUSED';
   
   @CreateDateColumn()
   created_at: Date;
@@ -86,16 +87,29 @@ export class Orders {
   @OneToMany(() => OrdersExtraItem, (orderExtraItem) => orderExtraItem.order_id, {
       cascade: true,
       nullable: true,
+      onUpdate: 'CASCADE', 
+      onDelete: 'CASCADE'
     },
   ) 
-  extra_items?: OrdersExtraItem[]; 
+  extra_items: OrdersExtraItem[]; 
 
   @OneToMany(() => OrdersExtraPhotos, (orderExtraPhotos) => orderExtraPhotos.order_id, {
     cascade: true,
     nullable: true,
+    onUpdate: 'CASCADE', 
+    onDelete: 'CASCADE'
   },
 ) 
-  order_extra_photos?: OrdersExtraPhotos[]; 
+  order_extra_photos: OrdersExtraPhotos[]; 
+
+  @OneToMany(() => OrdersPhotos, (orderPhotos) => orderPhotos.order_id, {
+    cascade: true,
+    nullable: true,
+    onUpdate: 'CASCADE', 
+    onDelete: 'CASCADE'
+  },
+) 
+  order_photos: OrdersPhotos[]; 
 
   constructor() {
     if (!this.id) this.id = uuidv4();

@@ -54,73 +54,64 @@ export class CreateOrdersDTO {
   amount_photos: number;
 
   @Expose()
-  orders_extra_items: any;
+  orders_extra_items?: any;
 
   @Expose()
-  orders_extra_photos: any;
+  orders_extra_photos?: any;
+
+  @Expose()
+  orders_photos: any;
 
   @IsString()
-  @IsNotEmpty()
   @Expose()
   @IsIn(['Credit Card', 'Pix'])
-  payment_type: string;
+  payment_type?: string;
 
   @IsString()
-  @IsNotEmpty()
   @Expose()
-  installment: string;
+  installment?: string;
   
   @IsNumber()
-  @IsNotEmpty()
   @Expose()
-  subtotal: number;
+  subtotal?: number;
 
   @IsNumber()
-  @IsNotEmpty()
   @Expose()
-  discount: number;
+  discount?: number;
 
   @IsNumber()
-  @IsNotEmpty()
   @Expose()
-  total_amount: number;
+  total_amount?: number;
 
   @IsString()
-  @IsNotEmpty()
   @Expose()
-  notes: string;
+  notes?: string;
 
   @IsString()
-  @IsNotEmpty()
   @Expose()
-  salesman: string;
+  salesman?: string;
   
   @IsString()
-  @IsNotEmpty()
   @Expose()
-  shipping_address: string;
+  shipping_address?: string;
   
   @IsString()
-  @IsNotEmpty()
   @Expose()
-  shipping_method: string;
+  shipping_method?: string;
   
   @IsString()
-  @IsNotEmpty()
   @Expose()
-  delivery_deadline: string;
+  delivery_deadline?: string;
   
   @IsNumber()
-  @IsNotEmpty()
   @Expose()
-  shipping_value: number;
+  shipping_value?: number;
   
   @IsString()
-  @IsNotEmpty()
   @Expose()
-  external_transaction_id: string;
+  external_transaction_id?: string;
 
   @IsIn(['APPROVED', 'RECUSED'])
   @Expose()
-  status: 'APPROVED' | 'RECUSED';
+  status?: 'APPROVED' | 'RECUSED';
 }

@@ -5,6 +5,7 @@ import { TenantProvider } from '../tenant.provider';
 import { CreateOrdersDTO } from './dto/createOrder.dto';
 import { Orders } from './entities/orders.entity';
 import * as moment from 'moment';
+import { UpdateOrdersDTO } from './dto/updateOrder.dto';
 
 @Injectable()
 export class OrdersService {
@@ -24,11 +25,12 @@ export class OrdersService {
 
   async create(createOrdersDTO: CreateOrdersDTO): Promise<Orders> {
     this.getOrdersRepository();
-    const { orders_extra_items, orders_extra_photos } = createOrdersDTO;
-
+    const { orders_extra_items, orders_extra_photos,  orders_photos } = createOrdersDTO;
+   
     const order = await this.ordersRepository.create(createOrdersDTO);
     order.extra_items = orders_extra_items;
     order.order_extra_photos = orders_extra_photos;
+    order.order_photos = orders_photos;
 
     await this.ordersRepository.save(order);
 
@@ -52,13 +54,13 @@ export class OrdersService {
       where: {
         id: id,
       },
-      relations: ['extra_items', 'order_extra_photos'],
+      relations: ['extra_items', 'order_extra_photos', 'order_photos'],
     });
   }
 
   async delete(id: string) {
     this.getOrdersRepository();
-    return this.ordersRepository.delete({
+    return await this.ordersRepository.delete({
       id: id,
     });
   }
@@ -93,5 +95,23 @@ export class OrdersService {
       relations: ['extra_items', 'order_extra_photos'],
     });
     return orders;
+  }
+
+  async update(id: string, updateOrdersDTO: UpdateOrdersDTO) {
+    this.getOrdersRepository();
+    const { orders_extra_items } = updateOrdersDTO;
+
+    const order = await this.ordersRepository.update(id, {
+
+    });
+    //order.extra_items = orders_extra_items;
+    // order.order_extra_photos = orders_extra_photos;
+    // order.order_photos = orders_photos;
+
+    //await this.ordersRepository.save(order);
+
+    return order;
+
+    return;
   }
 }

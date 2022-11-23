@@ -29,8 +29,9 @@ import { ProductStudioPhoto } from '../../../modules/tenant/product_studio_photo
 import { BucketS3Service } from '../../../bucket-s3/bucket-s3.service';
 import { EncryptedService } from '../../../modules/utils/encrypted.service';
 import { Orders } from '../../../modules/tenant/orders/entities/orders.entity';
-import { OrdersExtraItem } from '../../../modules/tenant/orders-extra-items/entities/orders-extra-item.entity';
-import { OrdersExtraPhotos } from '../../../modules/tenant/orders-extra-photos/entities/orders_extra_photos.entity';
+import { OrdersPhotos } from '../../../modules/tenant/orders/entities/ordersPhotos.entity';
+import { OrdersExtraPhotos } from '../../../modules/tenant/orders/entities/orders_extra_photos.entity';
+import { OrdersExtraItem } from '../../../modules/tenant/orders/entities/orders-extra-item.entity';
 
 
 @Module({
@@ -104,8 +105,9 @@ export class CompaniesModule {
               ProductStudioPhoto,
               ProductArtist,
               Orders,
-              OrdersExtraItem,
-              OrdersExtraPhotos
+              OrdersPhotos,
+              OrdersExtraPhotos,
+              OrdersExtraItem
             ], // TODO -> adiciona as entidades do tenant
             ssl: false,
             synchronize: true,

@@ -7,8 +7,7 @@ import { ProductStudio } from '../../../modules/tenant/product_studio/entity/pro
 import { ProductArtist } from '../../../modules/tenant/product_artist/entity/product-artist.entity';
 import { ProductStudioPhoto } from '../../../modules/tenant/product_studio_photos/entities/product-studio-photo.entity';
 import { Orders } from '../../../modules/tenant/orders/entities/orders.entity';
-import { OrdersExtraItem } from '../../../modules/tenant/orders-extra-items/entities/orders-extra-item.entity';
-import { OrdersExtraPhotos } from '../../../modules/tenant/orders-extra-photos/entities/orders_extra_photos.entity';
+import { OrdersPhotos } from '../../../modules/tenant/orders/entities/ordersPhotos.entity';
 
 export class DatabaseProvider {
   async getConnection(database: string, isTenant = false) {
@@ -30,8 +29,7 @@ export class DatabaseProvider {
             ProductArtist,
             ProductStudioPhoto,
             Orders,
-            OrdersExtraItem,
-            OrdersExtraPhotos
+            OrdersPhotos
           ]
         : [],
       ssl: false,

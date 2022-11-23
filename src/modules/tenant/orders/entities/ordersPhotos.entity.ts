@@ -2,8 +2,8 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, JoinColumn } from 't
 import { v4 as uuidv4 } from 'uuid';
 import { Orders } from '../../orders/entities/orders.entity';
 
-@Entity('orders_extra_item')
-export class OrdersExtraItem {
+@Entity('orders_photos')
+export class OrdersPhotos {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -23,7 +23,7 @@ export class OrdersExtraItem {
   price: number;
 
   @Column()
-  image_cropped: string;
+  url_image: string;
 
   @ManyToOne(() => Orders)
   @JoinColumn({ name: 'order_id' })

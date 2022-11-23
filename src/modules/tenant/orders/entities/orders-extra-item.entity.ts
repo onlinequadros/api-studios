@@ -1,9 +1,9 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-import { Orders } from '../../orders/entities/orders.entity';
+import { Orders } from './orders.entity';
 
-@Entity('orders_extra_photos')
-export class OrdersExtraPhotos {
+@Entity('orders_extra_item')
+export class OrdersExtraItem {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -23,10 +23,7 @@ export class OrdersExtraPhotos {
   price: number;
 
   @Column()
-  url_image: string;
-
-  @Column()
-  url_cropped: string;
+  image_cropped: string;
 
   @ManyToOne(() => Orders)
   @JoinColumn({ name: 'order_id' })
