@@ -20,7 +20,7 @@ export class OrdersExtraItem {
   category: string;
 
   @Column()
-  price: number;
+  price: string;
 
   @Column()
   image_cropped: string;

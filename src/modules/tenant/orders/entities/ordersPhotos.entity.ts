@@ -20,7 +20,7 @@ export class OrdersPhotos {
   category: string;
 
   @Column()
-  price: number;
+  price: string;
 
   @Column()
   url_image: string;
