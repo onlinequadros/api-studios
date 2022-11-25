@@ -87,29 +87,23 @@ export class Orders {
   @OneToMany(() => OrdersExtraItem, (orderExtraItem) => orderExtraItem.order_id, {
       cascade: true,
       nullable: true,
-      onUpdate: 'CASCADE', 
-      onDelete: 'CASCADE'
     },
   ) 
-  extra_items: OrdersExtraItem[]; 
+  orders_extra_item: OrdersExtraItem[]; 
 
   @OneToMany(() => OrdersExtraPhotos, (orderExtraPhotos) => orderExtraPhotos.order_id, {
     cascade: true,
     nullable: true,
-    onUpdate: 'CASCADE', 
-    onDelete: 'CASCADE'
   },
 ) 
-  order_extra_photos: OrdersExtraPhotos[]; 
+  orders_extra_photo: OrdersExtraPhotos[]; 
 
   @OneToMany(() => OrdersPhotos, (orderPhotos) => orderPhotos.order_id, {
     cascade: true,
-    nullable: true,
-    onUpdate: 'CASCADE', 
-    onDelete: 'CASCADE'
+    nullable: true
   },
 ) 
-  order_photos: OrdersPhotos[]; 
+  orders_photo: OrdersPhotos[]; 
 
   constructor() {
     if (!this.id) this.id = uuidv4();
