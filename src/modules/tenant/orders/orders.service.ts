@@ -25,13 +25,13 @@ export class OrdersService {
 
   async create(createOrdersDTO: CreateOrdersDTO): Promise<Orders> {
     this.getOrdersRepository();
-    const { orders_extra_item, orders_extra_photos, orders_photos } =
+    const { orders_extra_items, orders_extra_photos, orders_photos } =
       createOrdersDTO;
 
     const order = await this.ordersRepository.create(createOrdersDTO);
-    order.orders_extra_item = orders_extra_item;
-    order.orders_extra_photo = orders_extra_photos;
-    order.orders_photo = orders_photos;
+    order.orders_extra_items = orders_extra_items;
+    order.orders_extra_photos = orders_extra_photos;
+    order.orders_photos = orders_photos;
 
     await this.ordersRepository.save(order);
 
@@ -44,7 +44,7 @@ export class OrdersService {
       order: {
         created_at: 'DESC',
       },
-      relations: ['orders_extra_item', 'orders_extra_photo', 'orders_photo'],
+      relations: ['orders_extra_items', 'orders_extra_photos', 'orders_photos'],
     });
     return orders;
   }
@@ -55,7 +55,7 @@ export class OrdersService {
       where: {
         id: id,
       },
-      relations: ['orders_extra_item', 'orders_extra_photo', 'orders_photo'],
+      relations: ['orders_extra_items', 'orders_extra_photos', 'orders_photos'],
     });
   }
 
@@ -78,7 +78,7 @@ export class OrdersService {
       order: {
         created_at: 'DESC',
       },
-      relations: ['orders_extra_item', 'orders_extra_photo', 'orders_photo'],
+      relations: ['orders_extra_items', 'orders_extra_photos', 'orders_photos'],
     });
     return orders;
   }
@@ -93,7 +93,7 @@ export class OrdersService {
       order: {
         created_at: 'DESC',
       },
-      relations: ['orders_extra_item', 'orders_extra_photo', 'orders_photo'],
+      relations: ['orders_extra_items', 'orders_extra_photos', 'orders_photos'],
     });
     return orders;
   }

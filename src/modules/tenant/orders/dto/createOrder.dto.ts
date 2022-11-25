@@ -54,7 +54,7 @@ export class CreateOrdersDTO {
   amount_photos: number;
 
   @Expose()
-  orders_extra_item: any;
+  orders_extra_items: any;
 
   @Expose()
   orders_extra_photos: any;

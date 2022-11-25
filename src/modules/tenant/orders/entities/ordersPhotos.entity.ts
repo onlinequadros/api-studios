@@ -25,7 +25,7 @@ export class OrdersPhotos {
   @Column()
   url_image: string;
 
-  @ManyToOne(() => Orders, (order) => order.orders_photo, {
+  @ManyToOne(() => Orders, (order) => order.orders_photos, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
     orphanedRowAction: 'delete'

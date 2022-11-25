@@ -89,21 +89,21 @@ export class Orders {
       nullable: true,
     },
   ) 
-  orders_extra_item: OrdersExtraItem[]; 
+  orders_extra_items: OrdersExtraItem[]; 
 
   @OneToMany(() => OrdersExtraPhotos, (orderExtraPhotos) => orderExtraPhotos.order_id, {
     cascade: true,
     nullable: true,
   },
 ) 
-  orders_extra_photo: OrdersExtraPhotos[]; 
+  orders_extra_photos: OrdersExtraPhotos[]; 
 
   @OneToMany(() => OrdersPhotos, (orderPhotos) => orderPhotos.order_id, {
     cascade: true,
     nullable: true
   },
 ) 
-  orders_photo: OrdersPhotos[]; 
+  orders_photos: OrdersPhotos[]; 
 
   constructor() {
     if (!this.id) this.id = uuidv4();

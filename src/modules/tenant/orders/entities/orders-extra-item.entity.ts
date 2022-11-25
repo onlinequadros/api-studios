@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, JoinColumn } from 't
 import { v4 as uuidv4 } from 'uuid';
 import { Orders } from './orders.entity';
 
-@Entity('orders_extra_item')
+@Entity('orders_extra_items')
 export class OrdersExtraItem {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -25,7 +25,7 @@ export class OrdersExtraItem {
   @Column()
   url_image: string;
 
-  @ManyToOne(() => Orders, (order) => order.orders_extra_item, {
+  @ManyToOne(() => Orders, (order) => order.orders_extra_items, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
     orphanedRowAction: 'delete'
