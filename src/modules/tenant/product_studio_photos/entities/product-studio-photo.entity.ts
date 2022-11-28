@@ -24,6 +24,12 @@ export class ProductStudioPhoto {
   @Column()
   url: string;
 
+  @Column()
+  checked: boolean;
+
+  @Column()
+  order: boolean;
+
   @ManyToOne(() => ProductStudio)
   @JoinColumn({ name: 'product_photo_id' })
   product_photo_id: ProductStudio;

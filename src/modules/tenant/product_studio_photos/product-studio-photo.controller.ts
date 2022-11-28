@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Req,
   UploadedFiles,
   UseInterceptors,
@@ -20,6 +21,7 @@ import { ProductStudioPhotoService } from './product-studio-photo.service';
 import { Request } from 'express';
 import { SetCoverPhotoDTO } from '../product_studio/dtos/setCoverPhoto.dto';
 import { RemoveImagesDTO } from './dto/remove-images.dto';
+import { CheckImagesDTO } from './dto/check.dto';
 
 @Controller('product-studio-photo')
 export class ProductStudioPhotoController {
@@ -55,15 +57,17 @@ export class ProductStudioPhotoController {
   }
 
   @Patch('set-cover-photo/:id')
-  async setCoverPhoto(
-    @Param('id') id: string,
-    @Body() data: SetCoverPhotoDTO,
-  ) {
+  async setCoverPhoto(@Param('id') id: string, @Body() data: SetCoverPhotoDTO) {
     return await this.productStudioPhotoService.setCoverPhoto(id, data);
+  }
+
+  @Put('/check')
+  async check(@Body() checkImagesDTO: CheckImagesDTO) {
+    return await this.productStudioPhotoService.setCheckedOrder(checkImagesDTO);
   }
 
   @Delete()
   async delete(@Req() request: Request, @Body() data: RemoveImagesDTO) {
-    return await this.productStudioPhotoService.delete(request, data);    
+    return await this.productStudioPhotoService.delete(request, data);
   }
 }

@@ -11,6 +11,7 @@ import { ProductStudioService } from '../product_studio/product-studio.service';
 import { ReadProductStudioDto } from '../product_studio/dtos';
 import { SetCoverPhotoDTO } from '../product_studio/dtos/setCoverPhoto.dto';
 import { RemoveImagesDTO } from './dto/remove-images.dto';
+import { CheckImagesDTO } from './dto/check.dto';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 @Injectable({ scope: Scope.REQUEST })
@@ -98,6 +99,8 @@ export class ProductStudioPhotoService {
             photo: encryptedImageName,
             feature_photo: false,
             url: s3,
+            checked: false,
+            order: false,
             product_photo_id: {
               id: products_id,
             },
@@ -148,14 +151,33 @@ export class ProductStudioPhotoService {
 
     const product = await this.productStudio.findById(data.productId);
 
-    data.images.forEach((image)=>{
-      images.push(image.id)
-      imagesKey.push(company + '/' + data.category + '/' + product.slug + '/' + image.photo)
-    })
+    data.images.forEach((image) => {
+      images.push(image.id);
+      imagesKey.push(
+        company + '/' + data.category + '/' + product.slug + '/' + image.photo,
+      );
+    });
 
     await this.productStudioPhotoRepository.delete(images);
     await this.awsS3Service.deleteImages(imagesKey);
 
     return true;
+  }
+
+  async setCheckedOrder(checkImagesDTO: CheckImagesDTO) {
+    this.getProductStudioPhotoRepository();
+    const { images } = checkImagesDTO;
+
+    images.forEach(async (image) => {
+      await this.productStudioPhotoRepository
+        .createQueryBuilder()
+        .update(ProductStudioPhoto)
+        .set({
+          checked: image.check,
+          order: image.order,
+        })
+        .where('id = :id', { id: image.id })
+        .execute();
+    });
   }
 }
