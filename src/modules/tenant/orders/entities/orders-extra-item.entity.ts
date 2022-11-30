@@ -28,6 +28,9 @@ export class OrdersExtraItem {
   @Column()
   url_cropped?: string;
 
+  @Column()
+  type: string;
+
   @ManyToOne(() => Orders, (order) => order.orders_extra_items, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',

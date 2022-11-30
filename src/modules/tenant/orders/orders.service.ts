@@ -6,21 +6,34 @@ import { CreateOrdersDTO } from './dto/createOrder.dto';
 import { Orders } from './entities/orders.entity';
 import * as moment from 'moment';
 import { UpdateOrdersDTO } from './dto/updateOrder.dto';
+import { ProductStudioPhoto } from '../product_studio_photos/entities/product-studio-photo.entity';
+import { ProductStudioPhotoService } from '../product_studio_photos/product-studio-photo.service';
+import { CheckImagesDTO } from '../product_studio_photos/dto/check.dto';
 
 @Injectable()
 export class OrdersService {
   private ordersRepository: Repository<Orders>;
+  private productStudioPhotosRepository: Repository<ProductStudioPhoto>;
 
   getOrdersRepository() {
     if (TenantProvider.connection) {
       this.ordersRepository = TenantProvider.connection.getRepository(Orders);
     }
   }
+
+  getProductStudioPhotosRepository() {
+    if (TenantProvider.connection) {
+      this.productStudioPhotosRepository =
+        TenantProvider.connection.getRepository(ProductStudioPhoto);
+    }
+  }
   constructor(
     @InjectRepository(Orders)
     private readonly repository: Repository<Orders>,
+    private readonly productStudioPhotoService: ProductStudioPhotoService,
   ) {
     this.getOrdersRepository();
+    this.getProductStudioPhotosRepository();
   }
 
   async create(createOrdersDTO: CreateOrdersDTO): Promise<Orders> {
@@ -108,5 +121,52 @@ export class OrdersService {
     const orderSaved = await this.ordersRepository.save(orderUpdated);
 
     return orderSaved;
+  }
+
+  async deleteExtraPhoto(orderId: string, imageId: string) {
+    this.getOrdersRepository();
+    this.getProductStudioPhotosRepository();
+
+    const order = await this.findOne(orderId);
+    let extraPhotos = order.orders_extra_photos;
+
+    const image = extraPhotos.findIndex(
+      (photo) => photo.product_id == imageId['id'],
+    );
+
+    if (image == 0) {
+      extraPhotos.splice(image, 1);
+    }
+
+    order.orders_extra_photos = extraPhotos;
+    await this.ordersRepository.save(order);
+
+    const images = {
+      images: [
+        {
+          id: imageId['id'],
+          check: false,
+          order: false,
+        },
+      ],
+    };
+
+    await this.productStudioPhotoService.setCheckedOrder(images);
+  }
+
+  async deleteExtraItem(orderId: string, itemId: string) {
+    this.getOrdersRepository();
+
+    const order = await this.findOne(orderId);
+    let extraItems = order.orders_extra_items;
+
+    const item = extraItems.findIndex((item) => item.id == itemId['id']);
+
+    if (item == 0) {
+      extraItems.splice(item, 1);
+    }
+
+    order.orders_extra_items = extraItems;
+    await this.ordersRepository.save(order);
   }
 }
