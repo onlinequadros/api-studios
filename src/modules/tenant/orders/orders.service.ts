@@ -134,7 +134,7 @@ export class OrdersService {
       (photo) => photo.product_id == imageId['id'],
     );
 
-    if (image == 0) {
+    if (image >= 0) {
       extraPhotos.splice(image, 1);
     }
 
@@ -162,7 +162,7 @@ export class OrdersService {
 
     const item = extraItems.findIndex((item) => item.id == itemId['id']);
 
-    if (item == 0) {
+    if (item >= 0) {
       extraItems.splice(item, 1);
     }
 
