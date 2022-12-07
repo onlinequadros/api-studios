@@ -27,19 +27,19 @@ export class Product {
   @Column()
   color: string;
 
-  @Column()
+  @Column({type: "decimal", precision: 10, scale: 2, default: 0})
   depth: number;
 
-  @Column()
+  @Column({type: "decimal", precision: 10, scale: 2, default: 0})
   height: number;
 
-  @Column()
+  @Column({type: "decimal", precision: 10, scale: 2, default: 0})
   width: number;
 
   @Column()
   guidance: string;
 
-  @Column()
+  @Column({type: "decimal", precision: 10, scale: 2, default: 0})
   weight: number;
 
   @Column()
@@ -57,7 +57,7 @@ export class Product {
   @Column({ type: 'enum', enum: ['linha decoracao'] })
   print_type: string;
 
-  @Column()
+  @Column({type: "decimal", precision: 10, scale: 2, default: 0})
   price: number;
 
   constructor() {
