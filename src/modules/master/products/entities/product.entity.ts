@@ -13,6 +13,9 @@ export class Product {
   name: string;
 
   @Column()
+  img: string;
+
+  @Column()
   description: string;
 
   @Column({ type: 'enum', enum: ['Category1', 'Category2', 'Category3'] })
@@ -33,10 +36,16 @@ export class Product {
   @Column({type: "decimal", precision: 10, scale: 2, default: 0})
   height: number;
 
+  @Column()
+  heigth_px: number;
+
   @Column({type: "decimal", precision: 10, scale: 2, default: 0})
   width: number;
 
   @Column()
+  width_px: number;
+
+  @Column({ type: 'enum', enum: ['Quadrado', 'Paisagem', 'Retrato'] })
   guidance: string;
 
   @Column({type: "decimal", precision: 10, scale: 2, default: 0})
@@ -59,6 +68,12 @@ export class Product {
 
   @Column({type: "decimal", precision: 10, scale: 2, default: 0})
   price: number;
+
+  @Column({type: "decimal", precision: 10, scale: 2, default: 0})
+  declaredValue: number;
+
+  @Column()
+  proportion: string;
 
   constructor() {
     if (!this.id) this.id = uuidv4();

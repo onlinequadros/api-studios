@@ -6,6 +6,7 @@ export class CreateProductDto {
   @IsString()  
   product_code: string;
   name: string;
+  img: string;
   description: string;
 
   @IsIn(['Category1', 'Category2'])
@@ -27,9 +28,11 @@ export class CreateProductDto {
   @IsNumber()
   depth: number;
   height: number;
+  heigth_px: number;
   width: number;
+  width_px: number;  
 
-  @IsIn(['Quadrado', 'Paisagem'])
+  @IsIn(['Quadrado', 'Paisagem', 'Retrato'])
   guidance: string;
 
   @IsNotEmpty()
@@ -51,4 +54,12 @@ export class CreateProductDto {
   @IsNotEmpty()
   @IsNumber()
   price: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  declaredValue: number;
+
+  @IsNotEmpty()
+  @IsString()
+  proportion: string
 }
