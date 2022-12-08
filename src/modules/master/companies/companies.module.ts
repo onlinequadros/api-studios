@@ -129,6 +129,8 @@ export class CompaniesModule {
         { path: '/api/companies', method: RequestMethod.ALL },
         { path: '/api/companies/:id', method: RequestMethod.ALL },
         { path: '/api/companies/:id', method: RequestMethod.ALL },
+        { path: '/api/shipping', method: RequestMethod.ALL },
+        { path: '/api/shipping/:company', method: RequestMethod.ALL },
         { path: '/api/products', method: RequestMethod.ALL },
         { path: '/api/products/:id', method: RequestMethod.ALL },
         { path: '/api/products/guidance/:type', method: RequestMethod.ALL },

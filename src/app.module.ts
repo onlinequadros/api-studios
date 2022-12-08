@@ -18,6 +18,9 @@ import { BucketS3Module } from './bucket-s3/bucket-s3.module';
 import { ProductsModule } from './modules/master/products/products.module';
 import { ForgotPasswordStudioModule } from './modules/tenant/forgot-password/forgot-password-studio.module';
 import { OrdersModule } from './modules/tenant/orders/orders.module';
+import { PaymentModule } from './modules/tenant/payment/payment.module';
+import { HttpModule } from "@nestjs/axios";
+import { ShippingModule } from './modules/tenant/shipping/shipping.module';
 
 @Module({
 
@@ -51,7 +54,10 @@ import { OrdersModule } from './modules/tenant/orders/orders.module';
     BucketS3Module,
     ProductsModule,
     ForgotPasswordStudioModule,
-    OrdersModule
+    OrdersModule,
+    PaymentModule,
+    HttpModule,
+    ShippingModule
 
   ],
   controllers: [],
