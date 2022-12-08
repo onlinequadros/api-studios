@@ -37,7 +37,7 @@ export class Product {
   height: number;
 
   @Column()
-  heigth_px: number;
+  height_px: number;
 
   @Column({type: "decimal", precision: 10, scale: 2, default: 0})
   width: number;

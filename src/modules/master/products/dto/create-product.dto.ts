@@ -28,7 +28,7 @@ export class CreateProductDto {
   @IsNumber()
   depth: number;
   height: number;
-  heigth_px: number;
+  height_px: number;
   width: number;
   width_px: number;  
 
