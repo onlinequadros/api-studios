@@ -27,9 +27,7 @@ export class ProductsService {
     return await this.repository.findOne(id);
   }
 
-  async findGuidance(type: string) {
-    console.log('service');
-    
+  async findGuidance(type: string) {    
     return await this.repository.find({
       where: {
         guidance: type

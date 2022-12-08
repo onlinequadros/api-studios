@@ -131,6 +131,7 @@ export class CompaniesModule {
         { path: '/api/companies/:id', method: RequestMethod.ALL },
         { path: '/api/products', method: RequestMethod.ALL },
         { path: '/api/products/:id', method: RequestMethod.ALL },
+        { path: '/api/products/guidance/:type', method: RequestMethod.ALL },
         { path: '/api/companies/orders', method: RequestMethod.ALL },
         { path: '/api/companies/orders/:id', method: RequestMethod.ALL },
         { path: '/api/companies/orders/extra-photos/:id', method: RequestMethod.ALL },
