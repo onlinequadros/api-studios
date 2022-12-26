@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
 @Entity('products')
@@ -11,6 +11,9 @@ export class Product {
 
   @Column()
   name: string;
+
+  @Column()
+  img_frame: string;
 
   @Column()
   img: string;
@@ -30,16 +33,16 @@ export class Product {
   @Column()
   color: string;
 
-  @Column({type: "decimal", precision: 10, scale: 2, default: 0})
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   depth: number;
 
-  @Column({type: "decimal", precision: 10, scale: 2, default: 0})
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   height: number;
 
   @Column()
   height_px: number;
 
-  @Column({type: "decimal", precision: 10, scale: 2, default: 0})
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   width: number;
 
   @Column()
@@ -48,7 +51,7 @@ export class Product {
   @Column({ type: 'enum', enum: ['Quadrado', 'Paisagem', 'Retrato'] })
   guidance: string;
 
-  @Column({type: "decimal", precision: 10, scale: 2, default: 0})
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   weight: number;
 
   @Column()
@@ -66,10 +69,10 @@ export class Product {
   @Column({ type: 'enum', enum: ['linha decoracao'] })
   print_type: string;
 
-  @Column({type: "decimal", precision: 10, scale: 2, default: 0})
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   price: number;
 
-  @Column({type: "decimal", precision: 10, scale: 2, default: 0})
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   declaredValue: number;
 
   @Column()

@@ -1,7 +1,15 @@
 import { Expose } from 'class-transformer';
 
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsEmail, IsNumber, IsIn, Validate, IsArray } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsEmail,
+  IsNumber,
+  IsIn,
+  Validate,
+  IsArray,
+} from 'class-validator';
 import { ValidateCpf } from '../../../custom/decorators/validateCpf';
 
 export class CreateOrdersDTO {
@@ -10,7 +18,7 @@ export class CreateOrdersDTO {
   @ApiProperty({ default: 'Id do usuário' })
   @Expose()
   user_id: string;
- 
+
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ default: 'User name do usuário' })
@@ -21,33 +29,33 @@ export class CreateOrdersDTO {
   @IsNotEmpty()
   @Expose()
   receiver_name: string;
-  
+
   @IsString()
   @IsNotEmpty()
   @Expose()
   @Validate(ValidateCpf)
   cpf: string;
-  
+
   @IsEmail()
   @IsNotEmpty()
   @Expose()
   email: string;
-  
+
   @IsString()
   @IsNotEmpty()
   @Expose()
   phone: string;
-  
+
   @IsString()
   @IsNotEmpty()
   @Expose()
   product_album_name: string;
-  
+
   @IsNumber()
   @IsNotEmpty()
   @Expose()
   amount_extra_photos: number;
-  
+
   @IsNumber()
   @IsNotEmpty()
   @Expose()
@@ -70,7 +78,7 @@ export class CreateOrdersDTO {
   @IsString()
   @Expose()
   installment?: string;
-  
+
   @IsNumber()
   @Expose()
   subtotal?: number;
@@ -90,23 +98,23 @@ export class CreateOrdersDTO {
   @IsString()
   @Expose()
   salesman?: string;
-  
+
   @IsString()
   @Expose()
   shipping_address?: string;
-  
+
   @IsString()
   @Expose()
   shipping_method?: string;
-  
+
   @IsString()
   @Expose()
   delivery_deadline?: string;
-  
+
   @IsNumber()
   @Expose()
   shipping_value?: number;
-  
+
   @IsString()
   @Expose()
   external_transaction_id?: string;

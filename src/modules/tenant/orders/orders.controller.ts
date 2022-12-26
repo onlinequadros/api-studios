@@ -1,7 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { CheckImagesDTO } from '../product_studio_photos/dto/check.dto';
 import { CreateOrdersDTO } from './dto/createOrder.dto';
 import { UpdateOrdersDTO } from './dto/updateOrder.dto';
+import { UpdateOrderItemsDto } from './dto/updateOrderItems.dto';
 import { OrdersService } from './orders.service';
 
 @Controller('orders')
@@ -42,7 +52,10 @@ export class OrdersController {
   }
 
   @Delete('/extra-photo/:id')
-  async deleteExtraPhoto(@Param('id') orderId: string, @Body() imageId: string) {
+  async deleteExtraPhoto(
+    @Param('id') orderId: string,
+    @Body() imageId: string,
+  ) {
     return this.ordersService.deleteExtraPhoto(orderId, imageId);
   }
 
@@ -52,7 +65,23 @@ export class OrdersController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateOrdersDTO: UpdateOrdersDTO ) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateOrdersDTO: UpdateOrdersDTO,
+  ) {
     return this.ordersService.update(id, updateOrdersDTO);
+  }
+
+  @Put('/order-extra-items/:id_order/:id_extraitems')
+  async updateExtraItems(
+    @Param('id_order') id_order: string,
+    @Param('id_extraitems') id_extraitems: string,
+    @Body() updateOrderItemsDto: UpdateOrderItemsDto,
+  ) {
+    return this.ordersService.updateExtraItems(
+      id_order,
+      id_extraitems,
+      updateOrderItemsDto,
+    );
   }
 }

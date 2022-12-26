@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, MoreThan, Repository } from 'typeorm';
 import { TenantProvider } from '../tenant.provider';
@@ -9,6 +9,7 @@ import { UpdateOrdersDTO } from './dto/updateOrder.dto';
 import { ProductStudioPhoto } from '../product_studio_photos/entities/product-studio-photo.entity';
 import { ProductStudioPhotoService } from '../product_studio_photos/product-studio-photo.service';
 import { CheckImagesDTO } from '../product_studio_photos/dto/check.dto';
+import { UpdateOrderItemsDto } from './dto/updateOrderItems.dto';
 
 @Injectable()
 export class OrdersService {
@@ -123,12 +124,49 @@ export class OrdersService {
     return orderSaved;
   }
 
+  // FUNÇÃO PARA FAZER O UPDATE DENTRO DO ARRAY NO OBJETO DE ORDER EXTRA ITEMS
+  async updateExtraItems(
+    id_order: string,
+    id_extraitems: string,
+    updateOrdersItemsDTO: UpdateOrderItemsDto,
+  ) {
+    this.getOrdersRepository();
+
+    const order = await this.findOne(id_order);
+
+    if (!order) {
+      throw new NotFoundException('Ordem não encontrada.');
+    }
+
+    const indexObject = order.orders_extra_items.findIndex(
+      (item) => item.id === id_extraitems,
+    );
+
+    if (indexObject < 0) {
+      throw new NotFoundException('Item extra não encontrado.');
+    }
+
+    order.orders_extra_items[indexObject].sku = updateOrdersItemsDTO.sku;
+    order.orders_extra_items[indexObject].category =
+      updateOrdersItemsDTO.category;
+    order.orders_extra_items[indexObject].product_name =
+      updateOrdersItemsDTO.product_name;
+    order.orders_extra_items[indexObject].url_cropped =
+      updateOrdersItemsDTO.url_cropped;
+    order.orders_extra_items[indexObject].price =
+      updateOrdersItemsDTO.price.toString();
+
+    const orderSaved = await this.ordersRepository.save(order);
+
+    return orderSaved;
+  }
+
   async deleteExtraPhoto(orderId: string, imageId: string) {
     this.getOrdersRepository();
     this.getProductStudioPhotosRepository();
 
     const order = await this.findOne(orderId);
-    let extraPhotos = order.orders_extra_photos;
+    const extraPhotos = order.orders_extra_photos;
 
     const image = extraPhotos.findIndex(
       (photo) => photo.product_id == imageId['id'],
@@ -158,7 +196,7 @@ export class OrdersService {
     this.getOrdersRepository();
 
     const order = await this.findOne(orderId);
-    let extraItems = order.orders_extra_items;
+    const extraItems = order.orders_extra_items;
 
     const item = extraItems.findIndex((item) => item.id == itemId['id']);
 

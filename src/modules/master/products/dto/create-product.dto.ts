@@ -1,11 +1,11 @@
 import { IsIn, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateProductDto {
-  
   @IsNotEmpty()
-  @IsString()  
+  @IsString()
   product_code: string;
   name: string;
+  img_frame: string;
   img: string;
   description: string;
 
@@ -30,7 +30,7 @@ export class CreateProductDto {
   height: number;
   height_px: number;
   width: number;
-  width_px: number;  
+  width_px: number;
 
   @IsIn(['Quadrado', 'Paisagem', 'Retrato'])
   guidance: string;
@@ -61,5 +61,5 @@ export class CreateProductDto {
 
   @IsNotEmpty()
   @IsString()
-  proportion: string
+  proportion: string;
 }

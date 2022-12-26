@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -29,8 +37,19 @@ export class ProductsController {
     return this.productsService.findGuidance(type);
   }
 
+  @Get('list-frames/:frame/:size')
+  async listFramesPerDimensions(
+    @Param('frame') frame: string,
+    @Param('size') size: string,
+  ) {
+    return this.productsService.findFrame(frame, size);
+  }
+
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+  ) {
     return this.productsService.update(id, updateProductDto);
   }
 

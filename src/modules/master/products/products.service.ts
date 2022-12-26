@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -24,15 +24,47 @@ export class ProductsService {
   }
 
   async findOne(id: string): Promise<Product> {
-    return await this.repository.findOne(id);
+    const product = await this.repository.findOne(id);
+
+    if (!product) {
+      throw new NotFoundException('Produto não encontrado.');
+    }
+
+    return product;
   }
 
-  async findGuidance(type: string) {    
+  async findGuidance(type: string) {
     return await this.repository.find({
       where: {
-        guidance: type
-      }
-    })
+        guidance: type,
+      },
+    });
+  }
+
+  async findFrame(frame: string, size: string) {
+    const listFilterDimensions = await this.repository.find({
+      where: {
+        guidance: frame,
+        width_px: size.split('x')[0],
+        height_px: size.split('x')[1],
+      },
+    });
+
+    if (listFilterDimensions.length === 0) {
+      throw new NotFoundException(
+        'Nada encontrado na para ' + frame + ' no tamanho ' + size,
+      );
+    }
+
+    const listFiltered = listFilterDimensions.map((item) => {
+      return {
+        id: item.id,
+        img_frame: item.img_frame,
+        img: item.img,
+      };
+    });
+
+    return listFiltered;
   }
 
   async update(

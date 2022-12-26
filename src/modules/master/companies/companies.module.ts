@@ -33,7 +33,6 @@ import { OrdersPhotos } from '../../../modules/tenant/orders/entities/ordersPhot
 import { OrdersExtraPhotos } from '../../../modules/tenant/orders/entities/orders_extra_photos.entity';
 import { OrdersExtraItem } from '../../../modules/tenant/orders/entities/orders-extra-item.entity';
 
-
 @Module({
   imports: [
     TypeOrmModule.forFeature([Company]),
@@ -107,7 +106,7 @@ export class CompaniesModule {
               Orders,
               OrdersPhotos,
               OrdersExtraPhotos,
-              OrdersExtraItem
+              OrdersExtraItem,
             ], // TODO -> adiciona as entidades do tenant
             ssl: false,
             synchronize: true,
@@ -132,12 +131,22 @@ export class CompaniesModule {
         { path: '/api/shipping', method: RequestMethod.ALL },
         { path: '/api/shipping/:company', method: RequestMethod.ALL },
         { path: '/api/products', method: RequestMethod.ALL },
+        {
+          path: '/api/products/list-frames/:frame/:size',
+          method: RequestMethod.ALL,
+        },
         { path: '/api/products/:id', method: RequestMethod.ALL },
         { path: '/api/products/guidance/:type', method: RequestMethod.ALL },
         { path: '/api/companies/orders', method: RequestMethod.ALL },
         { path: '/api/companies/orders/:id', method: RequestMethod.ALL },
-        { path: '/api/companies/orders/extra-photos/:id', method: RequestMethod.ALL },
-        { path: '/api/companies/orders/extra-items/:id', method: RequestMethod.ALL },
+        {
+          path: '/api/companies/orders/extra-photos/:id',
+          method: RequestMethod.ALL,
+        },
+        {
+          path: '/api/companies/orders/extra-items/:id',
+          method: RequestMethod.ALL,
+        },
         {
           path: '/api/companies/validation-cpf/:cpf',
           method: RequestMethod.ALL,
