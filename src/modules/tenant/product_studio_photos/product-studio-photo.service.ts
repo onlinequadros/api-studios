@@ -1,4 +1,9 @@
-import { BadGatewayException, Injectable, Scope } from '@nestjs/common';
+import {
+  BadGatewayException,
+  Injectable,
+  Scope,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { plainToClass, plainToInstance } from 'class-transformer';
 import { BucketS3Service } from '../../../bucket-s3/bucket-s3.service';
 import { Repository } from 'typeorm';
@@ -129,7 +134,7 @@ export class ProductStudioPhotoService {
       }
     });
 
-    let image = await this.productStudioPhotoRepository.findOne(id);
+    const image = await this.productStudioPhotoRepository.findOne(id);
     image.feature_photo = data.isActive;
 
     return await this.productStudioPhotoRepository.save(image);
@@ -137,15 +142,15 @@ export class ProductStudioPhotoService {
 
   async desableCoverPhoto(id: string): Promise<void> {
     this.getProductStudioPhotoRepository();
-    let image = await this.productStudioPhotoRepository.findOne(id);
+    const image = await this.productStudioPhotoRepository.findOne(id);
     image.feature_photo = false;
     await this.productStudioPhotoRepository.save(image);
   }
 
   async delete(request, data: RemoveImagesDTO) {
     this.getProductStudioPhotoRepository();
-    let images = [];
-    let imagesKey = [];
+    const images = [];
+    const imagesKey = [];
 
     const company = await checkCompany(request);
 
@@ -167,6 +172,16 @@ export class ProductStudioPhotoService {
   async setCheckedOrder(checkImagesDTO: CheckImagesDTO) {
     this.getProductStudioPhotoRepository();
     const { images } = checkImagesDTO;
+
+    const verifyPhotoChecked = await this.productStudioPhotoRepository.find({
+      where: { id: images[0].id },
+    });
+
+    if (images[0].order === false && verifyPhotoChecked[0].order === true) {
+      throw new UnauthorizedException(
+        'Foto já finalizada o processo de compra, você não poderá mais desmarcar.',
+      );
+    }
 
     images.forEach(async (image) => {
       await this.productStudioPhotoRepository
