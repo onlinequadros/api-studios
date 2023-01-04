@@ -8,6 +8,7 @@ import { BucketS3Service } from '../../../bucket-s3/bucket-s3.service';
 import { EncryptedService } from '../../../modules/utils/encrypted.service';
 import { ProductStudioService } from '../product_studio/product-studio.service';
 import { ProductStudioDinamicRepository } from '../product_studio/repositories/product-studio.repository';
+import { ImagesService } from '../../../modules/utils/images.service';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ProductStudioDinamicRepository } from '../product_studio/repositories/p
     BucketS3Service,
     EncryptedService,
     ProductStudioDinamicRepository,
+    ImagesService
   ],
   exports: [ProductStudioPhotoService],
 })

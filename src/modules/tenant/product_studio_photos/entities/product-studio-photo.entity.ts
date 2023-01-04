@@ -4,6 +4,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -12,7 +13,7 @@ import { ProductStudio } from '../../product_studio/entity/product-studio.entity
 
 @Entity('productstudiophotos')
 export class ProductStudioPhoto {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn()
   id: string;
 
   @Column()
@@ -23,6 +24,9 @@ export class ProductStudioPhoto {
 
   @Column()
   url: string;
+
+  @Column()
+  low_resolution_image: string;
 
   @Column()
   checked: boolean;

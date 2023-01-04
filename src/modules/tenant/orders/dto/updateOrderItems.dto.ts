@@ -1,6 +1,7 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 
-import { IsString, IsNumber } from 'class-validator';
+import { IsString, IsNumber, ValidateNested } from 'class-validator';
+import { CroppedPixelArea } from '../model/croppedPixelArea.model';
 
 export class UpdateOrderItemsDto {
   @IsString()
@@ -18,6 +19,10 @@ export class UpdateOrderItemsDto {
   @IsString()
   @Expose()
   url_cropped: string;
+
+  @ValidateNested({ each: true })
+  @Type(() => CroppedPixelArea)
+  croppedPixelArea: CroppedPixelArea
 
   @IsNumber()
   @Expose()

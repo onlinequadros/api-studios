@@ -12,6 +12,9 @@ import { ReadProductStudioDto } from '../product_studio/dtos';
 import { SetCoverPhotoDTO } from '../product_studio/dtos/setCoverPhoto.dto';
 import { RemoveImagesDTO } from './dto/remove-images.dto';
 import { CheckImagesDTO } from './dto/check.dto';
+import * as sharp from 'sharp';
+import { v4 as uuidv4 } from 'uuid';
+import { ImagesService } from '../../../modules/utils/images.service';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 @Injectable({ scope: Scope.REQUEST })
@@ -29,6 +32,7 @@ export class ProductStudioPhotoService {
     private readonly awsS3Service: BucketS3Service,
     private readonly encryptedService: EncryptedService,
     private readonly productStudio: ProductStudioService,
+    private readonly imagesService: ImagesService,
   ) {
     this.getProductStudioPhotoRepository();
   }
@@ -86,7 +90,14 @@ export class ProductStudioPhotoService {
         const encryptedImageName =
           await this.encryptedService.encryptedImageName(element.originalname);
 
-        const s3 = await this.awsS3Service.uploadImage(
+        // Converte uma versão da imagem para webp
+        const webpImage = await this.convertImageLowResolution(
+          element,
+          encryptedImageName,
+        );
+
+        //Upload versão alta resolução s3
+        const highResolutionImageUrl = await this.awsS3Service.uploadImage(
           company,
           category,
           slug,
@@ -94,11 +105,25 @@ export class ProductStudioPhotoService {
           encryptedImageName,
         );
 
+        //Upload versão webp para o s3
+        const webpImageUrl = await this.awsS3Service.uploadImage(
+          company,
+          category,
+          slug,
+          webpImage,
+          webpImage.originalname,
+        );
+
+        const id = webpImage.originalname.split('.')[0];
+
+        // cria as informações da imagem no banco
         const newProductStudioPhoto =
           await this.productStudioPhotoRepository.create({
+            id: id,
             photo: encryptedImageName,
             feature_photo: false,
-            url: s3,
+            url: highResolutionImageUrl,
+            low_resolution_image: webpImageUrl,
             checked: false,
             order: false,
             product_photo_id: {
@@ -179,5 +204,36 @@ export class ProductStudioPhotoService {
         .where('id = :id', { id: image.id })
         .execute();
     });
+  }
+
+  async convertImageLowResolution(element, cryptImageName) {
+    const { data, info } = await sharp(element.buffer)
+      .webp({ effort: 6 })
+      .toBuffer({ resolveWithObject: true });
+
+    const splitCryptImageName = cryptImageName.split('.');
+
+    console.log(splitCryptImageName);
+
+    const image = {
+      //id: splitCryptImageName.shift(),
+      fieldname: 'images',
+      originalname: splitCryptImageName.shift() + `.${info.format}`,
+      mimetype: 'image/' + info.format,
+      buffer: data,
+      size: info.size,
+    };
+
+    return image;
+  }
+
+  async findOne(id: string) {
+    this.getProductStudioPhotoRepository();
+    const image = this.productStudioPhotoRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
+    return image;
   }
 }

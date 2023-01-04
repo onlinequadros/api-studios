@@ -12,10 +12,27 @@ import { OrdersPhotos } from './entities/ordersPhotos.entity';
 import { OrdersExtraPhotos } from './entities/orders_extra_photos.entity';
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
+import { ImagesService } from '../../../modules/utils/images.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Orders, OrdersPhotos,OrdersExtraItem, OrdersExtraPhotos]), CompaniesModule],
+  imports: [
+    TypeOrmModule.forFeature([
+      Orders,
+      OrdersPhotos,
+      OrdersExtraItem,
+      OrdersExtraPhotos,
+    ]),
+    CompaniesModule,
+  ],
   controllers: [OrdersController],
-  providers: [OrdersService, ProductStudioPhotoService, BucketS3Service, EncryptedService, ProductStudioService, ProductStudioDinamicRepository]
+  providers: [
+    OrdersService,
+    ProductStudioPhotoService,
+    BucketS3Service,
+    EncryptedService,
+    ImagesService,
+    ProductStudioService,
+    ProductStudioDinamicRepository,
+  ],
 })
 export class OrdersModule {}

@@ -10,6 +10,8 @@ import { ProductStudioPhoto } from '../product_studio_photos/entities/product-st
 import { ProductStudioPhotoService } from '../product_studio_photos/product-studio-photo.service';
 import { CheckImagesDTO } from '../product_studio_photos/dto/check.dto';
 import { UpdateOrderItemsDto } from './dto/updateOrderItems.dto';
+import { ImagesService } from '../../../modules/utils/images.service';
+import * as sharp from 'sharp';
 
 @Injectable()
 export class OrdersService {
@@ -32,6 +34,7 @@ export class OrdersService {
     @InjectRepository(Orders)
     private readonly repository: Repository<Orders>,
     private readonly productStudioPhotoService: ProductStudioPhotoService,
+    private readonly imagesService: ImagesService,
   ) {
     this.getOrdersRepository();
     this.getProductStudioPhotosRepository();
@@ -65,12 +68,14 @@ export class OrdersService {
 
   async findOne(id: string): Promise<Orders> {
     this.getOrdersRepository();
-    return this.ordersRepository.findOne({
+    const order = await this.ordersRepository.findOne({
       where: {
         id: id,
       },
       relations: ['orders_extra_items', 'orders_extra_photos', 'orders_photos'],
     });
+
+    return order;
   }
 
   async delete(id: string) {
@@ -130,9 +135,9 @@ export class OrdersService {
     id_extraitems: string,
     updateOrdersItemsDTO: UpdateOrderItemsDto,
   ) {
-    this.getOrdersRepository();
+    this.getOrdersRepository();    
 
-    const order = await this.findOne(id_order);
+    const order = await this.findOne(id_order);    
 
     if (!order) {
       throw new NotFoundException('Ordem não encontrada.');
@@ -146,19 +151,31 @@ export class OrdersService {
       throw new NotFoundException('Item extra não encontrado.');
     }
 
-    order.orders_extra_items[indexObject].sku = updateOrdersItemsDTO.sku;
-    order.orders_extra_items[indexObject].category =
-      updateOrdersItemsDTO.category;
-    order.orders_extra_items[indexObject].product_name =
-      updateOrdersItemsDTO.product_name;
-    order.orders_extra_items[indexObject].url_cropped =
-      updateOrdersItemsDTO.url_cropped;
-    order.orders_extra_items[indexObject].price =
-      updateOrdersItemsDTO.price.toString();
+    // extraimos a imagem copm a extensão da url nos extras items
+    const image = order.orders_extra_items[indexObject].url_image.split('/').slice(-1);
 
-    const orderSaved = await this.ordersRepository.save(order);
+    // fazemos um split para pegar o nome da imagem sem a extensão
+    // O nome da imagem é o id da imagem em alta resolução
+    const imageId = await this.imagesService.split(image);   
 
-    return orderSaved;
+    // buscamos a imagem original para fazer o crop e salvar
+    const photo = await this.productStudioPhotoService.findOne(imageId);   
+    
+    
+
+    // order.orders_extra_items[indexObject].sku = updateOrdersItemsDTO.sku;
+    // order.orders_extra_items[indexObject].category =
+    //   updateOrdersItemsDTO.category;
+    // order.orders_extra_items[indexObject].product_name =
+    //   updateOrdersItemsDTO.product_name;
+    // order.orders_extra_items[indexObject].url_cropped =
+    //   updateOrdersItemsDTO.url_cropped;
+    // order.orders_extra_items[indexObject].price =
+    //   updateOrdersItemsDTO.price.toString();
+
+    // const orderSaved = await this.ordersRepository.save(order);
+
+    // return orderSaved;
   }
 
   async deleteExtraPhoto(orderId: string, imageId: string) {
