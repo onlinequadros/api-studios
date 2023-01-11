@@ -10,6 +10,7 @@ import { Orders } from '../../../modules/tenant/orders/entities/orders.entity';
 import { OrdersPhotos } from '../../../modules/tenant/orders/entities/ordersPhotos.entity';
 import { OrdersExtraItem } from '../../../modules/tenant/orders/entities/orders-extra-item.entity';
 import { OrdersExtraPhotos } from '../../../modules/tenant/orders/entities/orders_extra_photos.entity';
+import { LinkSharing } from '../../tenant/link_sharing/entity/link-sharing.entity';
 
 export class DatabaseProvider {
   async getConnection(database: string, isTenant = false) {
@@ -33,7 +34,8 @@ export class DatabaseProvider {
             Orders,
             OrdersPhotos,
             OrdersExtraItem,
-            OrdersExtraPhotos
+            OrdersExtraPhotos,
+            LinkSharing,
           ]
         : [],
       ssl: false,

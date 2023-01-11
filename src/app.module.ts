@@ -19,11 +19,11 @@ import { ProductsModule } from './modules/master/products/products.module';
 import { ForgotPasswordStudioModule } from './modules/tenant/forgot-password/forgot-password-studio.module';
 import { OrdersModule } from './modules/tenant/orders/orders.module';
 import { PaymentModule } from './modules/tenant/payment/payment.module';
-import { HttpModule } from "@nestjs/axios";
+import { HttpModule } from '@nestjs/axios';
 import { ShippingModule } from './modules/tenant/shipping/shipping.module';
+import { LinkSharingModule } from './modules/tenant/link_sharing/link-sharing.module';
 
 @Module({
-
   imports: [
     CompaniesModule,
     ConfigModule.forRoot({ isGlobal: true }),
@@ -57,8 +57,8 @@ import { ShippingModule } from './modules/tenant/shipping/shipping.module';
     OrdersModule,
     PaymentModule,
     HttpModule,
-    ShippingModule
-
+    ShippingModule,
+    LinkSharingModule,
   ],
   controllers: [],
   providers: [],

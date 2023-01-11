@@ -135,9 +135,9 @@ export class OrdersService {
     id_extraitems: string,
     updateOrdersItemsDTO: UpdateOrderItemsDto,
   ) {
-    this.getOrdersRepository();    
+    this.getOrdersRepository();
 
-    const order = await this.findOne(id_order);    
+    const order = await this.findOne(id_order);
 
     if (!order) {
       throw new NotFoundException('Ordem não encontrada.');
@@ -152,30 +152,30 @@ export class OrdersService {
     }
 
     // extraimos a imagem copm a extensão da url nos extras items
-    const image = order.orders_extra_items[indexObject].url_image.split('/').slice(-1);
+    // const image = order.orders_extra_items[indexObject].url_image
+    //   .split('/')
+    //   .slice(-1);
 
     // fazemos um split para pegar o nome da imagem sem a extensão
     // O nome da imagem é o id da imagem em alta resolução
-    const imageId = await this.imagesService.split(image);   
+    // const imageId = await this.imagesService.split(image);
 
     // buscamos a imagem original para fazer o crop e salvar
-    const photo = await this.productStudioPhotoService.findOne(imageId);   
-    
-    
+    // const photo = await this.productStudioPhotoService.findOne(imageId);
 
-    // order.orders_extra_items[indexObject].sku = updateOrdersItemsDTO.sku;
-    // order.orders_extra_items[indexObject].category =
-    //   updateOrdersItemsDTO.category;
-    // order.orders_extra_items[indexObject].product_name =
-    //   updateOrdersItemsDTO.product_name;
-    // order.orders_extra_items[indexObject].url_cropped =
-    //   updateOrdersItemsDTO.url_cropped;
-    // order.orders_extra_items[indexObject].price =
-    //   updateOrdersItemsDTO.price.toString();
+    order.orders_extra_items[indexObject].sku = updateOrdersItemsDTO.sku;
+    order.orders_extra_items[indexObject].category =
+      updateOrdersItemsDTO.category;
+    order.orders_extra_items[indexObject].product_name =
+      updateOrdersItemsDTO.product_name;
+    order.orders_extra_items[indexObject].url_cropped =
+      updateOrdersItemsDTO.url_cropped;
+    order.orders_extra_items[indexObject].price =
+      updateOrdersItemsDTO.price.toString();
 
-    // const orderSaved = await this.ordersRepository.save(order);
+    const orderSaved = await this.ordersRepository.save(order);
 
-    // return orderSaved;
+    return orderSaved;
   }
 
   async deleteExtraPhoto(orderId: string, imageId: string) {

@@ -22,6 +22,7 @@ import { Request } from 'express';
 import { SetCoverPhotoDTO } from '../product_studio/dtos/setCoverPhoto.dto';
 import { RemoveImagesDTO } from './dto/remove-images.dto';
 import { CheckImagesDTO } from './dto/check.dto';
+import { ProductStudioPhoto } from './entities/product-studio-photo.entity';
 
 @Controller('product-studio-photo')
 export class ProductStudioPhotoController {
@@ -32,6 +33,13 @@ export class ProductStudioPhotoController {
   @Get()
   async findAll(): Promise<ReadProductStudioPhotoDto[]> {
     return this.productStudioPhotoService.findAll();
+  }
+
+  @Get('/images-high')
+  async findImagesHigh(
+    @Body() imgIds: string[],
+  ): Promise<ProductStudioPhoto[]> {
+    return this.productStudioPhotoService.findAllImagesHigh(imgIds);
   }
 
   @Post()

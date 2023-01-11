@@ -22,7 +22,7 @@ export class ProductStudioPhoto {
   @Column({ nullable: true })
   feature_photo?: boolean;
 
-  @Column()
+  @Column({ select: false })
   url: string;
 
   @Column()

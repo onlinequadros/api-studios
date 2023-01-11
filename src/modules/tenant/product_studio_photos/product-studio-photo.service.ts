@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { plainToClass, plainToInstance } from 'class-transformer';
 import { BucketS3Service } from '../../../bucket-s3/bucket-s3.service';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { TenantProvider } from '../tenant.provider';
 import { CreateProductStudioPhotoDto, ReadProductStudioPhotoDto } from './dto';
 import { ProductStudioPhoto } from './entities/product-studio-photo.entity';
@@ -50,6 +50,18 @@ export class ProductStudioPhotoService {
     );
   }
 
+  async findAllImagesHigh(imgIds: string[]): Promise<any[]> {
+    this.getProductStudioPhotoRepository();
+
+    const productsStudioPhoto = await this.productStudioPhotoRepository.find({
+      where: { id: In(imgIds) },
+      select: ['url', 'id'],
+    });
+    return productsStudioPhoto.map((studioPhoto) =>
+      plainToInstance(ReadProductStudioPhotoDto, studioPhoto),
+    );
+  }
+
   async create(
     productStudioPhoto: CreateProductStudioPhotoDto,
   ): Promise<ReadProductStudioPhotoDto> {
@@ -71,8 +83,6 @@ export class ProductStudioPhotoService {
           newProductStudioPhoto,
         );
       });
-
-      console.log(await createPhotoStudioPhoto);
 
       //return;
 

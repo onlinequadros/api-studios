@@ -32,6 +32,7 @@ import { Orders } from '../../../modules/tenant/orders/entities/orders.entity';
 import { OrdersPhotos } from '../../../modules/tenant/orders/entities/ordersPhotos.entity';
 import { OrdersExtraPhotos } from '../../../modules/tenant/orders/entities/orders_extra_photos.entity';
 import { OrdersExtraItem } from '../../../modules/tenant/orders/entities/orders-extra-item.entity';
+import { LinkSharing } from '../../tenant/link_sharing/entity/link-sharing.entity';
 
 @Module({
   imports: [
@@ -107,6 +108,7 @@ export class CompaniesModule {
               OrdersPhotos,
               OrdersExtraPhotos,
               OrdersExtraItem,
+              LinkSharing,
             ], // TODO -> adiciona as entidades do tenant
             ssl: false,
             synchronize: true,
