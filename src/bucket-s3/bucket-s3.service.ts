@@ -1,6 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { config, S3 } from 'aws-sdk';
 import { MessagesHelper } from '../helpers/messages.helpers';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const AmazonS3URI = require('amazon-s3-uri');
+import * as archiver from 'archiver';
+import * as fs from 'fs';
 
 @Injectable()
 export class BucketS3Service {
@@ -123,14 +127,12 @@ export class BucketS3Service {
 
   async deleteImages(images) {
     const objects = images.map((key) => ({ Key: key }));
-
     const params = {
       Bucket: process.env.AWS_BUCKET,
       Delete: {
         Objects: objects,
       },
     };
-
     try {
       const response = await this.s3.deleteObjects(params).promise();
       return response.data;
@@ -140,5 +142,100 @@ export class BucketS3Service {
         error.stack,
       );
     }
+  }
+
+  private async getObject(outputDir: string, uri: string, fileName: string) {
+    try {
+      const { bucket, key } = AmazonS3URI(uri);
+      if (bucket && key) {
+        const params = {
+          Bucket: bucket,
+          Key: key,
+        };
+        const readStream = this.s3.getObject(params).createReadStream();
+        return new Promise((resolve, reject) => {
+          fs.mkdirSync(`tmp/${outputDir}`, { recursive: true });
+          const writeStream = fs.createWriteStream(
+            `tmp/${outputDir}/${fileName}`,
+          );
+          readStream.pipe(writeStream);
+          writeStream.on('error', (e) => reject(e));
+          writeStream.on('close', (data) => {
+            resolve(data);
+          });
+        });
+      }
+    } catch (error) {
+      throw new BadRequestException(
+        MessagesHelper.FAILED_GET_FILE,
+        error.stack,
+      );
+    }
+  }
+
+  async zipFiles(outputDir: string, files: Array<Record<string, any>>) {
+    for (const file of files) {
+      await this.getObject(outputDir, file.url, file.name || file.photo);
+    }
+    await this.zipDirectory(`tmp/${outputDir}`);
+    const path = await this.uploadLocalFileToBucket(
+      `zip/photos/photos-${new Date().getTime()}`,
+      `tmp/${outputDir}.zip`,
+    );
+    return this.getSignedUrl(path);
+  }
+
+  public async getSignedUrl(file: string) {
+    const bucketParams = {
+      Key: file,
+      Bucket: process.env.AWS_BUCKET,
+      Expires: 604800,
+    };
+    return this.s3.getSignedUrlPromise('getObject', bucketParams);
+  }
+
+  private async zipDirectory(sourceDir: string, outPath?: string) {
+    if (!outPath) outPath = sourceDir;
+    const archive = archiver('zip', { zlib: { level: 2 } });
+    const stream = fs.createWriteStream(`${outPath}.zip`);
+    return new Promise((resolve, reject) => {
+      archive
+        .directory(sourceDir, false)
+        .on('error', (err) => reject(err))
+        .pipe(stream);
+      stream.on('close', (data) => {
+        resolve(data);
+      });
+      archive.finalize();
+    });
+  }
+
+  public async uploadLocalFileToBucket(
+    outputPath: string,
+    sourcePath: string,
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const file = [];
+      const readStream = fs.createReadStream(sourcePath);
+      readStream
+        .on('data', (data) => {
+          file.push(data);
+        })
+        .on('close', () => {
+          const params = {
+            Bucket: process.env.AWS_BUCKET,
+            Key: outputPath,
+            Body: Buffer.concat(file),
+          };
+          this.s3
+            .upload(params)
+            .promise()
+            .then(() => readStream.resume());
+          resolve(outputPath);
+        })
+        .on('error', (e) => {
+          reject(e);
+        });
+    });
   }
 }

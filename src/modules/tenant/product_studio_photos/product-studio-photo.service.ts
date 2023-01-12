@@ -50,18 +50,17 @@ export class ProductStudioPhotoService {
     );
   }
 
-  async getImagesZipUrl(): Promise<ReadProductStudioPhotoDto[]> {
+  async getImagesZipUrl(studio: string) {
     this.getProductStudioPhotoRepository();
-    const productsStudioPhoto = await this.productStudioPhotoRepository.find({
+    const productsStudioPhotos = await this.productStudioPhotoRepository.find({
       where: {
         checked: true,
         order: true,
       },
+      select: ['id', 'url', 'photo'],
     });
 
-    return productsStudioPhoto.map((studioPhoto) =>
-      plainToInstance(ReadProductStudioPhotoDto, studioPhoto),
-    );
+    return this.awsS3Service.zipFiles(studio, productsStudioPhotos);
   }
 
   async findAllImagesHigh(imgIds: string[]): Promise<any[]> {
@@ -266,8 +265,6 @@ export class ProductStudioPhotoService {
       .toBuffer({ resolveWithObject: true });
 
     const splitCryptImageName = cryptImageName.split('.');
-
-    console.log(splitCryptImageName);
 
     const image = {
       //id: splitCryptImageName.shift(),

@@ -31,9 +31,9 @@ export class ProductStudioPhotoController {
     return this.productStudioPhotoService.findAll();
   }
 
-  @Get('/link')
-  async getImagesZipUrl(): Promise<ReadProductStudioPhotoDto[]> {
-    return this.productStudioPhotoService.getImagesZipUrl();
+  @Get('/link/:studio')
+  async getImagesZipUrl(@Param('studio') studio: string) {
+    return this.productStudioPhotoService.getImagesZipUrl(studio);
   }
 
   @Get('/images-high')
