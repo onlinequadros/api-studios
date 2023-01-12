@@ -50,6 +50,20 @@ export class ProductStudioPhotoService {
     );
   }
 
+  async getImagesZipUrl(): Promise<ReadProductStudioPhotoDto[]> {
+    this.getProductStudioPhotoRepository();
+    const productsStudioPhoto = await this.productStudioPhotoRepository.find({
+      where: {
+        checked: true,
+        order: true,
+      },
+    });
+
+    return productsStudioPhoto.map((studioPhoto) =>
+      plainToInstance(ReadProductStudioPhotoDto, studioPhoto),
+    );
+  }
+
   async findAllImagesHigh(imgIds: string[]): Promise<any[]> {
     this.getProductStudioPhotoRepository();
 
@@ -60,6 +74,23 @@ export class ProductStudioPhotoService {
     return productsStudioPhoto.map((studioPhoto) =>
       plainToInstance(ReadProductStudioPhotoDto, studioPhoto),
     );
+  }
+
+  async verifyImagesHired(quantity: string): Promise<boolean> {
+    this.getProductStudioPhotoRepository();
+
+    const productsStudioPhoto = await this.productStudioPhotoRepository.find({
+      where: {
+        checked: true,
+        order: true,
+      },
+    });
+
+    if (productsStudioPhoto.length < Number(quantity)) {
+      return false;
+    }
+
+    return true;
   }
 
   async create(
@@ -83,8 +114,6 @@ export class ProductStudioPhotoService {
           newProductStudioPhoto,
         );
       });
-
-      //return;
 
       return plainToClass(ReadProductStudioPhotoDto, createPhotoStudioPhoto);
     } catch (err) {

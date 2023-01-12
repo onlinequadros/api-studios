@@ -18,12 +18,6 @@ export class CreateLinkSharingDto {
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ default: 'Código do link' })
-  @Expose()
-  readonly code: string;
-
-  @IsString()
-  @IsNotEmpty()
   @ApiProperty({ default: 'Link' })
   @Expose()
   readonly link: string;

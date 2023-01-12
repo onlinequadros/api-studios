@@ -11,11 +11,7 @@ import {
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import {
-  AnyFilesInterceptor,
-  FileFieldsInterceptor,
-  FilesInterceptor,
-} from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreateProductStudioPhotoDto, ReadProductStudioPhotoDto } from './dto';
 import { ProductStudioPhotoService } from './product-studio-photo.service';
 import { Request } from 'express';
@@ -35,6 +31,11 @@ export class ProductStudioPhotoController {
     return this.productStudioPhotoService.findAll();
   }
 
+  @Get('/link')
+  async getImagesZipUrl(): Promise<ReadProductStudioPhotoDto[]> {
+    return this.productStudioPhotoService.getImagesZipUrl();
+  }
+
   @Get('/images-high')
   async findImagesHigh(
     @Body() imgIds: string[],
@@ -42,11 +43,21 @@ export class ProductStudioPhotoController {
     return this.productStudioPhotoService.findAllImagesHigh(imgIds);
   }
 
+  @Get('/verify-photos-hired/:quantity')
+  async verifyPhotosHired(
+    @Param('quantity') quantity: string,
+  ): Promise<boolean> {
+    return this.productStudioPhotoService.verifyImagesHired(quantity);
+  }
+
   @Post()
   async create(
     @Body() createProductStudioPhotoDto: CreateProductStudioPhotoDto,
   ): Promise<ReadProductStudioPhotoDto> {
-    return this.productStudioPhotoService.create(createProductStudioPhotoDto);
+    const responseVerifyImage = await this.productStudioPhotoService.create(
+      createProductStudioPhotoDto,
+    );
+    return responseVerifyImage;
   }
 
   @Post('/upload_images')
