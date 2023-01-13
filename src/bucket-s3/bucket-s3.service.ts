@@ -182,6 +182,10 @@ export class BucketS3Service {
       `zip/photos/photos-${new Date().getTime()}`,
       `tmp/${outputDir}.zip`,
     );
+
+    //deletar a pasta temp
+    await fs.promises.rmdir(`tmp`, { recursive: true });
+
     return this.getSignedUrl(path);
   }
 
