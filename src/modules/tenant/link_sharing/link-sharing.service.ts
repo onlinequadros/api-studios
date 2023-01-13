@@ -8,16 +8,23 @@ import { Repository } from 'typeorm';
 import { TenantProvider } from '../tenant.provider';
 import { CreateLinkSharingDto } from './dtos';
 import { LinkSharing } from './entity/link-sharing.entity';
+import { ProductStudio } from '../product_studio/entity/product-studio.entity';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 @Injectable()
 export class LinkSharingService {
   private linkSharingRepository: Repository<LinkSharing>;
+  private productStudioRepository: Repository<ProductStudio>;
 
   getProductStudioRepository() {
     if (TenantProvider.connection) {
       this.linkSharingRepository =
         TenantProvider.connection.getRepository(LinkSharing);
+    }
+
+    if (TenantProvider.connection) {
+      this.productStudioRepository =
+        TenantProvider.connection.getRepository(ProductStudio);
     }
   }
 
@@ -26,10 +33,10 @@ export class LinkSharingService {
   }
 
   // FUNÇÃO PARA BUSCAR UM LINK
-  async findOneLink(slug: string, code: string): Promise<{ link: string }> {
+  async findOneLink(slug: string): Promise<{ link: string }> {
     this.getProductStudioRepository();
     const linkSharing = await this.linkSharingRepository.findOne({
-      where: { code, slug },
+      where: { slug },
     });
 
     if (!linkSharing) {
@@ -42,17 +49,17 @@ export class LinkSharingService {
   }
 
   // FUNÇÃO PARA BUSCAR O CÓDIGO DO LINK NO STUDIO
-  async findOneLinkPerCode(slug: string): Promise<{ code: number }> {
+  async findOneLinkPerCode(slug: string): Promise<{ code: string }> {
     this.getProductStudioRepository();
     const linkSharing = await this.linkSharingRepository.findOne({
       where: { slug },
     });
 
     if (!linkSharing) {
-      return { code: 0 };
+      return { code: '0' };
     }
 
-    return { code: Number(linkSharing.code) };
+    return { code: linkSharing.code };
   }
 
   // FUNÇÃO PARA CRIAR UM LINK
@@ -63,11 +70,17 @@ export class LinkSharingService {
       code: String(randomInt(1000000000, 9999999999)),
     };
 
+    // Pega o id do produto para colocar junto com o código
+    const product = await this.productStudioRepository.findOne({
+      where: { slug: dataLink.slug },
+      select: ['id'],
+    });
+
     const objectDataLink = {
       link: dataLink.link,
       studio: dataLink.studio,
       slug: dataLink.slug,
-      code: variables.code,
+      code: `${variables.code}#${product.id}`,
     };
 
     try {

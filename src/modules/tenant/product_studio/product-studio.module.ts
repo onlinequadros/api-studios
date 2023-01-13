@@ -9,7 +9,11 @@ import { ProductStudioDinamicRepository } from './repositories/product-studio.re
 @Module({
   imports: [TypeOrmModule.forFeature([ProductStudio])],
   controllers: [ProductStudioController],
-  providers: [ProductStudioService, BucketS3Service, ProductStudioDinamicRepository],
+  providers: [
+    ProductStudioService,
+    BucketS3Service,
+    ProductStudioDinamicRepository,
+  ],
   exports: [ProductStudioService, ProductStudioDinamicRepository],
 })
 export class ProductStudioModule {}

@@ -7,18 +7,15 @@ import { LinkSharingService } from './link-sharing.service';
 export class LinkSharingController {
   constructor(private readonly linkSharingService: LinkSharingService) {}
 
-  @Get('/:slug/:code')
-  // @UseGuards(JwtAuthGuard)
-  async findOne(
-    @Param('slug') slug: string,
-    @Param('code') code: string,
-  ): Promise<{ link: string }> {
-    return this.linkSharingService.findOneLink(slug, code);
-  }
-
   @Get('/:slug')
   // @UseGuards(JwtAuthGuard)
-  async findOneCode(@Param('slug') slug: string): Promise<{ code: number }> {
+  async findOne(@Param('slug') slug: string): Promise<{ link: string }> {
+    return this.linkSharingService.findOneLink(slug);
+  }
+
+  @Get('/code/:slug')
+  // @UseGuards(JwtAuthGuard)
+  async findOneCode(@Param('slug') slug: string): Promise<{ code: string }> {
     return this.linkSharingService.findOneLinkPerCode(slug);
   }
 
