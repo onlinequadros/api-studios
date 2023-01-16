@@ -30,6 +30,38 @@ export class CompaniesController {
     return await this.companyService.create(companyDTO);
   }
 
+  // CRIA UM USUÁRIO MASTER
+  @Post('/create-administrador')
+  @ApiOperation({ summary: 'Criar um usuário master.' })
+  async createUserAdmin() {
+    const companyDTO: CreateCompanyDto = {
+      address: 'Endereço do administrador',
+      birth_date: '2000-01-01',
+      cep: '01153-000',
+      city: 'São Paulo',
+      cnpj: '',
+      company_name: '',
+      complement: '',
+      cpf: '61520609078',
+      district: 'Centro',
+      email: 'admin@gmail.com',
+      lastname: 'Online Quadros',
+      login_notification: true,
+      name: 'Nilton',
+      number: '00',
+      password: 'z1x2c3v4!@AS',
+      phone: '99999999999',
+      role: 'Admin',
+      segment: 'Studio',
+      sex: 'Masculino',
+      uf: 'PE',
+      tenant_company: 'onlinequadros',
+    };
+
+    await this.companyService.create(companyDTO);
+    return true;
+  }
+
   // ATUALIZA PELO ID DO USUÁRIO INFORMADO
   @Put(':company_id')
   @ApiOperation({ summary: 'Alterar uma companhia no sistema.' })
@@ -49,6 +81,15 @@ export class CompaniesController {
   // @UseGuards(JwtAuthGuard)
   async allCompanies() {
     return await this.companyService.getAllCompanies();
+  }
+
+  // PEGA A LISTAGEM DE TODOS OS USUÁRIOS
+  @Get('/studio')
+  @ApiOperation({ summary: 'Buscar todos os studios no sistema.' })
+  @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  async allStudio() {
+    return await this.companyService.getAllStudios();
   }
 
   // FAZ A PESQUISA PELO ID DO USUÁRIO

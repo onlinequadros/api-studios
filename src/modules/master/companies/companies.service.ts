@@ -268,6 +268,15 @@ export class CompaniesService {
     });
   }
 
+  // FUNÇÃO PARA PEGAR TODOS OS ESTÚDIOS
+  async getAllStudios() {
+    const company = await this.companyRepository.findStudio();
+    return company.map((companies) => {
+      delete companies.password;
+      return companies;
+    });
+  }
+
   // FUNÇÃO PARA PEGAR UM USUÁRIO POR ID
   async getCompany(company_id: string) {
     const company = await this.companyRepository.findOne(company_id);

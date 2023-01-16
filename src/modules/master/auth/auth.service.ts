@@ -74,30 +74,30 @@ export class AuthService {
       };
 
       // notificação de login por email;
-      if (user.login_notification) {
-        const templatePath = resolve(
-          __dirname,
-          '..',
-          '..',
-          '..',
-          'views',
-          'emails',
-          'login.hbs',
-        );
+      // if (user.login_notification) {
+      //   const templatePath = resolve(
+      //     __dirname,
+      //     '..',
+      //     '..',
+      //     '..',
+      //     'views',
+      //     'emails',
+      //     'login.hbs',
+      //   );
 
-        const variables = {
-          name: user.name,
-          email: email,
-          datetime: dayjs().format('DD/MM/YYYY HH:mm'),
-        };
+      //   const variables = {
+      //     name: user.name,
+      //     email: email,
+      //     datetime: dayjs().format('DD/MM/YYYY HH:mm'),
+      //   };
 
-        this.mailsService.sendEmail(
-          email,
-          'Login feito em sua conta',
-          variables,
-          templatePath,
-        );
-      }
+      //   this.mailsService.sendEmail(
+      //     email,
+      //     'Login feito em sua conta',
+      //     variables,
+      //     templatePath,
+      //   );
+      // }
 
       return resultValidate;
     }

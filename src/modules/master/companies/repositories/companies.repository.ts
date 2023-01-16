@@ -27,6 +27,15 @@ export class CompanyRepository {
     });
   }
 
+  async findStudio(): Promise<Company[]> {
+    return await this.repository.find({
+      order: {
+        tenant_company: 'ASC',
+      },
+      select: ['id', 'tenant_company'],
+    });
+  }
+
   async findOne(id: string): Promise<Company> {
     return await this.repository.findOne({ where: { id } });
   }
