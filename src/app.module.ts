@@ -22,6 +22,7 @@ import { PaymentModule } from './modules/tenant/payment/payment.module';
 import { HttpModule } from '@nestjs/axios';
 import { ShippingModule } from './modules/tenant/shipping/shipping.module';
 import { LinkSharingModule } from './modules/tenant/link_sharing/link-sharing.module';
+import { ImagesCropModule } from './modules/master/images-crop/images-crop.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { LinkSharingModule } from './modules/tenant/link_sharing/link-sharing.mo
     HttpModule,
     ShippingModule,
     LinkSharingModule,
+    ImagesCropModule,
   ],
   controllers: [],
   providers: [],

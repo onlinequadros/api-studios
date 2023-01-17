@@ -132,6 +132,7 @@ export class CompaniesModule {
         { path: '/api/companies/:id', method: RequestMethod.ALL },
         { path: '/api/shipping', method: RequestMethod.ALL },
         { path: '/api/shipping/:company', method: RequestMethod.ALL },
+        { path: '/api/images-crop', method: RequestMethod.ALL },
         { path: '/api/products', method: RequestMethod.ALL },
         {
           path: '/api/products/list-frames/:frame/:size',
