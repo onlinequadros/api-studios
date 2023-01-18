@@ -6,6 +6,7 @@ import { CropImageCut, IParams } from './interfaces/crop-image-cut';
 import { DatabaseProvider } from '../../shared/database/database.provider';
 import { crop } from './utils/crop-function';
 import { BucketS3Service } from 'src/bucket-s3/bucket-s3.service';
+import * as fs from 'fs';
 
 @Injectable()
 export class ImageCropService {
@@ -55,7 +56,9 @@ export class ImageCropService {
         responseCrop,
       );
 
-      return this.bucketS3Service.getSignedUrl(filePath);
+      const signedUrl = await this.bucketS3Service.getSignedUrl(filePath);
+      await fs.promises.rm('tmp', { recursive: true });
+      return signedUrl;
     }
   }
 }

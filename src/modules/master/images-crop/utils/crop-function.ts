@@ -11,11 +11,15 @@ const crop = async (
   paramY: number,
   paramWidth: number,
   paramHeight: number,
-) => {
-  const image = await Jimp.read(url);
-  image.crop(paramX, paramY, paramWidth, paramHeight).write(`tmp/${id}.jpeg`);
-
-  return `tmp/${id}.jpeg`;
+): Promise<string> => {
+  return new Promise(async (resolve, reject) => {
+    const image = await Jimp.read(url);
+    image
+      .crop(paramX, paramY, paramWidth, paramHeight)
+      .write(`tmp/${id}.jpeg`, (res) => {
+        resolve(`tmp/${id}.jpeg`);
+      });
+  });
 };
 
 export { crop };
