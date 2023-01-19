@@ -57,6 +57,7 @@ export class CompaniesModule {
     private readonly connection: Connection,
     private readonly configService: ConfigService,
     private readonly companyService: CompaniesService,
+    private readonly databaseProvider: DatabaseProvider,
   ) {}
   configure(consumer: MiddlewareConsumer): void {
     consumer
@@ -88,31 +89,12 @@ export class CompaniesModule {
               `CREATE DATABASE ${tenant.tenant_company}`,
             );
           }
-          const createdConnection: Connection = await createConnection({
-            name: tenant.tenant_company,
-            type: this.configService.get('CMS_POSTGRES_TYPE'),
-            host: this.configService.get('CMS_POSTGRES_HOST'),
-            port: +this.configService.get('CMS_POSTGRES_PORT'),
-            username: this.configService.get('CMS_POSTGRES_USER'),
-            password: this.configService.get('CMS_POSTGRES_PASSWORD'),
-            database: tenant.tenant_company,
-            entities: [
-              Client,
-              Address,
-              User,
-              Category,
-              ProductStudio,
-              ProductStudioPhoto,
-              ProductArtist,
-              Orders,
-              OrdersPhotos,
-              OrdersExtraPhotos,
-              OrdersExtraItem,
-              LinkSharing,
-            ], // TODO -> adiciona as entidades do tenant
-            ssl: false,
-            synchronize: true,
-          });
+          const createdConnection: Connection =
+            await this.databaseProvider.getConnection(
+              tenant.tenant_company,
+              true,
+              !databaseExists.length,
+            );
           if (createdConnection) {
             TenantProvider.connection = createdConnection;
             next();

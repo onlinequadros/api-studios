@@ -13,7 +13,11 @@ import { OrdersExtraPhotos } from '../../../modules/tenant/orders/entities/order
 import { LinkSharing } from '../../tenant/link_sharing/entity/link-sharing.entity';
 
 export class DatabaseProvider {
-  async getConnection(database: string, isTenant = false) {
+  async getConnection(
+    database: string,
+    isTenant = false,
+    isFirstConnection = false,
+  ) {
     return createConnection({
       name: database,
       type: 'postgres',
@@ -39,7 +43,7 @@ export class DatabaseProvider {
           ]
         : [],
       ssl: false,
-      synchronize: true,
+      synchronize: isFirstConnection,
     });
   }
 }

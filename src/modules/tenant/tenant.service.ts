@@ -45,6 +45,7 @@ export class TenantService {
     const tenantConnection = await this.databaseProvider.getConnection(
       tenant,
       true,
+      true,
     );
 
     const clientRepository = tenantConnection.getRepository(Client);
@@ -70,12 +71,9 @@ export class TenantService {
     const client = await clientRepository.save(clientDto);
     await userRepositorory.save(userTenant);
 
-    categories.forEach(async(category) => {
-      await categoriesRepository.save(category)     
-    })
-
-
-
+    categories.forEach(async (category) => {
+      await categoriesRepository.save(category);
+    });
 
     this.connection.close();
 
