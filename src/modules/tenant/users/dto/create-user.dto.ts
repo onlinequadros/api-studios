@@ -56,10 +56,10 @@ export class CreateUserDto {
   readonly birth_date: string;
 
   @IsString()
-  @IsIn(['client', 'system'])
+  @IsIn(['client', 'system', 'guest'])
   @ApiProperty({ default: 'client' })
   @Expose()
-  readonly user_type: 'client' | 'system';
+  readonly user_type: 'client' | 'system' | 'guest';
 
   @IsString()
   @MinLength(6)

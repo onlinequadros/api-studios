@@ -59,8 +59,8 @@ export class User {
   @Column({ nullable: true })
   is_active?: boolean;
 
-  @Column({ type: 'enum', enum: ['client', 'system'] })
-  user_type?: 'client' | 'system';
+  @Column({ type: 'enum', enum: ['client', 'system', 'guest'] })
+  user_type?: 'client' | 'system' | 'guest';
 
   @OneToMany(() => Address, (address) => address.user_id, {
     cascade: true,

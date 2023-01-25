@@ -18,7 +18,7 @@ export class DatabaseProvider {
     isTenant = false,
     isFirstConnection = false,
   ) {
-    return createConnection({
+    const connection = await createConnection({
       name: database,
       type: 'postgres',
       host: process.env.CMS_POSTGRES_HOST,
@@ -26,24 +26,28 @@ export class DatabaseProvider {
       username: process.env.CMS_POSTGRES_USER,
       password: process.env.CMS_POSTGRES_PASSWORD,
       database: database,
-      entities: isTenant
-        ? [
-            Client,
-            Address,
-            User,
-            Category,
-            ProductStudio,
-            ProductArtist,
-            ProductStudioPhoto,
-            Orders,
-            OrdersPhotos,
-            OrdersExtraItem,
-            OrdersExtraPhotos,
-            LinkSharing,
-          ]
-        : [],
+      entities:
+        isTenant && !isFirstConnection
+          ? [
+              Client,
+              Address,
+              User,
+              Category,
+              ProductStudio,
+              ProductArtist,
+              ProductStudioPhoto,
+              Orders,
+              OrdersPhotos,
+              OrdersExtraItem,
+              OrdersExtraPhotos,
+              LinkSharing,
+            ]
+          : [],
       ssl: false,
-      synchronize: isFirstConnection,
+      synchronize: false,
+      migrations: isTenant ? [process.env.CMS_POSTGRES_MIGRATION] : [],
     });
+    if (isTenant) await connection.runMigrations();
+    return connection;
   }
 }

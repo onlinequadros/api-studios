@@ -31,9 +31,10 @@ export class TenantService {
   constructor(private readonly databaseProvider: DatabaseProvider) {}
 
   async createTenant(tenant: string, clientDto: CreateCompanyDto) {
-    this.connection = await this.databaseProvider.getConnection(
-      process.env.CMS_POSTGRES_DB_NAME,
-    );
+    if (!this?.connection?.isConnected)
+      this.connection = await this.databaseProvider.getConnection(
+        process.env.CMS_POSTGRES_DB_NAME,
+      );
     const databaseExists = await this.connection.query(
       `SELECT datname FROM pg_database WHERE datname = '${tenant}'`,
     );
@@ -42,10 +43,17 @@ export class TenantService {
       await this.connection.query(`CREATE DATABASE ${tenant}`);
     }
 
-    const tenantConnection = await this.databaseProvider.getConnection(
+    let tenantConnection = await this.databaseProvider.getConnection(
       tenant,
       true,
       true,
+    );
+    await tenantConnection.close();
+
+    tenantConnection = await this.databaseProvider.getConnection(
+      tenant,
+      true,
+      // true,
     );
 
     const clientRepository = tenantConnection.getRepository(Client);
@@ -75,7 +83,7 @@ export class TenantService {
       await categoriesRepository.save(category);
     });
 
-    this.connection.close();
+    await this.connection.close();
 
     return client;
   }

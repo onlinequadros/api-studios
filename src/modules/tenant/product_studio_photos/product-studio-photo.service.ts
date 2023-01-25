@@ -1,3 +1,5 @@
+import * as Jimp from 'jimp';
+import * as fs from 'fs';
 import {
   BadGatewayException,
   Injectable,
@@ -120,6 +122,24 @@ export class ProductStudioPhotoService {
     }
   }
 
+  // FUNÇÃO PARA INCLUIR A MARDA D`AGUA NA IMAGEM ******************************
+  async waterMark(
+    wartermakPath: string,
+    sourcePath: string,
+    outputPath: string,
+  ) {
+    const watermark = await Jimp.read(wartermakPath);
+    // watermark = watermark.resize(320, 320); // para redimensionar a marca dágua
+    const image = await Jimp.read(sourcePath);
+    image.composite(watermark, 0, 0, {
+      mode: Jimp.BLEND_SOURCE_OVER,
+      opacityDest: 1,
+      opacitySource: 0.5,
+    });
+    await image.writeAsync(outputPath);
+  }
+
+  //FUNÇÃO PARA REALIZAR O UPLOAD DE IMAGENS DOS ESTÚDIOS PARA A APLICAÇÃO *****
   async uploadImages(images, products_id, category, request) {
     this.getProductStudioPhotoRepository();
 
@@ -129,17 +149,36 @@ export class ProductStudioPhotoService {
 
     let createPhotoStudioPhoto;
     try {
-      images['images'].forEach(async (element) => {
+      for (const element of images['images']) {
+        await fs.promises.mkdir('tmp', { recursive: true });
+        await fs.promises.writeFile(
+          `tmp/${element.originalname}`,
+          element.buffer,
+        );
+        await this.waterMark(
+          'src/assets/water-mark-list.png',
+          `tmp/${element.originalname}`,
+          `tmp/tagged-${element.originalname}`,
+        );
+        const buffer = await fs.promises.readFile(
+          `tmp/tagged-${element.originalname}`,
+        );
         const encryptedImageName =
           await this.encryptedService.encryptedImageName(element.originalname);
-
-        // Converte uma versão da imagem para webp
         const webpImage = await this.convertImageLowResolution(
-          element,
+          { buffer },
           encryptedImageName,
         );
-
-        //Upload versão alta resolução s3
+        await fs.promises.writeFile(
+          `tmp/${webpImage.originalname}`,
+          webpImage.buffer,
+        );
+        const { Location } = await this.awsS3Service.uploadLocalFileToBucket(
+          `tagged-images/${webpImage.originalname}`,
+          `tmp/${webpImage.originalname}`,
+          'image/webp',
+          true,
+        );
         const highResolutionImageUrl = await this.awsS3Service.uploadImage(
           company,
           category,
@@ -147,38 +186,26 @@ export class ProductStudioPhotoService {
           element,
           encryptedImageName,
         );
-
-        //Upload versão webp para o s3
-        const webpImageUrl = await this.awsS3Service.uploadImage(
-          company,
-          category,
-          slug,
-          webpImage,
-          webpImage.originalname,
-        );
-
         const id = webpImage.originalname.split('.')[0];
-
-        // cria as informações da imagem no banco
-        const newProductStudioPhoto =
-          await this.productStudioPhotoRepository.create({
-            id: id,
-            photo: encryptedImageName,
-            feature_photo: false,
-            url: highResolutionImageUrl,
-            low_resolution_image: webpImageUrl,
-            checked: false,
-            order: false,
-            product_photo_id: {
-              id: products_id,
-            },
-          });
+        const newProductStudioPhoto = this.productStudioPhotoRepository.create({
+          id: id,
+          photo: encryptedImageName,
+          feature_photo: false,
+          url: highResolutionImageUrl,
+          low_resolution_image: Location,
+          checked: false,
+          order: false,
+          product_photo_id: {
+            id: products_id,
+          },
+        });
 
         createPhotoStudioPhoto = await this.productStudioPhotoRepository.save(
           newProductStudioPhoto,
         );
-      });
+      }
 
+      await fs.promises.rmdir('tmp', { recursive: true });
       return plainToClass(ReadProductStudioPhotoDto, createPhotoStudioPhoto);
     } catch (err) {
       throw new BadGatewayException(err.message);

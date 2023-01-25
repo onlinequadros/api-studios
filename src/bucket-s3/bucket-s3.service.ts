@@ -217,7 +217,9 @@ export class BucketS3Service {
   public async uploadLocalFileToBucket(
     outputPath: string,
     sourcePath: string,
-  ): Promise<string> {
+    contentType?: string,
+    isPublic = false,
+  ): Promise<any> {
     return new Promise((resolve, reject) => {
       const file = [];
       const readStream = fs.createReadStream(sourcePath);
@@ -231,11 +233,22 @@ export class BucketS3Service {
             Key: outputPath,
             Body: Buffer.concat(file),
           };
+          if (isPublic) {
+            params['ACL'] = 'public-read';
+            params['ContentDisposition'] = 'inline';
+            params['CreateBucketConfiguration'] = {
+              LocationConstraint: 'ap-south-1',
+            };
+          }
+          if (contentType) params['ContentType'] = contentType;
+          console.log('params ', params);
           this.s3
             .upload(params)
             .promise()
-            .then(() => readStream.resume());
-          resolve(outputPath);
+            .then((data) => {
+              readStream.resume();
+              resolve({ filePath: outputPath, ...data });
+            });
         })
         .on('error', (e) => {
           reject(e);

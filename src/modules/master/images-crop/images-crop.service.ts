@@ -51,7 +51,7 @@ export class ImageCropService {
 
     if (responseCrop) {
       // PASSA A IMAGEM PARA O S3
-      const filePath = await this.bucketS3Service.uploadLocalFileToBucket(
+      const { filePath } = await this.bucketS3Service.uploadLocalFileToBucket(
         `images-cropped/${cropImage.id}.jpeg`,
         responseCrop,
       );

@@ -31,6 +31,9 @@ export class ProductStudioPhoto {
   @Column()
   checked: boolean;
 
+  @Column({ default: true })
+  visible: boolean;
+
   @Column()
   order: boolean;
 

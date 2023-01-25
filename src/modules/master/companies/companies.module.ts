@@ -84,25 +84,22 @@ export class CompaniesModule {
             `SELECT datname FROM pg_database WHERE datname = '${tenant.tenant_company}'`,
           );
 
-          if (!databaseExists.length) {
-            await this.connection.query(
-              `CREATE DATABASE ${tenant.tenant_company}`,
-            );
-          }
-          const createdConnection: Connection =
-            await this.databaseProvider.getConnection(
-              tenant.tenant_company,
-              true,
-              !databaseExists.length,
-            );
-          if (createdConnection) {
-            TenantProvider.connection = createdConnection;
-            next();
-          } else {
-            throw new BadRequestException(
-              'Falha na conexão com a database.',
-              'Houve um erro ao conectar com a base de dados!',
-            );
+          if (databaseExists.length) {
+            const createdConnection: Connection =
+              await this.databaseProvider.getConnection(
+                tenant.tenant_company,
+                true,
+                // !databaseExists.length,
+              );
+            if (createdConnection) {
+              TenantProvider.connection = createdConnection;
+              next();
+            } else {
+              throw new BadRequestException(
+                'Falha na conexão com a database.',
+                'Houve um erro ao conectar com a base de dados!',
+              );
+            }
           }
         }
       })
