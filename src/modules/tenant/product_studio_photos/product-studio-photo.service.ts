@@ -230,6 +230,16 @@ export class ProductStudioPhotoService {
     return await this.productStudioPhotoRepository.save(image);
   }
 
+  // FUNÇÃO PARA DEIXAR A IMAGEM VISÍVEL OU NÃO PARA O CONVIDADO ***************
+  async setOptionVisibleImage(id: string) {
+    this.getProductStudioPhotoRepository();
+
+    const image = await this.productStudioPhotoRepository.findOne(id);
+    image.visible = !image.visible;
+
+    return await this.productStudioPhotoRepository.save(image);
+  }
+
   async desableCoverPhoto(id: string): Promise<void> {
     this.getProductStudioPhotoRepository();
     const image = await this.productStudioPhotoRepository.findOne(id);

@@ -85,6 +85,11 @@ export class ProductStudioPhotoController {
     return await this.productStudioPhotoService.setCheckedOrder(checkImagesDTO);
   }
 
+  @Patch('/visible-image/:id')
+  async setVisibleImage(@Param('id') id: string) {
+    return await this.productStudioPhotoService.setOptionVisibleImage(id);
+  }
+
   @Delete()
   async delete(@Req() request: Request, @Body() data: RemoveImagesDTO) {
     return await this.productStudioPhotoService.delete(request, data);
