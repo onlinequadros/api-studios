@@ -8,12 +8,16 @@ import * as fs from 'fs';
 
 @Injectable()
 export class BucketS3Service {
-  private readonly s3;
+  private readonly s3: S3;
   constructor() {
     config.getCredentials(function (err) {
       if (err) console.log(err.stack);
     });
-    this.s3 = new S3();
+    this.s3 = new S3({
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      maxRetries: 4,
+    });
   }
 
   async uploadImage(company, category, product, image, encryptedName) {
@@ -98,9 +102,9 @@ export class BucketS3Service {
     };
 
     try {
-      const response = await this.s3.putObject(params).promise();
-      return response.Location;
+      return await this.s3.putObject(params).promise();
     } catch (error) {
+      console.error('DEBUG ERROR 02');
       throw new BadRequestException(
         MessagesHelper.FAILED_TO_CREATE_FOLDER,
         error.stack,
@@ -115,9 +119,9 @@ export class BucketS3Service {
     };
 
     try {
-      const response = await this.s3.deleteObject(params).promise();
-      return response.Location;
+      return await this.s3.deleteObject(params).promise();
     } catch (error) {
+      console.error('DEBUG ERROR 03');
       throw new BadRequestException(
         MessagesHelper.FAILED_REMOVED_FOLDER,
         error.stack,
@@ -134,8 +138,7 @@ export class BucketS3Service {
       },
     };
     try {
-      const response = await this.s3.deleteObjects(params).promise();
-      return response.data;
+      return await this.s3.deleteObjects(params).promise();
     } catch (error) {
       throw new BadRequestException(
         MessagesHelper.FAILED_REMOVE_IMAGES,
@@ -147,24 +150,34 @@ export class BucketS3Service {
   private async getObject(outputDir: string, uri: string, fileName: string) {
     try {
       const { bucket, key } = AmazonS3URI(uri);
+
       if (bucket && key) {
         const params = {
           Bucket: bucket,
           Key: key,
         };
-        const readStream = this.s3.getObject(params).createReadStream();
+        const readStream = this.s3
+          .getObject(params, (error) => {
+            if (error) {
+              throw error;
+            }
+          })
+          .createReadStream();
         return new Promise((resolve, reject) => {
           fs.mkdirSync(`tmp/${outputDir}`, { recursive: true });
           const writeStream = fs.createWriteStream(
             `tmp/${outputDir}/${fileName}`,
           );
           readStream.pipe(writeStream);
-          writeStream.on('error', (e) => reject(e));
+          writeStream.on('error', (e) => {
+            console.error('DEBUG ERROR GETOBJECT');
+            reject(e);
+          });
           writeStream.on('close', (data) => {
             resolve(data);
           });
         });
-      }
+      } //photovida/Treinamento/fotografias-top-plus/75c844eb-cc41-4981-b837-b31c990b0d18.jpg
     } catch (error) {
       throw new BadRequestException(
         MessagesHelper.FAILED_GET_FILE,
@@ -178,15 +191,14 @@ export class BucketS3Service {
       await this.getObject(outputDir, file.url, file.name || file.photo);
     }
     await this.zipDirectory(`tmp/${outputDir}`);
-    const path = await this.uploadLocalFileToBucket(
-      `zip/photos/photos-${new Date().getTime()}`,
+    const { filePath } = await this.uploadLocalFileToBucket(
+      `zip/photos/photos-${new Date().getTime()}.zip`,
       `tmp/${outputDir}.zip`,
     );
 
     //deletar a pasta temp
-    await fs.promises.rmdir(`tmp`, { recursive: true });
-
-    return this.getSignedUrl(path);
+    await fs.promises.rm(`tmp`, { recursive: true });
+    return this.getSignedUrl(filePath);
   }
 
   public async getSignedUrl(file: string) {
@@ -241,7 +253,6 @@ export class BucketS3Service {
             };
           }
           if (contentType) params['ContentType'] = contentType;
-          console.log('params ', params);
           this.s3
             .upload(params)
             .promise()

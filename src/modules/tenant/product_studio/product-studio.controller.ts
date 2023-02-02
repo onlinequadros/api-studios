@@ -38,6 +38,14 @@ export class ProductStudioController {
     return this.productStudioService.findOne(slug);
   }
 
+  @Get('/images/:slug')
+  // @UseGuards(JwtAuthGuard)
+  async findImagesProduct(
+    @Param('slug') slug: string,
+  ): Promise<ReadProductStudioDto> {
+    return this.productStudioService.findImages(slug);
+  }
+
   @Get('/product/:id')
   // @UseGuards(JwtAuthGuard)
   async findOneProduct(@Param('id') id: string) {
@@ -70,6 +78,18 @@ export class ProductStudioController {
     return this.productStudioService.updateOneProduct(
       slug,
       updateProductStudio,
+    );
+  }
+
+  @Patch('/amount-extra-photos/:slug')
+  // @UseGuards(JwtAuthGuard)
+  async updateAmountExtraPhotosProduct(
+    @Param('slug') slug: string,
+    @Body() updateAmountExtraPhoto: { amount_extra_photos: number },
+  ) {
+    return this.productStudioService.updateAmountExtraPhotos(
+      slug,
+      updateAmountExtraPhoto,
     );
   }
 

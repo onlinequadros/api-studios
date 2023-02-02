@@ -94,6 +94,22 @@ export class ProductStudioService {
     return plainToClass(ReadProductStudioDto, product);
   }
 
+  // FUNÇÃO PARA BUSCAR AS IMAGENS DE UM PRODUTO
+  async findImages(slug: string): Promise<ReadProductStudioDto> {
+    this.getProductStudioRepository();
+    const product = await this.productStudioRepository.findOne({
+      where: { slug },
+      relations: ['product_studio_photo'],
+      select: ['id', 'amount_photos', 'product_studio_photo'],
+    });
+
+    if (!product) {
+      throw new NotFoundException(MessagesHelper.PRODUCT_NOT_FOUND);
+    }
+
+    return plainToClass(ReadProductStudioDto, product);
+  }
+
   async findById(id: string): Promise<ReadProductStudioDto> {
     this.getProductStudioRepository();
     const product = await this.productStudioRepository.findOne({
@@ -233,6 +249,31 @@ export class ProductStudioService {
     }
 
     const productModify = Object.assign(product, updateProductStudio);
+
+    const productUpdatted = await this.productStudioRepository.save(
+      productModify,
+    );
+
+    return plainToClass(ReadProductStudioDto, productUpdatted);
+  }
+
+  async updateAmountExtraPhotos(
+    slug: string,
+    updateAmountExtraPhoto: { amount_extra_photos: number },
+  ): Promise<ReadProductStudioDto> {
+    this.getProductStudioRepository();
+    const product = await this.productStudioRepository.findOne({
+      where: { slug: slug },
+    });
+
+    if (!product) {
+      throw new NotFoundException(MessagesHelper.PRODUCT_NOT_FOUND);
+    }
+
+    const productModify = Object.assign(product, {
+      ...product,
+      amount_extra_photos: updateAmountExtraPhoto.amount_extra_photos,
+    });
 
     const productUpdatted = await this.productStudioRepository.save(
       productModify,

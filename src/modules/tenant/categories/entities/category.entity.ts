@@ -15,6 +15,9 @@ export class Category {
   @Column()
   name: string;
 
+  @Column()
+  sku: string;
+
   @CreateDateColumn()
   created_at: Date;
 

@@ -79,7 +79,6 @@ export class CreateProductStudioDto {
   readonly amount_extra_photos: number;
 
   @IsString()
-  @IsNotEmpty()
   @ApiProperty({ default: 'Valor pelas fotos extras' })
   @Expose()
   readonly price_extra_photos: string;
@@ -103,19 +102,16 @@ export class CreateProductStudioDto {
   readonly full_fotos: number;
 
   @IsString()
-  @IsNotEmpty()
   @ApiProperty({ default: 'Valor do desconto de um terço das fotos' })
   @Expose()
   readonly discount_one_third_photos: string;
 
   @IsString()
-  @IsNotEmpty()
   @ApiProperty({ default: 'Valor do desconto de dois terço das fotos' })
   @Expose()
   readonly discount_two_third_photos: string;
 
   @IsString()
-  @IsNotEmpty()
   @ApiProperty({ default: 'Valor do desconto de todas as fotos' })
   @Expose()
   readonly discount_full_photos: string;

@@ -10,29 +10,17 @@ import { CompanyRepository } from './repositories/companies.repository';
 import { CompaniesController } from './companies.controller';
 import { CompaniesService } from './companies.service';
 import { MailsModule } from '../mails/mail.module';
-import { Connection, createConnection, getConnection } from 'typeorm';
+import { Connection, getConnection } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { NextFunction, Request, Response } from 'express';
-import { Client } from '../../tenant/clients/entities/client.entity';
-import { Address } from '../../tenant/address/entities/address.entity';
-import { User } from '../../tenant/users/entities/user.entity';
 import { TenantProvider } from '../../tenant/tenant.provider';
 import { TenantService } from '../../../modules/tenant/tenant.service';
 import { DatabaseProvider } from '../../../modules/shared/database/database.provider';
 import { AddressService } from '../../../modules/tenant/address/address.service';
-import { Category } from '../../../modules/tenant/categories/entities/category.entity';
 import { forwardRef } from '@nestjs/common';
 import { ClientModule } from '../../../modules/tenant/clients/client.module';
-import { ProductStudio } from '../../../modules/tenant/product_studio/entity/product-studio.entity';
-import { ProductArtist } from '../../../modules/tenant/product_artist/entity/product-artist.entity';
-import { ProductStudioPhoto } from '../../../modules/tenant/product_studio_photos/entities/product-studio-photo.entity';
 import { BucketS3Service } from '../../../bucket-s3/bucket-s3.service';
 import { EncryptedService } from '../../../modules/utils/encrypted.service';
-import { Orders } from '../../../modules/tenant/orders/entities/orders.entity';
-import { OrdersPhotos } from '../../../modules/tenant/orders/entities/ordersPhotos.entity';
-import { OrdersExtraPhotos } from '../../../modules/tenant/orders/entities/orders_extra_photos.entity';
-import { OrdersExtraItem } from '../../../modules/tenant/orders/entities/orders-extra-item.entity';
-import { LinkSharing } from '../../tenant/link_sharing/entity/link-sharing.entity';
 
 @Module({
   imports: [

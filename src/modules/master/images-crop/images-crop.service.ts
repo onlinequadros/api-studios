@@ -27,7 +27,7 @@ export class ImageCropService {
     }
   }
 
-  async cropImage(cropImage: CropImageCut): Promise<void> {
+  async cropImage(cropImage: CropImageCut): Promise<string> {
     await this.getProductStudioPhotoRepository(cropImage.studio);
 
     const paramsCrop: IParams = JSON.parse(cropImage.params);

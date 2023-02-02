@@ -52,17 +52,33 @@ export class ProductStudioPhotoService {
     );
   }
 
-  async getImagesZipUrl(studio: string) {
+  async getImagesZipUrl(studio: string, usertype: string) {
     this.getProductStudioPhotoRepository();
-    const productsStudioPhotos = await this.productStudioPhotoRepository.find({
-      where: {
-        checked: true,
-        order: true,
-      },
-      select: ['id', 'url', 'photo'],
-    });
 
-    return this.awsS3Service.zipFiles(studio, productsStudioPhotos);
+    if (usertype === 'guest') {
+      const productsStudioPhotosGuest =
+        await this.productStudioPhotoRepository.find({
+          where: {
+            checked: true,
+            order: true,
+            visible: true,
+          },
+          select: ['id', 'url', 'photo'],
+        });
+      return this.awsS3Service.zipFiles(studio, productsStudioPhotosGuest);
+    }
+
+    if (usertype === 'client') {
+      const productsStudioPhotosClient =
+        await this.productStudioPhotoRepository.find({
+          where: {
+            checked: true,
+            order: true,
+          },
+          select: ['id', 'url', 'photo'],
+        });
+      return this.awsS3Service.zipFiles(studio, productsStudioPhotosClient);
+    }
   }
 
   async findAllImagesHigh(imgIds: string[]): Promise<any[]> {
@@ -134,7 +150,7 @@ export class ProductStudioPhotoService {
     image.composite(watermark, 0, 0, {
       mode: Jimp.BLEND_SOURCE_OVER,
       opacityDest: 1,
-      opacitySource: 0.5,
+      opacitySource: 0.7,
     });
     await image.writeAsync(outputPath);
   }
