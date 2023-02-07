@@ -44,7 +44,7 @@ export class CompaniesController {
       complement: '',
       cpf: '61520609078',
       district: 'Centro',
-      email: 'admin@gmail.com',
+      email: 'everton@onlinequadros.com.br',
       lastname: 'Online Quadros',
       login_notification: true,
       name: 'Nilton',
