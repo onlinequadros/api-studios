@@ -225,7 +225,7 @@ export class ProductStudioPhotoService {
         );
       }
 
-      await fs.promises.rmdir('tmp', { recursive: true });
+      await fs.promises.rm('tmp', { recursive: true });
       return plainToClass(ReadProductStudioPhotoDto, createPhotoStudioPhoto);
     } catch (err) {
       throw new BadGatewayException(err.message);
