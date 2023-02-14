@@ -1,5 +1,6 @@
 import * as Jimp from 'jimp';
 import * as fs from 'fs';
+import * as webpConverter from 'webp-converter';
 import {
   BadGatewayException,
   Injectable,
@@ -144,15 +145,22 @@ export class ProductStudioPhotoService {
     sourcePath: string,
     outputPath: string,
   ) {
-    const watermark = await Jimp.read(wartermakPath);
-    // watermark = watermark.resize(320, 320); // para redimensionar a marca dágua
-    const image = await Jimp.read(sourcePath);
-    image.composite(watermark, 0, 0, {
-      mode: Jimp.BLEND_SOURCE_OVER,
-      opacityDest: 1,
-      opacitySource: 0.7,
-    });
-    await image.writeAsync(outputPath);
+    try {
+      await sharp(sourcePath)
+        .composite([
+          {
+            input: wartermakPath,
+            top: 0,
+            left: 0,
+            blend: 'over',
+            tile: true,
+          },
+        ])
+        .webp()
+        .toFile(outputPath);
+    } catch (err) {
+      console.log('error do watermark ', err);
+    }
   }
 
   //FUNÇÃO PARA REALIZAR O UPLOAD DE IMAGENS DOS ESTÚDIOS PARA A APLICAÇÃO *****
@@ -171,27 +179,17 @@ export class ProductStudioPhotoService {
           `tmp/${element.originalname}`,
           element.buffer,
         );
-        await this.waterMark(
-          'src/assets/water-mark-list.png',
-          `tmp/${element.originalname}`,
-          `tmp/tagged-${element.originalname}`,
-        );
-        const buffer = await fs.promises.readFile(
-          `tmp/tagged-${element.originalname}`,
-        );
         const encryptedImageName =
           await this.encryptedService.encryptedImageName(element.originalname);
-        const webpImage = await this.convertImageLowResolution(
-          { buffer },
-          encryptedImageName,
-        );
-        await fs.promises.writeFile(
-          `tmp/${webpImage.originalname}`,
-          webpImage.buffer,
+        const fileName = `${encryptedImageName.split('.jpg')}.webp`;
+        await this.waterMark(
+          'src/assets/watermark.png',
+          `tmp/${element.originalname}`,
+          `tmp/${fileName}`,
         );
         const { Location } = await this.awsS3Service.uploadLocalFileToBucket(
-          `tagged-images/${webpImage.originalname}`,
-          `tmp/${webpImage.originalname}`,
+          `tagged-images/${fileName}`,
+          `tmp/${fileName}`,
           'image/webp',
           true,
         );
@@ -202,7 +200,7 @@ export class ProductStudioPhotoService {
           element,
           encryptedImageName,
         );
-        const id = webpImage.originalname.split('.')[0];
+        const id = fileName.split('.')[0];
         const newProductStudioPhoto = this.productStudioPhotoRepository.create({
           id: id,
           photo: encryptedImageName,
@@ -215,13 +213,12 @@ export class ProductStudioPhotoService {
             id: products_id,
           },
         });
-
         createPhotoStudioPhoto = await this.productStudioPhotoRepository.save(
           newProductStudioPhoto,
         );
       }
 
-      await fs.promises.rmdir('tmp', { recursive: true });
+      // await fs.promises.rmdir('tmp', { recursive: true });
       return plainToClass(ReadProductStudioPhotoDto, createPhotoStudioPhoto);
     } catch (err) {
       throw new BadGatewayException(err.message);

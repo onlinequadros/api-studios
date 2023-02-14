@@ -1,8 +1,7 @@
 import * as Jimp from 'jimp';
 import * as JPEG from 'jpeg-js';
 
-Jimp.decoders['image/jpeg'] = (data: Buffer) =>
-  JPEG.decode(data, { maxMemoryUsageInMB: 1024 });
+Jimp.decoders['image/jpeg'] = (data: Buffer) => JPEG.decode(data);
 
 const crop = async (
   id: string,
