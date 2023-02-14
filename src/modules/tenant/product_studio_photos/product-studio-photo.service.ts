@@ -1,6 +1,7 @@
 import * as Jimp from 'jimp';
 import * as fs from 'fs';
 import * as webpConverter from 'webp-converter';
+import * as bufferImageSize from 'buffer-image-size';
 import {
   BadGatewayException,
   Injectable,
@@ -23,6 +24,7 @@ import { CheckImagesDTO } from './dto/check.dto';
 import * as sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
 import { ImagesService } from '../../../modules/utils/images.service';
+import { checkWaterMark } from 'src/modules/utils/checkWaterMark';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 @Injectable({ scope: Scope.REQUEST })
@@ -156,7 +158,7 @@ export class ProductStudioPhotoService {
             tile: true,
           },
         ])
-        .webp()
+        .webp({ quality: 90 })
         .toFile(outputPath);
     } catch (err) {
       console.log('error do watermark ', err);
@@ -182,11 +184,16 @@ export class ProductStudioPhotoService {
         const encryptedImageName =
           await this.encryptedService.encryptedImageName(element.originalname);
         const fileName = `${encryptedImageName.split('.jpg')}.webp`;
+
+        const imageSize = bufferImageSize(element.buffer);
+        const waterMarkImage = checkWaterMark(imageSize);
+
         await this.waterMark(
-          'src/assets/watermark.png',
+          `src/assets/${waterMarkImage}.png`,
           `tmp/${element.originalname}`,
           `tmp/${fileName}`,
         );
+
         const { Location } = await this.awsS3Service.uploadLocalFileToBucket(
           `tagged-images/${fileName}`,
           `tmp/${fileName}`,
@@ -218,7 +225,7 @@ export class ProductStudioPhotoService {
         );
       }
 
-      // await fs.promises.rmdir('tmp', { recursive: true });
+      await fs.promises.rmdir('tmp', { recursive: true });
       return plainToClass(ReadProductStudioPhotoDto, createPhotoStudioPhoto);
     } catch (err) {
       throw new BadGatewayException(err.message);
