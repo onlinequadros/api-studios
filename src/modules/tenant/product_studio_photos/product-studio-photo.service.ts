@@ -1,6 +1,4 @@
-import * as Jimp from 'jimp';
 import * as fs from 'fs';
-import * as webpConverter from 'webp-converter';
 import * as bufferImageSize from 'buffer-image-size';
 import {
   BadGatewayException,
@@ -17,12 +15,10 @@ import { ProductStudioPhoto } from './entities/product-studio-photo.entity';
 import { EncryptedService } from '../../../modules/utils/encrypted.service';
 import { checkCompany } from '../../../modules/utils/checkCompany';
 import { ProductStudioService } from '../product_studio/product-studio.service';
-import { ReadProductStudioDto } from '../product_studio/dtos';
 import { SetCoverPhotoDTO } from '../product_studio/dtos/setCoverPhoto.dto';
 import { RemoveImagesDTO } from './dto/remove-images.dto';
 import { CheckImagesDTO } from './dto/check.dto';
 import * as sharp from 'sharp';
-import { v4 as uuidv4 } from 'uuid';
 import { ImagesService } from '../../../modules/utils/images.service';
 import { checkWaterMark } from 'src/modules/utils/checkWaterMark';
 
@@ -161,7 +157,7 @@ export class ProductStudioPhotoService {
         .webp({ quality: 90 })
         .toFile(outputPath);
     } catch (err) {
-      console.log('error do watermark ', err);
+      throw new BadGatewayException('error do watermark ');
     }
   }
 
@@ -200,6 +196,7 @@ export class ProductStudioPhotoService {
           'image/webp',
           true,
         );
+
         const highResolutionImageUrl = await this.awsS3Service.uploadImage(
           company,
           category,
@@ -207,6 +204,7 @@ export class ProductStudioPhotoService {
           element,
           encryptedImageName,
         );
+
         const id = fileName.split('.')[0];
         const newProductStudioPhoto = this.productStudioPhotoRepository.create({
           id: id,
