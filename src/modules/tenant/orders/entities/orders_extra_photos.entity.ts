@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  JoinColumn,
+} from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { Orders } from './orders.entity';
 
@@ -28,7 +34,7 @@ export class OrdersExtraPhotos {
   @ManyToOne(() => Orders, (order) => order.orders_extra_photos, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
-    orphanedRowAction: 'delete'
+    orphanedRowAction: 'delete',
   })
   order_id?: Orders;
 

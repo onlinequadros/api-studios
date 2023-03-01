@@ -16,7 +16,7 @@ services:
   app:
     build: .
     container_name: api_online_quadros   
-    command: npm run start:prod 
+    command: npm run start:dev 
     restart: always
     volumes: 
       - .:/usr/src/app

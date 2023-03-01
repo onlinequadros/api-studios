@@ -1,10 +1,15 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class initialMigragion1675092179176 implements MigrationInterface {
-  name = 'initialMigragion1675092179176';
+export class InitialMigrationDatabases1677278358822
+  implements MigrationInterface
+{
+  name = 'InitialMigrationDatabases1677278358822';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
+    await queryRunner.query(
+      `CREATE TABLE "category" ("id" character varying NOT NULL, "name" character varying NOT NULL, "sku" character varying NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_9c4e4a89e3674fc9f382d733f03" PRIMARY KEY ("id"))`,
+    );
     await queryRunner.query(
       `CREATE TABLE "productstudiophotos" ("id" character varying NOT NULL, "photo" character varying NOT NULL, "feature_photo" boolean, "url" character varying NOT NULL, "low_resolution_image" character varying NOT NULL, "checked" boolean NOT NULL, "visible" boolean NOT NULL DEFAULT true, "order" boolean NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "product_photo_id" character varying, CONSTRAINT "PK_32a391b4e2ee95a25d96fe7d2a7" PRIMARY KEY ("id"))`,
     );
@@ -22,9 +27,6 @@ export class initialMigragion1675092179176 implements MigrationInterface {
     );
     await queryRunner.query(
       `CREATE TABLE "address" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "address_name" character varying NOT NULL, "number" character varying NOT NULL, "district" character varying NOT NULL, "city" character varying NOT NULL, "uf" character varying NOT NULL, "cep" character varying NOT NULL, "complement" character varying, "favorite" boolean NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "user_id" character varying, CONSTRAINT "PK_d92de1f82754668b5f5f5dd4fd5" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "category" ("id" character varying NOT NULL, "name" character varying NOT NULL, "sku" character varying NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_9c4e4a89e3674fc9f382d733f03" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TYPE "public"."client_segment_enum" AS ENUM('Studio', 'Artista')`,
@@ -127,12 +129,12 @@ export class initialMigragion1675092179176 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "linksharing"`);
     await queryRunner.query(`DROP TABLE "client"`);
     await queryRunner.query(`DROP TYPE "public"."client_segment_enum"`);
-    await queryRunner.query(`DROP TABLE "category"`);
     await queryRunner.query(`DROP TABLE "address"`);
     await queryRunner.query(`DROP TABLE "users"`);
     await queryRunner.query(`DROP TYPE "public"."users_user_type_enum"`);
     await queryRunner.query(`DROP TABLE "productstudio"`);
     await queryRunner.query(`DROP TYPE "public"."productstudio_type_enum"`);
     await queryRunner.query(`DROP TABLE "productstudiophotos"`);
+    await queryRunner.query(`DROP TABLE "category"`);
   }
 }
