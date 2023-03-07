@@ -1,15 +1,10 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class InitialMigrationDatabases1677278358822
-  implements MigrationInterface
-{
-  name = 'InitialMigrationDatabases1677278358822';
+export class initialMigration1677844957909 implements MigrationInterface {
+  name = 'initialMigration1677844957909';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
-    await queryRunner.query(
-      `CREATE TABLE "category" ("id" character varying NOT NULL, "name" character varying NOT NULL, "sku" character varying NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_9c4e4a89e3674fc9f382d733f03" PRIMARY KEY ("id"))`,
-    );
     await queryRunner.query(
       `CREATE TABLE "productstudiophotos" ("id" character varying NOT NULL, "photo" character varying NOT NULL, "feature_photo" boolean, "url" character varying NOT NULL, "low_resolution_image" character varying NOT NULL, "checked" boolean NOT NULL, "visible" boolean NOT NULL DEFAULT true, "order" boolean NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "product_photo_id" character varying, CONSTRAINT "PK_32a391b4e2ee95a25d96fe7d2a7" PRIMARY KEY ("id"))`,
     );
@@ -27,6 +22,9 @@ export class InitialMigrationDatabases1677278358822
     );
     await queryRunner.query(
       `CREATE TABLE "address" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "address_name" character varying NOT NULL, "number" character varying NOT NULL, "district" character varying NOT NULL, "city" character varying NOT NULL, "uf" character varying NOT NULL, "cep" character varying NOT NULL, "complement" character varying, "favorite" boolean NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "user_id" character varying, CONSTRAINT "PK_d92de1f82754668b5f5f5dd4fd5" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "category" ("id" character varying NOT NULL, "name" character varying NOT NULL, "sku" character varying NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_9c4e4a89e3674fc9f382d733f03" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TYPE "public"."client_segment_enum" AS ENUM('Studio', 'Artista')`,
@@ -57,6 +55,15 @@ export class InitialMigrationDatabases1677278358822
     );
     await queryRunner.query(
       `CREATE TABLE "productartist" ("id" character varying NOT NULL, "type" "public"."productartist_type_enum" NOT NULL, "name" character varying NOT NULL, "category" character varying NOT NULL, "client_user" character varying array, "sku_father" character varying NOT NULL, "slug" character varying NOT NULL, "tags" character varying array, "photo" character varying, "price" character varying NOT NULL, "feature_photo" boolean NOT NULL, "url" character varying, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_cfb995ad7e6d480ae12c9adf604" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."wallets_status_enum" AS ENUM('INVALID', 'BLOCKED', 'DISPONIBLE')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."wallets_payment_enum" AS ENUM('ACCOMPLISHED', 'BLOCKED')`,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "wallets" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "order_id" character varying NOT NULL, "product_id" character varying NOT NULL, "status" "public"."wallets_status_enum" NOT NULL, "value" character varying NOT NULL, "payment" "public"."wallets_payment_enum" NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_8402e5df5a30a229380e83e4f7e" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "productstudio_users_users" ("productstudioId" character varying NOT NULL, "usersId" character varying NOT NULL, CONSTRAINT "PK_beb368da7c4314f51cff3d00316" PRIMARY KEY ("productstudioId", "usersId"))`,
@@ -119,6 +126,9 @@ export class InitialMigrationDatabases1677278358822
       `DROP INDEX "public"."IDX_2a843a969140ff2c573db2b3c8"`,
     );
     await queryRunner.query(`DROP TABLE "productstudio_users_users"`);
+    await queryRunner.query(`DROP TABLE "wallets"`);
+    await queryRunner.query(`DROP TYPE "public"."wallets_payment_enum"`);
+    await queryRunner.query(`DROP TYPE "public"."wallets_status_enum"`);
     await queryRunner.query(`DROP TABLE "productartist"`);
     await queryRunner.query(`DROP TYPE "public"."productartist_type_enum"`);
     await queryRunner.query(`DROP TABLE "orders_extra_photos"`);
@@ -129,12 +139,12 @@ export class InitialMigrationDatabases1677278358822
     await queryRunner.query(`DROP TABLE "linksharing"`);
     await queryRunner.query(`DROP TABLE "client"`);
     await queryRunner.query(`DROP TYPE "public"."client_segment_enum"`);
+    await queryRunner.query(`DROP TABLE "category"`);
     await queryRunner.query(`DROP TABLE "address"`);
     await queryRunner.query(`DROP TABLE "users"`);
     await queryRunner.query(`DROP TYPE "public"."users_user_type_enum"`);
     await queryRunner.query(`DROP TABLE "productstudio"`);
     await queryRunner.query(`DROP TYPE "public"."productstudio_type_enum"`);
     await queryRunner.query(`DROP TABLE "productstudiophotos"`);
-    await queryRunner.query(`DROP TABLE "category"`);
   }
 }

@@ -24,6 +24,7 @@ import { ShippingModule } from './modules/tenant/shipping/shipping.module';
 import { LinkSharingModule } from './modules/tenant/link_sharing/link-sharing.module';
 import { ImagesCropModule } from './modules/master/images-crop/images-crop.module';
 import { FinanceModule } from './modules/tenant/finances/finance.module';
+import { WalletProfessionalModule } from './modules/tenant/wallet/wallet.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { FinanceModule } from './modules/tenant/finances/finance.module';
     LinkSharingModule,
     ImagesCropModule,
     FinanceModule,
+    WalletProfessionalModule,
   ],
   controllers: [],
   providers: [],

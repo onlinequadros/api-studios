@@ -11,6 +11,7 @@ import { OrdersPhotos } from '../../../modules/tenant/orders/entities/ordersPhot
 import { OrdersExtraItem } from '../../../modules/tenant/orders/entities/orders-extra-item.entity';
 import { OrdersExtraPhotos } from '../../../modules/tenant/orders/entities/orders_extra_photos.entity';
 import { LinkSharing } from '../../tenant/link_sharing/entity/link-sharing.entity';
+import { Wallet } from '../../tenant/wallet/entities/wallet.entity';
 
 export class DatabaseProvider {
   async getConnection(
@@ -41,6 +42,7 @@ export class DatabaseProvider {
               OrdersExtraItem,
               OrdersExtraPhotos,
               LinkSharing,
+              Wallet,
             ]
           : [],
       ssl: false,

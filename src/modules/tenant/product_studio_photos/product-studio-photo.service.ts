@@ -205,7 +205,7 @@ export class ProductStudioPhotoService {
           encryptedImageName,
         );
 
-        const id = fileName.split('.')[0];
+        const id = fileName.split(',')[0];
         const newProductStudioPhoto = this.productStudioPhotoRepository.create({
           id: id,
           photo: encryptedImageName,
