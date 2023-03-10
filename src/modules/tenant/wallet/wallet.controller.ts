@@ -1,6 +1,14 @@
-import { Body, Controller, Get, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { Request } from 'express';
 import { WalletsProfessionalService } from './wallet.service';
 import { IResponseWalletsData } from './interfaces/wallets.interface';
 import { CreateWalletDto, ReadWalletDto, UpdateWalletDto } from './dtos';
@@ -12,7 +20,7 @@ export class WalletsProfessionalController {
   ) {}
 
   @Get()
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async findAll(
     @Query('limit') limit: number,
     @Query('page') page: number,
@@ -22,14 +30,20 @@ export class WalletsProfessionalController {
   }
 
   @Post()
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async create(@Body() wallet: CreateWalletDto): Promise<ReadWalletDto> {
     return this.walletProfessionalService.create(wallet);
   }
 
   @Put()
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async update(@Body() wallet: UpdateWalletDto): Promise<ReadWalletDto> {
     return this.walletProfessionalService.update(wallet);
+  }
+
+  @Patch('/payment')
+  @UseGuards(JwtAuthGuard)
+  async pathPayment(@Body() wallet: UpdateWalletDto): Promise<ReadWalletDto> {
+    return this.walletProfessionalService.pathPayment(wallet);
   }
 }

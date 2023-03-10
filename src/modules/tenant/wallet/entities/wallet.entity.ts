@@ -24,7 +24,7 @@ export class Wallet {
   @Column()
   value: string;
 
-  @Column({ type: 'enum', enum: ['ACCOMPLISHED', 'BLOCKED'] })
+  @Column({ type: 'enum', enum: ['ACCOMPLISHED', 'BLOCKED', 'AWAITRELEASE'] })
   payment: string;
 
   @CreateDateColumn()

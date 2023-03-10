@@ -126,4 +126,31 @@ export class WalletsProfessionalService {
       throw new BadGatewayException(err.message);
     }
   }
+
+  // FUNÇÃO PARA SOLICITAR UM SAQUE NO ESTADO DA CARTEIRA
+  async pathPayment(updateWalletDTO: UpdateWalletDto): Promise<ReadWalletDto> {
+    this.getWalletProfessionalRepository();
+    try {
+      const wallet = await this.walletProfessionalRepository.findOne({
+        where: { id: updateWalletDTO.id },
+      });
+
+      if (!wallet) {
+        throw new NotFoundException('Ordem não encontrada para essa carteira.');
+      }
+
+      wallet.payment = updateWalletDTO.payment;
+
+      const newWallet = Object.assign(wallet, {
+        payment: updateWalletDTO.payment,
+      });
+
+      const updateWallet = await this.walletProfessionalRepository.save(
+        newWallet,
+      );
+      return plainToInstance(ReadWalletDto, updateWallet);
+    } catch (err) {
+      throw new BadGatewayException(err.message);
+    }
+  }
 }

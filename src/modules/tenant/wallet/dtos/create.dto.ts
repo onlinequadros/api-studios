@@ -29,8 +29,8 @@ export class CreateWalletDto {
   readonly value: string;
 
   @IsString()
-  @IsIn(['ACCOMPLISHED', 'BLOCKED'])
+  @IsIn(['ACCOMPLISHED', 'BLOCKED', 'AWAITRELEASE'])
   @ApiProperty({ default: 'Autorização de pagamento' })
   @Expose()
-  readonly payment: 'ACCOMPLISHED' | 'BLOCKED';
+  readonly payment: 'ACCOMPLISHED' | 'BLOCKED' | 'AWAITRELEASE';
 }
