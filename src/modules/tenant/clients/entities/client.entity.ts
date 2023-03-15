@@ -99,6 +99,27 @@ export class Client {
   @Column({ nullable: true })
   is_active?: string;
 
+  @Column({ type: 'enum', enum: ['CORRENTE', 'POUPANCA'] })
+  type_account_bank: 'CORRENTE' | 'POUPANCA';
+
+  @Column()
+  name_bank: string;
+
+  @Column()
+  agency_bank: string;
+
+  @Column()
+  digit_agency_bank: string;
+
+  @Column()
+  account_bank: string;
+
+  @Column()
+  digit_account_bank: string;
+
+  @Column()
+  account_pix_bank: string;
+
   @CreateDateColumn()
   created_at: Date;
 

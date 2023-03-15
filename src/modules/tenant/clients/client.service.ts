@@ -13,6 +13,7 @@ import { Client } from './entities/client.entity';
 import { TenantProvider } from '../tenant.provider';
 import { ClientRepository } from './repository/client.repository';
 import { UpdateClientDTO } from './dto/updateClient.dto';
+import { AccountBankData } from './interfaces';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 
@@ -44,6 +45,67 @@ export class ClientService {
     this.getConnectionClient();
     const clients = await this.clientConnectionRepository.find();
     return { segment: clients?.[0].segment };
+  }
+
+  // RETORNA OS DADOS BANCÁRIOS DO CLIENTE
+  async findAccountClient(): Promise<AccountBankData[]> {
+    this.getConnectionClient();
+    const clients = await this.clientConnectionRepository.find({
+      select: [
+        'id',
+        'type_account_bank',
+        'name_bank',
+        'agency_bank',
+        'digit_agency_bank',
+        'account_bank',
+        'digit_account_bank',
+        'account_pix_bank',
+      ],
+    });
+
+    return clients;
+  }
+
+  // RETORNA OS DADOS BANCÁRIOS DO CLIENTE
+  async updateAccountClient(
+    account: AccountBankData,
+  ): Promise<AccountBankData> {
+    this.getConnectionClient();
+    const clients = await this.clientConnectionRepository.findOne({
+      where: { id: account.id },
+    });
+
+    if (!clients) {
+      throw new NotFoundException('Cliente não encontrado');
+    }
+
+    const newAccountClient = Object.assign(clients, {
+      ...clients,
+      type_account_bank: account.type_account_bank,
+      name_bank: account.name_bank,
+      agency_bank: account.agency_bank,
+      digit_agency_bank: account.digit_agency_bank,
+      account_bank: account.account_bank,
+      digit_account_bank: account.digit_account_bank,
+      account_pix_bank: account.account_pix_bank,
+    });
+
+    const updateAccountClient = await this.clientConnectionRepository.save(
+      newAccountClient,
+    );
+
+    const responseAccountClient: AccountBankData = {
+      id: updateAccountClient.id,
+      type_account_bank: updateAccountClient.type_account_bank,
+      name_bank: updateAccountClient.name_bank,
+      agency_bank: updateAccountClient.agency_bank,
+      digit_agency_bank: updateAccountClient.digit_agency_bank,
+      account_bank: updateAccountClient.digit_agency_bank,
+      digit_account_bank: updateAccountClient.digit_account_bank,
+      account_pix_bank: updateAccountClient.account_pix_bank,
+    };
+
+    return responseAccountClient;
   }
 
   // CRIA UM CLIENT

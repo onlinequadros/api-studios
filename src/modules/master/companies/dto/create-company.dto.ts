@@ -119,11 +119,48 @@ export class CreateCompanyDto {
   @ApiProperty({ default: 'true' })
   login_notification: boolean;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn(['CORRENTE', 'POUPANCA'])
+  @ApiProperty({ default: 'Tipo da conta bancária' })
+  readonly type_account_bank: 'CORRENTE' | 'POUPANCA';
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: 'Nome do banco' })
+  readonly name_bank: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: 'Agencia do banco' })
+  readonly agency_bank: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: 'Dígito da Agencia' })
+  readonly digit_agency_bank: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: 'Conta do banco' })
+  readonly account_bank: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: 'Dígito conta do banco' })
+  readonly digit_account_bank: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: 'Conta PIX' })
+  readonly account_pix_bank: string;
+
   validate_access?: boolean;
   code_access?: string;
   status?: string;
   plan_recurrence?: string;
   plan_id?: string;
   is_active?: string;
+
   deleted_at?: Date;
 }

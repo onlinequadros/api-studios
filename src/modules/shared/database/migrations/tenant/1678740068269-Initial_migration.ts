@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class nomeDaMigration1678389722536 implements MigrationInterface {
-  name = 'nomeDaMigration1678389722536';
+export class InitialMigration1678740068269 implements MigrationInterface {
+  name = 'InitialMigration1678740068269';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
@@ -24,16 +24,19 @@ export class nomeDaMigration1678389722536 implements MigrationInterface {
       `CREATE TABLE "address" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "address_name" character varying NOT NULL, "number" character varying NOT NULL, "district" character varying NOT NULL, "city" character varying NOT NULL, "uf" character varying NOT NULL, "cep" character varying NOT NULL, "complement" character varying, "favorite" boolean NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "user_id" character varying, CONSTRAINT "PK_d92de1f82754668b5f5f5dd4fd5" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
+      `CREATE TYPE "public"."client_segment_enum" AS ENUM('Studio', 'Artista')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."client_type_account_bank_enum" AS ENUM('CORRENTE', 'POUPANCA')`,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "client" ("id" character varying NOT NULL, "name" character varying NOT NULL, "lastname" character varying NOT NULL, "cpf" character varying NOT NULL, "email" character varying NOT NULL, "phone" character varying NOT NULL, "sex" character varying NOT NULL, "birth_date" character varying NOT NULL, "cnpj" character varying, "company_name" character varying, "message_email" character varying, "address" character varying NOT NULL, "number" character varying NOT NULL, "district" character varying NOT NULL, "city" character varying NOT NULL, "uf" character varying NOT NULL, "cep" character varying NOT NULL, "complement" character varying, "segment" "public"."client_segment_enum" NOT NULL, "password" character varying NOT NULL, "login_notification" boolean NOT NULL, "code_access" character varying, "cover" character varying, "validate_access" boolean, "tenant_company" character varying NOT NULL, "role" character varying NOT NULL, "status" character varying, "plan_recurrence" character varying, "plan_id" character varying, "is_active" character varying, "type_account_bank" "public"."client_type_account_bank_enum" NOT NULL, "name_bank" character varying NOT NULL, "agency_bank" character varying NOT NULL, "digit_agency_bank" character varying NOT NULL, "account_bank" character varying NOT NULL, "digit_account_bank" character varying NOT NULL, "account_pix_bank" character varying NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, CONSTRAINT "UQ_e474050210979aca62b9721adcb" UNIQUE ("tenant_company"), CONSTRAINT "PK_96da49381769303a6515a8785c7" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
       `CREATE TABLE "category" ("id" character varying NOT NULL, "name" character varying NOT NULL, "sku" character varying NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_9c4e4a89e3674fc9f382d733f03" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "linksharing" ("id" character varying NOT NULL, "studio" character varying NOT NULL, "slug" character varying NOT NULL, "code" character varying NOT NULL, "link" character varying NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "delete_at" TIMESTAMP, CONSTRAINT "PK_3e4593b8ff1b748dd01627630bc" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
-      `CREATE TYPE "public"."client_segment_enum" AS ENUM('Studio', 'Artista')`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "client" ("id" character varying NOT NULL, "name" character varying NOT NULL, "lastname" character varying NOT NULL, "cpf" character varying NOT NULL, "email" character varying NOT NULL, "phone" character varying NOT NULL, "sex" character varying NOT NULL, "birth_date" character varying NOT NULL, "cnpj" character varying, "company_name" character varying, "message_email" character varying, "address" character varying NOT NULL, "number" character varying NOT NULL, "district" character varying NOT NULL, "city" character varying NOT NULL, "uf" character varying NOT NULL, "cep" character varying NOT NULL, "complement" character varying, "segment" "public"."client_segment_enum" NOT NULL, "password" character varying NOT NULL, "login_notification" boolean NOT NULL, "code_access" character varying, "cover" character varying, "validate_access" boolean, "tenant_company" character varying NOT NULL, "role" character varying NOT NULL, "status" character varying, "plan_recurrence" character varying, "plan_id" character varying, "is_active" character varying, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, CONSTRAINT "UQ_e474050210979aca62b9721adcb" UNIQUE ("tenant_company"), CONSTRAINT "PK_96da49381769303a6515a8785c7" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "orders_extra_items" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "product_id" character varying NOT NULL, "sku" character varying NOT NULL, "product_name" character varying NOT NULL, "category" character varying NOT NULL, "price" character varying NOT NULL, "url_image" character varying NOT NULL, "url_cropped" character varying NOT NULL, "type" character varying NOT NULL, "orderIdId" uuid, CONSTRAINT "PK_c40e0d573e82dbfedc8b77478bb" PRIMARY KEY ("id"))`,
@@ -136,10 +139,13 @@ export class nomeDaMigration1678389722536 implements MigrationInterface {
     await queryRunner.query(`DROP TYPE "public"."orders_payment_type_enum"`);
     await queryRunner.query(`DROP TABLE "orders_photos"`);
     await queryRunner.query(`DROP TABLE "orders_extra_items"`);
-    await queryRunner.query(`DROP TABLE "client"`);
-    await queryRunner.query(`DROP TYPE "public"."client_segment_enum"`);
     await queryRunner.query(`DROP TABLE "linksharing"`);
     await queryRunner.query(`DROP TABLE "category"`);
+    await queryRunner.query(`DROP TABLE "client"`);
+    await queryRunner.query(
+      `DROP TYPE "public"."client_type_account_bank_enum"`,
+    );
+    await queryRunner.query(`DROP TYPE "public"."client_segment_enum"`);
     await queryRunner.query(`DROP TABLE "address"`);
     await queryRunner.query(`DROP TABLE "users"`);
     await queryRunner.query(`DROP TYPE "public"."users_user_type_enum"`);

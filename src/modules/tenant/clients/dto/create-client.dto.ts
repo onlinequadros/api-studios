@@ -164,6 +164,49 @@ export class CreateClientDto {
   @Expose()
   readonly is_active?: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn(['CORRENTE', 'POUPANCA'])
+  @ApiProperty({ default: 'Tipo da conta bancária' })
+  @Expose()
+  readonly type_account_bank: 'CORRENTE' | 'POUPANCA';
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: 'Nome do banco' })
+  @Expose()
+  readonly name_bank: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: 'Agencia do banco' })
+  @Expose()
+  readonly agency_bank: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: 'Dígito da Agencia' })
+  @Expose()
+  readonly digit_agency_bank: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: 'Conta do banco' })
+  @Expose()
+  readonly account_bank: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: 'Dígito conta do banco' })
+  @Expose()
+  readonly digit_account_bank: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: 'Conta PIX' })
+  @Expose()
+  readonly account_pix_bank: string;
+
   @Expose()
   readonly deleted_at?: Date;
 }

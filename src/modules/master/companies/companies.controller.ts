@@ -56,6 +56,13 @@ export class CompaniesController {
       sex: 'Masculino',
       uf: 'PE',
       tenant_company: 'onlinequadros',
+      type_account_bank: 'CORRENTE',
+      name_bank: 'Desconhecido',
+      agency_bank: '00000',
+      digit_agency_bank: '0',
+      account_bank: '000000',
+      digit_account_bank: '0',
+      account_pix_bank: 'xxxxxxx@xxxx.xx',
     };
 
     await this.companyService.create(companyDTO);

@@ -14,6 +14,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ClientService } from './client.service';
 import { CreateClientDto, ReadClientDto } from './dto';
 import { UpdateClientDTO } from './dto/updateClient.dto';
+import { AccountBankData } from './interfaces';
 
 @Controller('clients')
 export class ClientController {
@@ -27,6 +28,20 @@ export class ClientController {
   @Get('/segment')
   async findSegment(): Promise<{ segment: string }> {
     return this.clientService.findSegment();
+  }
+
+  // Tras os dados bancários do cliente
+  @Get('/account-payment')
+  async findAccountClient(): Promise<AccountBankData[]> {
+    return this.clientService.findAccountClient();
+  }
+
+  // Atualiza os dados bancários
+  @Put('/account-payment-update')
+  async updateAccountClient(
+    @Body() account: AccountBankData,
+  ): Promise<AccountBankData> {
+    return this.clientService.updateAccountClient(account);
   }
 
   @Post()
