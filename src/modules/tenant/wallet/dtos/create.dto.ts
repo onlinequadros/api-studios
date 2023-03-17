@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsIn, IsNotEmpty } from 'class-validator';
+import { IsString, IsIn, IsNotEmpty, IsBoolean } from 'class-validator';
 
 export class CreateWalletDto {
   @IsString()
@@ -27,6 +27,12 @@ export class CreateWalletDto {
   @ApiProperty({ default: 'Valor da carteira' })
   @Expose()
   readonly value: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  @ApiProperty({ default: false })
+  @Expose()
+  readonly withdraw_visible: boolean;
 
   @IsString()
   @IsIn(['ACCOMPLISHED', 'BLOCKED', 'AWAITRELEASE'])

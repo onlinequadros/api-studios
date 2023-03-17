@@ -27,6 +27,9 @@ export class Wallet {
   @Column({ type: 'enum', enum: ['ACCOMPLISHED', 'BLOCKED', 'AWAITRELEASE'] })
   payment: string;
 
+  @Column()
+  withdraw_visible: boolean;
+
   @CreateDateColumn()
   created_at: Date;
 
