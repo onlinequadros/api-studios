@@ -38,8 +38,14 @@ export class User {
   @Column()
   birth_date: string;
 
-  @Column()
-  password: string;
+  @Column({ nullable: true })
+  password?: string;
+
+  @Column({ nullable: true })
+  token?: string;
+
+  @Column({ nullable: true })
+  token_isvalid?: boolean;
 
   @Column({ nullable: true })
   avatar?: string;

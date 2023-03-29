@@ -57,6 +57,12 @@ export class ReadUserDto {
   @Expose()
   readonly birth_date: string;
 
+  @IsString()
+  @IsOptional()
+  @ApiProperty({ default: '123456' })
+  @Expose()
+  readonly token?: string;
+
   @IsOptional()
   @Expose()
   readonly avatar?: string;

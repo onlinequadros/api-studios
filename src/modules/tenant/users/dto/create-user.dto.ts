@@ -62,10 +62,19 @@ export class CreateUserDto {
   readonly user_type: 'client' | 'system' | 'guest';
 
   @IsString()
-  @MinLength(6)
+  @IsOptional()
   @ApiProperty({ default: '123456' })
   @Expose()
-  readonly password: string;
+  readonly password?: string;
+
+  @Expose()
+  readonly token_isvalid?: boolean;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({ default: '123456' })
+  @Expose()
+  readonly token?: string;
 
   @IsOptional()
   @Expose()

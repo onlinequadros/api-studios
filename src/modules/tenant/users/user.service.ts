@@ -6,6 +6,7 @@ import {
   Scope,
 } from '@nestjs/common';
 import * as aws from 'aws-sdk';
+import * as moment from 'moment';
 import { v4 as uuidV4 } from 'uuid';
 import { compare, hash } from 'bcryptjs';
 import { validate as uuidValidate } from 'uuid';
@@ -13,12 +14,19 @@ import { plainToClass, plainToInstance } from 'class-transformer';
 import { validationCPF } from 'src/modules/utils/validationsCPF';
 import { ILike, Repository } from 'typeorm';
 import { TenantProvider } from '../tenant.provider';
-import { CreateUserDto, ReadUserDto, UpdateUserDto } from './dto';
+import {
+  CreatePassword,
+  CreateUserDto,
+  ReadUserDto,
+  UpdateUserDto,
+} from './dto';
 import { IResponseUserData } from './interface/read-user-pagination';
 import { User } from './entities/user.entity';
 import { IReadUsersParams } from './interface/get-all-users-params';
 import { UserDinamicRepository } from './repositories/users.repositories';
 import { ForgotPassword } from './dto/forgot-password.dto';
+import { resolve } from 'path';
+import { MailsStudioService } from '../mails/mail-studio.service';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 @Injectable({ scope: Scope.REQUEST })
@@ -31,7 +39,10 @@ export class UserService {
     }
   }
 
-  constructor(private readonly userDinamicRepository: UserDinamicRepository) {
+  constructor(
+    private readonly userDinamicRepository: UserDinamicRepository,
+    private readonly mailsService: MailsStudioService,
+  ) {
     this.getUserRepository();
   }
 
@@ -134,17 +145,60 @@ export class UserService {
   }
 
   // FUNÇÃO PARA CRIAR UM USUÁRIO
-  async create(user: CreateUserDto): Promise<ReadUserDto> {
+  async create(user: CreateUserDto, studio: string): Promise<ReadUserDto> {
     this.getUserRepository();
+
     try {
       await this.validateUser(user);
-      const userCreatted = Object.assign(user, {
-        password: await hash(user.password, 8),
-      });
+      const userCreatted = user.password.length
+        ? Object.assign(user, {
+            password: await hash(user.password, 8),
+            token: uuidV4().replace('-', ''),
+            token_isvalid: false,
+          })
+        : Object.assign(user, {
+            token: String(uuidV4()).slice(-12),
+            token_isvalid: false,
+          });
 
       const newUser = this.userRepository.create(userCreatted);
       const createdUser = await this.userRepository.save(newUser);
       delete createdUser.password;
+
+      // Se for passado o estúdio no parâmetro da rota ele entra aqui para que o cliente
+      // informe a sua senha pelo link enviado ao seu e-mail
+      if (studio) {
+        const templatePath = resolve(
+          __dirname,
+          '..',
+          '..',
+          '..',
+          '..',
+          'views',
+          'emails',
+          'generate-password.hbs',
+        );
+
+        const nameClient = `${user.name.toUpperCase()} ${user.lastname.toUpperCase()}`;
+
+        const variables = {
+          name: nameClient,
+          date: moment().format('DD/MM/YYYY'),
+          link: `${process.env.URL_PRINCIPAL}/${studio}/${process.env.URL_NEW_PASSWORD}${createdUser.token}&email=${createdUser.email}`,
+        };
+
+        await this.mailsService.sendEmail(
+          createdUser.email,
+          'Criação de senha para acessar o estúdio',
+          variables,
+          templatePath,
+        );
+
+        delete createdUser.token;
+
+        return plainToClass(ReadUserDto, createdUser);
+      }
+
       return plainToClass(ReadUserDto, createdUser);
     } catch (err) {
       throw new BadGatewayException(err.message);
@@ -266,6 +320,36 @@ export class UserService {
     }
 
     delete updateUserProfile.password;
+
+    return true;
+  }
+
+  // FUNÇÃO PARA CRIAR UMA SENHA PARA O CLIENTE
+  async generatePassword(
+    objectCreatePassword: CreatePassword,
+  ): Promise<boolean> {
+    this.getUserRepository();
+
+    const userExists = await this.userRepository.findOne({
+      where: {
+        email: objectCreatePassword.email,
+        token: objectCreatePassword.token,
+      },
+    });
+
+    if (!userExists) {
+      throw new NotFoundException(
+        'Usuário ou código não cadastrado pelo estúdio.',
+      );
+    }
+
+    if (userExists.token_isvalid) {
+      throw new BadRequestException('Senha já criada para esse link.');
+    }
+
+    userExists.password = await hash(objectCreatePassword.password, 8);
+    userExists.token_isvalid = true;
+    await this.userRepository.save(userExists);
 
     return true;
   }

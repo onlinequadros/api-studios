@@ -146,6 +146,9 @@ export class CompaniesModule {
           method: RequestMethod.ALL,
         },
         { path: '/api/auth/login', method: RequestMethod.ALL },
+
+        { path: '/api/getnet/credit-card', method: RequestMethod.ALL },
+        { path: '/api/getnet/credit-pix', method: RequestMethod.ALL },
       )
       .forRoutes('*');
   }

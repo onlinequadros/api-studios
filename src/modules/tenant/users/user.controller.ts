@@ -13,7 +13,12 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto, ReadUserDto, UpdateUserDto } from './dto';
+import {
+  CreatePassword,
+  CreateUserDto,
+  ReadUserDto,
+  UpdateUserDto,
+} from './dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { IResponseUserData } from './interface/read-user-pagination';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -57,8 +62,11 @@ export class UserController {
   }
 
   @Post()
-  async create(@Body() client: CreateUserDto): Promise<ReadUserDto> {
-    return this.userService.create(client);
+  async create(
+    @Body() client: CreateUserDto,
+    @Query('studio') studio: string,
+  ): Promise<ReadUserDto> {
+    return this.userService.create(client, studio);
   }
 
   @Post('upload-avatar')
@@ -94,9 +102,16 @@ export class UserController {
     );
   }
 
+  // RECUPERA A SENHA DO USUÁRIO
   @Patch('forgot-password')
   async ForgotPassword(@Body() forgotPass: ForgotPassword): Promise<boolean> {
     return this.userService.forgotProfilePassword(forgotPass);
+  }
+
+  // CRIA A SENHA PARA O CLIENTE DO ALBUM
+  @Patch('generate-password')
+  async generatePassword(@Body() generate: CreatePassword): Promise<boolean> {
+    return this.userService.generatePassword(generate);
   }
 
   // FAZ A PESQUISA E VERIRIFICA SE O EMAIL É VÁLIDO OU SE JÁ ESTÁ CADASTRADO
