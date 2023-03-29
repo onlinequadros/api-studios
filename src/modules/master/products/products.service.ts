@@ -61,6 +61,7 @@ export class ProductsService {
         id: item.id,
         img_frame: item.img_frame,
         img: item.img,
+        price: item.price,
       };
     });
 
