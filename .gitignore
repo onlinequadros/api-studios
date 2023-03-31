@@ -15,6 +15,9 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# Migrations
+/src/modules/shared/database/migrations/*
+
 # OS
 .DS_Store
 
