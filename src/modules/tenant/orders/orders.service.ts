@@ -129,6 +129,26 @@ export class OrdersService {
     return orderSaved;
   }
 
+  //FUNÇÃO PARA ALTERAR O ESTATUS DE PAGAMENTO
+  async updateStatusOrderPayment(
+    id: string,
+    statusPayment: { status: 'APPROVED' | 'RECUSED' },
+  ) {
+    this.getOrdersRepository();
+
+    const order = await this.findOne(id);
+
+    if (!order) {
+      throw new NotFoundException('Ordem de serviço não encontrada');
+    }
+
+    order.status = statusPayment.status;
+
+    const orderSaved = await this.ordersRepository.save(order);
+
+    return orderSaved;
+  }
+
   // FUNÇÃO PARA FAZER O UPDATE DENTRO DO ARRAY NO OBJETO DE ORDER EXTRA ITEMS
   async updateExtraItems(
     id_order: string,

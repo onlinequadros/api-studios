@@ -72,6 +72,14 @@ export class OrdersController {
     return this.ordersService.update(id, updateOrdersDTO);
   }
 
+  @Patch('/status-payment/:id')
+  async updateStatusOrderPayment(
+    @Param('id') id: string,
+    @Body() status: { status: 'APPROVED' | 'RECUSED' },
+  ) {
+    return this.ordersService.updateStatusOrderPayment(id, status);
+  }
+
   @Put('/order-extra-items/:id_order/:id_extraitems')
   async updateExtraItems(
     @Param('id_order') id_order: string,

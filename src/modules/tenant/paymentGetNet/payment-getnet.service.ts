@@ -74,7 +74,9 @@ export class PaymentGetNetService {
 
       return { responseTokenCard, authorization };
     } catch (err) {
-      throw new BadRequestException('Erro ao gerar um token para o pagamento');
+      throw new BadRequestException(
+        'Erro ao gerar um token do cartão para o pagamento',
+      );
     }
   }
 
