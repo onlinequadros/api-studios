@@ -155,9 +155,10 @@ export class ProductStudioPhotoService {
           },
         ])
         .webp({ quality: 90 })
+        .rotate()
         .toFile(outputPath);
     } catch (err) {
-      throw new BadGatewayException('error do watermark ');
+      throw new BadGatewayException('error do watermark');
     }
   }
 
