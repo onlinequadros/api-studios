@@ -6,7 +6,7 @@ import {
   Scope,
   UnauthorizedException,
 } from '@nestjs/common';
-import { plainToClass } from 'class-transformer';
+import { plainToClass, plainToInstance } from 'class-transformer';
 import { BucketS3Service } from '../../../bucket-s3/bucket-s3.service';
 import { ILike, Repository } from 'typeorm';
 import { TenantProvider } from '../tenant.provider';
@@ -80,18 +80,41 @@ export class ProductStudioService {
   }
 
   // FUNÇÃO PARA BUSCAR UM PRODUTO
+  // async findOne(slug: string): Promise<ReadProductStudioDto> {
+  //   this.getProductStudioRepository();
+  //   const product = await this.productStudioRepository.findOne({
+  //     where: { slug },
+  //     relations: ['product_studio_photo', 'users'],
+  //   });
+
+  //   if (!product) {
+  //     throw new NotFoundException(MessagesHelper.PRODUCT_NOT_FOUND);
+  //   }
+
+  //   return plainToClass(ReadProductStudioDto, product);
+  // }
+
+  // FUNÇÃO PARA BUSCAR UM PRODUTO COM QUERY BUILDER
   async findOne(slug: string): Promise<ReadProductStudioDto> {
     this.getProductStudioRepository();
-    const product = await this.productStudioRepository.findOne({
-      where: { slug },
-      relations: ['product_studio_photo', 'users'],
-    });
+
+    const product = await this.productStudioRepository
+      .createQueryBuilder('product_studio')
+      .where('product_studio.slug = :slug', { slug: slug })
+      .leftJoinAndSelect(
+        'product_studio.product_studio_photo',
+        'product_studio_photo',
+      )
+      .leftJoinAndSelect('product_studio.users', 'users')
+      .orderBy('product_studio_photo.created_at', 'ASC')
+      .addOrderBy('users.created_at', 'ASC')
+      .getOne();
 
     if (!product) {
       throw new NotFoundException(MessagesHelper.PRODUCT_NOT_FOUND);
     }
 
-    return plainToClass(ReadProductStudioDto, product);
+    return plainToInstance(ReadProductStudioDto, product);
   }
 
   // FUNÇÃO PARA BUSCAR AS IMAGENS DE UM PRODUTO
