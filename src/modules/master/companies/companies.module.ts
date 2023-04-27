@@ -149,6 +149,8 @@ export class CompaniesModule {
 
         { path: '/api/getnet/credit-card', method: RequestMethod.ALL },
         { path: '/api/getnet/credit-pix', method: RequestMethod.ALL },
+        { path: '/api/getnet/homolog-credit-card', method: RequestMethod.ALL },
+        { path: '/api/getnet/homolog-credit-pix', method: RequestMethod.ALL },
       )
       .forRoutes('*');
   }
