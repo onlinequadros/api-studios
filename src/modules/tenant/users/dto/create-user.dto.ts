@@ -44,11 +44,11 @@ export class CreateUserDto {
   @Expose()
   readonly phone: string;
 
-  @IsString()
-  @IsIn(['Masculino', 'Feminino'])
+  @IsOptional()
+  @IsIn(['Masculino', 'Feminino', null])
   @ApiProperty({ default: 'Masculino' })
   @Expose()
-  readonly sex: 'Masculino' | 'Feminino';
+  readonly sex?: 'Masculino' | 'Feminino' | null;
 
   @IsDateString()
   @ApiProperty({ default: '1990-01-01' })

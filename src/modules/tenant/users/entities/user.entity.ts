@@ -32,8 +32,8 @@ export class User {
   @Column()
   phone: string;
 
-  @Column()
-  sex: 'Masculino' | 'Feminino';
+  @Column({ nullable: true })
+  sex?: 'Masculino' | 'Feminino' | null;
 
   @Column()
   birth_date: string;

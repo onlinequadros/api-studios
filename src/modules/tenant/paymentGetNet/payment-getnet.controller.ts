@@ -4,6 +4,7 @@ import { getNetCreditCardDTO } from './dto/creditCard.dto';
 import { PaymentGetNetService } from './payment-getnet.service';
 import { getNetHomologCreditCardDTO } from './dto/homologCreditCard.dto';
 import { getNetHomologCreditPixDTO } from './dto/homologCreditPix.dto';
+import { getNetHomologCancelCreditPixDTO } from './dto/homologCancelCreditPix.dto';
 
 @Controller('getnet')
 export class PaymentGetNetController {
@@ -36,6 +37,15 @@ export class PaymentGetNetController {
   ) {
     return this.paymentGetNetService.paymentHomologCreditPixGetNet(
       getnetHomologCreditPixDTO,
+    );
+  }
+
+  @Post('/homolog-cancel-credit-pix')
+  async pagGetNetHomologCancelCreditPix(
+    @Body() getnetHomologCancelCreditPixDTO: getNetHomologCancelCreditPixDTO,
+  ) {
+    return this.paymentGetNetService.paymentHomologCancelCreditPixGetNet(
+      getnetHomologCancelCreditPixDTO,
     );
   }
 }

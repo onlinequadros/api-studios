@@ -5,6 +5,7 @@ import { getNetCreditCardDTO } from './dto/creditCard.dto';
 import { IResponsePaymentFirstStep } from './types/response-payment-first-step.type';
 import { getNetCreditPixDTO } from './dto/credicPix.dto';
 import { getNetHomologCreditCardDTO } from './dto/homologCreditCard.dto';
+import { getNetHomologCancelCreditPixDTO } from './dto/homologCancelCreditPix.dto';
 
 @Injectable()
 export class PaymentGetNetService {
@@ -206,10 +207,10 @@ export class PaymentGetNetService {
       },
       customer: {
         customer_id: customer.customer_id,
-        first_name: customer.first_name,
-        last_name: customer.last_name,
+        first_name: customer.first_name.toUpperCase(),
+        last_name: customer.last_name.toUpperCase(),
         name: 'null',
-        email: customer.email,
+        email: customer.email.toLowerCase(),
         document_type: 'CPF',
         document_number: customer.document_number,
         phone_number: `55${customer.phone_number}`,
@@ -352,10 +353,55 @@ export class PaymentGetNetService {
 
         return responsePaymentPix;
       } catch (err) {
-        console.log(err);
         throw new BadRequestException('Erro no pagamento', {
           cause: new Error(),
           description: 'Falha ao realizar o pagamento no pix',
+        });
+      }
+    }
+  }
+
+  // FUNÇÃO PARA SOLICITAR O CANCELAMENTO DO PAGAMENTO DO CARTÃO DE CRÉDITO
+  async paymentHomologCancelCreditPixGetNet(
+    paymentCancelCreditPixDto: getNetHomologCancelCreditPixDTO,
+  ) {
+    const { payment_id, cancel_amount } = paymentCancelCreditPixDto;
+
+    const proccessCancelPaymentFirstStep: IResponsePaymentFirstStep =
+      await this.paymentAuth();
+
+    if (proccessCancelPaymentFirstStep) {
+      const headersConfig = {
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+          seller_id: process.env.GETNET_SELLER_ID,
+          Authorization: `Bearer ${proccessCancelPaymentFirstStep.access_token}`,
+        },
+      };
+
+      const requestData = {
+        payment_id,
+        cancel_amount,
+      };
+
+      console.log('headers ', headersConfig);
+
+      try {
+        const responseCancelPayment = await lastValueFrom(
+          this.httpService
+            .post(
+              `${process.env.GETNET_URL_API}/v1/payments/cancel/request`,
+              requestData,
+              headersConfig,
+            )
+            .pipe(map((response) => response.data)),
+        );
+
+        return responseCancelPayment;
+      } catch (err) {
+        throw new BadRequestException('Erro no cancelamento do pagamento', {
+          cause: new Error(),
+          description: 'Falha ao realizar o cancelamento do pagamento.',
         });
       }
     }
