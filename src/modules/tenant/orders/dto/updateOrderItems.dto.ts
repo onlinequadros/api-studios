@@ -1,6 +1,11 @@
 import { Expose, Type } from 'class-transformer';
 
-import { IsString, IsNumber, ValidateNested } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  ValidateNested,
+  IsOptional,
+} from 'class-validator';
 import { CroppedPixelArea } from '../model/croppedPixelArea.model';
 
 export class UpdateOrderItemsDto {
@@ -16,13 +21,23 @@ export class UpdateOrderItemsDto {
   @Expose()
   category: string;
 
+  @IsNumber()
+  @IsOptional()
+  @Expose()
+  quantity?: number;
+
+  @IsString()
+  @IsOptional()
+  @Expose()
+  image_dimension_frame?: string;
+
   @IsString()
   @Expose()
   url_cropped: string;
 
   @ValidateNested({ each: true })
   @Type(() => CroppedPixelArea)
-  croppedPixelArea: CroppedPixelArea
+  croppedPixelArea: CroppedPixelArea;
 
   @IsNumber()
   @Expose()

@@ -72,6 +72,14 @@ export class OrdersController {
     return this.ordersService.update(id, updateOrdersDTO);
   }
 
+  @Patch('/quantity/:id')
+  async updateQuantityOrder(
+    @Param('id') id: string,
+    @Body() payload: { quantity: number; id: string },
+  ) {
+    return this.ordersService.updateQuantity(id, payload);
+  }
+
   @Patch('/status-payment/:id')
   async updateStatusOrderPayment(
     @Param('id') id: string,

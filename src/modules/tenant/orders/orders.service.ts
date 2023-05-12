@@ -117,12 +117,33 @@ export class OrdersService {
     return orders;
   }
 
+  // FUNÇÃO PARA ALTERAR A QUANTIDADE DE ITENS DE UM PRODUTO FÍSICO
   async update(id: string, updateOrdersDTO: UpdateOrdersDTO) {
     this.getOrdersRepository();
 
     const order = await this.findOne(id);
 
     const orderUpdated = Object.assign(order, updateOrdersDTO);
+
+    const orderSaved = await this.ordersRepository.save(orderUpdated);
+
+    return orderSaved;
+  }
+
+  // FUNÇÃO PARA ALTERAR A QUANTIDADE DE ITENS DE UM PRODUTO FÍSICO
+  async updateQuantity(id: string, payload: { quantity: number; id: string }) {
+    this.getOrdersRepository();
+
+    const order = await this.findOne(id);
+
+    order.orders_extra_items.map((item) => {
+      if (item.id === payload.id) {
+        item.quantity = payload.quantity;
+      }
+      return item;
+    });
+
+    const orderUpdated = Object.assign(order);
 
     const orderSaved = await this.ordersRepository.save(orderUpdated);
 
@@ -188,8 +209,12 @@ export class OrdersService {
       updateOrdersItemsDTO.category;
     order.orders_extra_items[indexObject].product_name =
       updateOrdersItemsDTO.product_name;
+    order.orders_extra_items[indexObject].quantity =
+      updateOrdersItemsDTO.quantity;
     order.orders_extra_items[indexObject].url_cropped =
       updateOrdersItemsDTO.url_cropped;
+    order.orders_extra_items[indexObject].image_dimension_frame =
+      updateOrdersItemsDTO.image_dimension_frame;
     order.orders_extra_items[indexObject].price =
       updateOrdersItemsDTO.price.toString();
 
