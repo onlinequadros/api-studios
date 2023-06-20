@@ -26,9 +26,11 @@ import { ImagesCropModule } from './modules/master/images-crop/images-crop.modul
 import { FinanceModule } from './modules/tenant/finances/finance.module';
 import { WalletProfessionalModule } from './modules/tenant/wallet/wallet.module';
 import { PaymentGetNetModule } from './modules/tenant/paymentGetNet/payment-getnet.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     CompaniesModule,
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({

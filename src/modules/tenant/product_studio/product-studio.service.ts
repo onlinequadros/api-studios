@@ -20,6 +20,7 @@ import { ProductStudioDinamicRepository } from './repositories/product-studio.re
 import { MessagesHelper } from '../../../helpers/messages.helpers';
 import { checkCompany } from '../../../modules/utils/checkCompany';
 import { UpdateProductStudioDTO } from './dtos/updateProduct.dto';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 @Injectable({ scope: Scope.REQUEST })
@@ -303,5 +304,10 @@ export class ProductStudioService {
     );
 
     return plainToClass(ReadProductStudioDto, productUpdatted);
+  }
+
+  // @Cron(CronExpression.EVERY_10_SECONDS)
+  async sendMessageInAlbumWitchDeadline() {
+    console.log('teste 2');
   }
 }
