@@ -99,8 +99,17 @@ export class CompaniesController {
     return await this.companyService.getAllStudios();
   }
 
+  // PEGA A LISTAGEM DE TODOS OS USUÁRIOS
+  @Get('/list-studios')
+  @ApiOperation({ summary: 'Busca a lista de estúdios.' })
+  @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  async allListStudio() {
+    return await this.companyService.getListAllStudios();
+  }
+
   // FAZ A PESQUISA PELO ID DO USUÁRIO
-  @Get(':company_id')
+  @Get('/:company_id')
   @ApiOperation({ summary: 'Buscar uma companhia no sistema.' })
   @ApiBearerAuth()
   // @UseGuards(JwtAuthGuard)

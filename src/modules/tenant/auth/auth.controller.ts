@@ -1,4 +1,4 @@
-import { Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import {
   ApiBody,
   ApiOkResponse,
@@ -33,5 +33,10 @@ export class AuthControllerTenant {
   @Post('/login')
   async login(@Request() request) {
     return this.authService.login(request.user);
+  }
+
+  @Post('/studio-login')
+  async verifyUserAndLogin(@Body('email') email: string) {
+    return this.authService.verifyUserAndLogin(email);
   }
 }

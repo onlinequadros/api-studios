@@ -332,4 +332,10 @@ export class CompaniesService {
     }
     return false;
   }
+
+  async getListAllStudios() {
+    const companies = await this.getAllStudios();
+    const allCompanies = companies.map((company) => company.tenant_company);
+    return allCompanies;
+  }
 }

@@ -80,4 +80,18 @@ export class AuthServiceTenant {
       access_token: this.jwtService.sign(payload),
     };
   }
+
+  async verifyUserAndLogin(email: string) {
+    await this.getUserRepository();
+    const user = await this.userRepository.findOne({
+      where: { email: email },
+      select: ['email'],
+    });
+
+    if (!user) {
+      return undefined;
+    }
+
+    return { studio: TenantProvider.connection.name };
+  }
 }
