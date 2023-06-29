@@ -7,6 +7,8 @@ import { DatabaseProvider } from '../../shared/database/database.provider';
 import { crop } from './utils/crop-function';
 import { BucketS3Service } from 'src/bucket-s3/bucket-s3.service';
 import * as fs from 'fs';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 @Injectable()
 export class ImageCropService {
@@ -26,6 +28,21 @@ export class ImageCropService {
         TenantProvider.connection.getRepository(ProductStudioPhoto);
     }
   }
+
+  // async formaterArchiveInZip(imageUrl: string) {
+  //   if (imageUrl) {
+  //     const zip = new JSZip();
+  //     const image = imageUrl;
+  //     const imagesFolder = zip.folder('images/20x20/receba');
+  //     const imagesFetcher = await (await fetch(image)).blob();
+
+  //     imagesFolder.file(`img_01.jpg`, imagesFetcher, { blob: true });
+
+  //     return zip.generateAsync({ type: 'blob' }).then(function (content) {
+  //       saveAs(content, 'Arquivo-fotográfico.zip');
+  //     });
+  //   }
+  // }
 
   async cropImage(cropImage: CropImageCut): Promise<string> {
     await this.getProductStudioPhotoRepository(cropImage.studio);

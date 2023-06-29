@@ -187,7 +187,6 @@ export class BucketS3Service {
 
     //deletar a pasta temp
     await fs.promises.rm(`tmp`, { recursive: true });
-    console.log('01  zipfiles');
     return this.getSignedUrl(filePath);
   }
 

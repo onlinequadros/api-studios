@@ -162,6 +162,29 @@ export class ProductStudioPhotoService {
     }
   }
 
+  // FUNÇÃO PARA REALIZAR O RESIZE DA IMAGEM NO UPLOAD
+  async resizeImage(element) {
+    if (
+      bufferImageSize(element.buffer).width < 1204 ||
+      bufferImageSize(element.buffer).height < 771
+    ) {
+      return new Promise((resolve, reject) => {
+        sharp(element.buffer)
+          .toFile(`tmp/resized${element.originalname}`)
+          .then((data) => resolve(data))
+          .catch((error) => reject(error));
+      });
+    }
+
+    return new Promise((resolve, reject) => {
+      sharp(element.buffer)
+        .resize({ width: 1500, fit: 'cover' })
+        .toFile(`tmp/resized${element.originalname}`)
+        .then((data) => resolve(data))
+        .catch((error) => reject(error));
+    });
+  }
+
   //FUNÇÃO PARA REALIZAR O UPLOAD DE IMAGENS DOS ESTÚDIOS PARA A APLICAÇÃO *****
   async uploadImages(images, products_id, category, request) {
     this.getProductStudioPhotoRepository();
@@ -180,14 +203,17 @@ export class ProductStudioPhotoService {
         );
         const encryptedImageName =
           await this.encryptedService.encryptedImageName(element.originalname);
-        const fileName = `${encryptedImageName.split('.jpg')}.webp`;
 
-        const imageSize = bufferImageSize(element.buffer);
-        const waterMarkImage = checkWaterMark(imageSize);
+        const fileName = `${encryptedImageName.split('.')[0]}.webp`;
+
+        await this.resizeImage(element);
+
+        const waterMarkImage = 'watermark-small';
+        // const waterMarkImage = checkWaterMark({ width: 600, height: 600 });
 
         await this.waterMark(
           `src/assets/${waterMarkImage}.png`,
-          `tmp/${element.originalname}`,
+          `tmp/resized${element.originalname}`,
           `tmp/${fileName}`,
         );
 
@@ -206,7 +232,7 @@ export class ProductStudioPhotoService {
           encryptedImageName,
         );
 
-        const id = fileName.split(',')[0];
+        const id = fileName.split('.')[0];
         const newProductStudioPhoto = this.productStudioPhotoRepository.create({
           id: id,
           photo: encryptedImageName,
