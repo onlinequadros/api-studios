@@ -3,6 +3,7 @@ import * as bufferImageSize from 'buffer-image-size';
 import {
   BadGatewayException,
   Injectable,
+  InternalServerErrorException,
   Scope,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -148,9 +149,13 @@ export class ProductStudioPhotoService {
         .composite([
           {
             input: wartermakPath,
-            top: 0,
-            left: 0,
-            blend: 'over',
+            // top: 0,
+            // left: 0,
+            // blend: 'over',
+            // raw: {
+            //   height: photoHeight,
+            //   width: photoWidth,
+            // },
             tile: true,
           },
         ])
@@ -158,32 +163,32 @@ export class ProductStudioPhotoService {
         .rotate()
         .toFile(outputPath);
     } catch (err) {
-      throw new BadGatewayException('error do watermark');
+      throw new InternalServerErrorException('error do watermark');
     }
   }
 
-  // FUNÇÃO PARA REALIZAR O RESIZE DA IMAGEM NO UPLOAD
-  async resizeImage(element) {
-    if (
-      bufferImageSize(element.buffer).width < 1204 ||
-      bufferImageSize(element.buffer).height < 771
-    ) {
-      return new Promise((resolve, reject) => {
-        sharp(element.buffer)
-          .toFile(`tmp/resized${element.originalname}`)
-          .then((data) => resolve(data))
-          .catch((error) => reject(error));
-      });
-    }
+  // // FUNÇÃO PARA REALIZAR O RESIZE DA IMAGEM NO UPLOAD
+  // async resizeImage(element) {
+  //   if (
+  //     bufferImageSize(element.buffer).width < 1204 ||
+  //     bufferImageSize(element.buffer).height < 771
+  //   ) {
+  //     return new Promise((resolve, reject) => {
+  //       sharp(element.buffer)
+  //         .toFile(`tmp/resized${element.originalname}`)
+  //         .then((data) => resolve(data))
+  //         .catch((error) => reject(error));
+  //     });
+  //   }
 
-    return new Promise((resolve, reject) => {
-      sharp(element.buffer)
-        .resize({ width: 1500, fit: 'cover' })
-        .toFile(`tmp/resized${element.originalname}`)
-        .then((data) => resolve(data))
-        .catch((error) => reject(error));
-    });
-  }
+  //   return new Promise((resolve, reject) => {
+  //     sharp(element.buffer)
+  //       .resize({ width: 1500, fit: 'cover' })
+  //       .toFile(`tmp/resized${element.originalname}`)
+  //       .then((data) => resolve(data))
+  //       .catch((error) => reject(error));
+  //   });
+  // }
 
   //FUNÇÃO PARA REALIZAR O UPLOAD DE IMAGENS DOS ESTÚDIOS PARA A APLICAÇÃO *****
   async uploadImages(images, products_id, category, request) {
@@ -196,6 +201,14 @@ export class ProductStudioPhotoService {
     let createPhotoStudioPhoto;
     try {
       for (const element of images['images']) {
+        // Por padrão o tamanho da imagem a ser convertida em webp não pode ser maior que 16383 de altura ou largura
+        const imageSize = bufferImageSize(element.buffer);
+        if (imageSize.width > 16300 || imageSize.height > 16300) {
+          throw new InternalServerErrorException(
+            `Falha no upload da imagem, a largura ou altura é maior que 16300`,
+          );
+        }
+
         await fs.promises.mkdir('tmp', { recursive: true });
         await fs.promises.writeFile(
           `tmp/${element.originalname}`,
@@ -203,17 +216,13 @@ export class ProductStudioPhotoService {
         );
         const encryptedImageName =
           await this.encryptedService.encryptedImageName(element.originalname);
+        const fileName = `${encryptedImageName.split('.')}.webp`;
 
-        const fileName = `${encryptedImageName.split('.')[0]}.webp`;
-
-        await this.resizeImage(element);
-
-        const waterMarkImage = 'watermark-small';
-        // const waterMarkImage = checkWaterMark({ width: 600, height: 600 });
+        const waterMarkImage = checkWaterMark(imageSize);
 
         await this.waterMark(
           `src/assets/${waterMarkImage}.png`,
-          `tmp/resized${element.originalname}`,
+          `tmp/${element.originalname}`,
           `tmp/${fileName}`,
         );
 

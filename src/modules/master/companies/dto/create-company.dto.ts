@@ -37,10 +37,10 @@ export class CreateCompanyDto {
   @ApiProperty({ default: '11999999999' })
   phone: string;
 
-  @IsString()
+  @IsOptional()
   @IsIn(['Masculino', 'Feminino'])
-  @ApiProperty({ default: 'Masculino' })
-  sex: 'Masculino' | 'Feminino';
+  @ApiProperty({ default: 'Masculino', required: false })
+  sex?: 'Masculino' | 'Feminino';
 
   @IsDateString()
   @ApiProperty({ default: '1990-01-01' })

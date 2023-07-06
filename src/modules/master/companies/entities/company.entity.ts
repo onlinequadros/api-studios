@@ -27,8 +27,8 @@ export class Company {
   @Column()
   phone: string;
 
-  @Column()
-  sex: 'Masculino' | 'Feminino';
+  @Column({ nullable: true })
+  sex?: 'Masculino' | 'Feminino';
 
   @Column()
   birth_date: string;

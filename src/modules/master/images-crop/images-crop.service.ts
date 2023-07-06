@@ -7,8 +7,8 @@ import { DatabaseProvider } from '../../shared/database/database.provider';
 import { crop } from './utils/crop-function';
 import { BucketS3Service } from 'src/bucket-s3/bucket-s3.service';
 import * as fs from 'fs';
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
+// import JSZip from 'jszip';
+// import { saveAs } from 'file-saver';
 
 @Injectable()
 export class ImageCropService {
