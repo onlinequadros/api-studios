@@ -119,41 +119,34 @@ export class CreateCompanyDto {
   @ApiProperty({ default: 'true' })
   login_notification: boolean;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @IsIn(['CORRENTE', 'POUPANCA'])
   @ApiProperty({ default: 'Tipo da conta bancária' })
-  readonly type_account_bank: 'CORRENTE' | 'POUPANCA';
+  type_account_bank?: 'CORRENTE' | 'POUPANCA';
 
-  @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({ default: 'Nome do banco' })
-  readonly name_bank: string;
+  name_bank?: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({ default: 'Agencia do banco' })
-  readonly agency_bank: string;
+  agency_bank?: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({ default: 'Dígito da Agencia' })
-  readonly digit_agency_bank: string;
+  digit_agency_bank?: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({ default: 'Conta do banco' })
-  readonly account_bank: string;
+  account_bank?: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({ default: 'Dígito conta do banco' })
-  readonly digit_account_bank: string;
+  digit_account_bank?: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({ default: 'Conta PIX' })
-  readonly account_pix_bank: string;
+  account_pix_bank?: string;
 
   validate_access?: boolean;
   code_access?: string;
