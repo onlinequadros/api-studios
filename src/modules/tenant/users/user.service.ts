@@ -2,6 +2,7 @@ import {
   BadGatewayException,
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   Scope,
 } from '@nestjs/common';
@@ -211,6 +212,21 @@ export class UserService {
     return await this.userRepository.findOne({ where: { email } });
   }
 
+  // FUNÇÃO PARA VALIDAR E VERIFICAR UM E-MAIL
+  async availableEmail(email: string) {
+    const company = await this.userRepository.findOne({
+      where: { email: email },
+    });
+    if (company)
+      throw new BadRequestException({
+        statusCode: 400,
+        message: 'E-mail já em uso.',
+        available: false,
+      });
+
+    return { available: true };
+  }
+
   // FUNÇÃO PARA ATUALIZAR UM USUÁRIO
   async updateProfile(
     id: string,
@@ -219,7 +235,7 @@ export class UserService {
     this.getUserRepository();
 
     if (!uuidValidate(id)) {
-      throw new BadRequestException('Id informado não é válido.');
+      throw new InternalServerErrorException('Id informado não é válido.');
     }
 
     const userExists = await this.userRepository.findOne({
@@ -239,6 +255,67 @@ export class UserService {
     delete updateUserProfile.password;
 
     return plainToInstance(ReadUserDto, updateUserProfile);
+  }
+
+  // FUNÇÃO PARA ENVIAR UM LINK PARA O CLIENTE
+  async redefinitionPasswordInUser(id: string) {
+    this.getUserRepository();
+    const studio = TenantProvider.connection.name;
+
+    if (!uuidValidate(id)) {
+      throw new InternalServerErrorException('Id informado não é válido.');
+    }
+
+    const userExists = await this.userRepository.findOne({
+      where: { id },
+    });
+
+    if (!userExists) {
+      throw new NotFoundException('Identificador do usuário não encontrado');
+    }
+
+    const resetUserPassword = Object.assign(userExists, {
+      password: null,
+      token_isvalid: false,
+    });
+
+    const resetUserPassordProfile = await this.userRepository.save(
+      resetUserPassword,
+    );
+
+    if (!resetUserPassordProfile) {
+      throw new InternalServerErrorException('Falha ao resetar senha');
+    }
+    // Parte para enviar o email
+    if (studio) {
+      const templatePath = resolve(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        '..',
+        'views',
+        'emails',
+        'generate-password.hbs',
+      );
+
+      const nameClient = `${userExists.name.toUpperCase()} ${userExists.lastname.toUpperCase()}`;
+
+      const variables = {
+        name: nameClient,
+        date: moment().format('DD/MM/YYYY'),
+        link: `${process.env.URL_PRINCIPAL}/${studio}/${process.env.URL_NEW_PASSWORD}${userExists.token}&email=${userExists.email}`,
+      };
+
+      await this.mailsService.sendEmail(
+        userExists.email,
+        'Criação de senha para acessar o estúdio',
+        variables,
+        templatePath,
+      );
+
+      return { resetPassword: true };
+    }
   }
 
   // FUNÇÃO PARA ATUALIZAR UMA SENHA DO USUÁRIO
@@ -276,21 +353,6 @@ export class UserService {
     delete updateUserProfile.password;
 
     return plainToInstance(ReadUserDto, updateUserProfile);
-  }
-
-  // FUNÇÃO PARA VALIDAR E VERIFICAR UM E-MAIL
-  async availableEmail(email: string) {
-    const company = await this.userRepository.findOne({
-      where: { email: email },
-    });
-    if (company)
-      throw new BadRequestException({
-        statusCode: 400,
-        message: 'E-mail já em uso.',
-        available: false,
-      });
-
-    return { available: true };
   }
 
   // FUNÇÃO PARA RECUPERAR UMA SENHA DO USUÁRIO

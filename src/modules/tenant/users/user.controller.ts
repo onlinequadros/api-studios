@@ -102,6 +102,12 @@ export class UserController {
     );
   }
 
+  // RESETA A SENHA DO USUÁRIO PELO ESTÚDIO DO FOTÓGRAFO
+  @Patch('reset-pass-in-studio/:id')
+  async redefinitionPasswordInUser(@Param('id') id: string) {
+    return this.userService.redefinitionPasswordInUser(id);
+  }
+
   // RECUPERA A SENHA DO USUÁRIO
   @Patch('forgot-password')
   async ForgotPassword(@Body() forgotPass: ForgotPassword): Promise<boolean> {
