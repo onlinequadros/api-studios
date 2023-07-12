@@ -118,6 +118,22 @@ export class ProductStudioService {
     return plainToInstance(ReadProductStudioDto, product);
   }
 
+  // FUNÇÃO PARA BUSCAR AS IMAGENS PARA O ARQUIVO ZIP
+  async findImagesInZip(slug: string): Promise<ReadProductStudioDto> {
+    this.getProductStudioRepository();
+    const product = await this.productStudioRepository.findOne({
+      where: { slug },
+      relations: ['product_studio_photo'],
+      select: ['id', 'product_studio_photo'],
+    });
+
+    if (!product) {
+      throw new NotFoundException(MessagesHelper.PRODUCT_NOT_FOUND);
+    }
+
+    return plainToClass(ReadProductStudioDto, product);
+  }
+
   // FUNÇÃO PARA BUSCAR AS IMAGENS DE UM PRODUTO
   async findImages(slug: string): Promise<ReadProductStudioDto> {
     this.getProductStudioRepository();

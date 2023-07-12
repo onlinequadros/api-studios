@@ -5,7 +5,6 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryColumn,
-  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
@@ -39,7 +38,7 @@ export class ProductStudioPhoto {
 
   @ManyToOne(() => ProductStudio)
   @JoinColumn({ name: 'product_photo_id' })
-  product_photo_id: ProductStudio;
+  product_photo: ProductStudio;
 
   @CreateDateColumn()
   created_at: Date;

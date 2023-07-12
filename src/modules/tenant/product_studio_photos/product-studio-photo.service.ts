@@ -52,33 +52,31 @@ export class ProductStudioPhotoService {
     );
   }
 
+  async getImagesBySlug(slug: string, userType: string) {
+    const where = {
+      product_photo: { slug },
+      checked: true,
+      order: true,
+    };
+
+    if (userType === 'guest') {
+      where['visible'] = true;
+    }
+
+    return this.productStudioPhotoRepository.find({
+      where,
+      relations: ['product_photo'],
+      select: ['id', 'url', 'photo'],
+    });
+  }
+
   async getImagesZipUrl(studio: string, usertype: string) {
     this.getProductStudioPhotoRepository();
-
-    if (usertype === 'guest') {
-      const productsStudioPhotosGuest =
-        await this.productStudioPhotoRepository.find({
-          where: {
-            checked: true,
-            order: true,
-            visible: true,
-          },
-          select: ['id', 'url', 'photo'],
-        });
-      return this.awsS3Service.zipFiles(studio, productsStudioPhotosGuest);
-    }
-
-    if (usertype === 'client') {
-      const productsStudioPhotosClient =
-        await this.productStudioPhotoRepository.find({
-          where: {
-            checked: true,
-            order: true,
-          },
-          select: ['id', 'url', 'photo'],
-        });
-      return this.awsS3Service.zipFiles(studio, productsStudioPhotosClient);
-    }
+    const productsStudioPhotosGuest = await this.getImagesBySlug(
+      studio,
+      usertype,
+    );
+    return this.awsS3Service.zipFiles(studio, productsStudioPhotosGuest);
   }
 
   async findAllImagesHigh(imgIds: string[]): Promise<any[]> {
@@ -122,7 +120,7 @@ export class ProductStudioPhotoService {
           photo: element.image,
           feature_photo: false,
           url: '123456789',
-          product_photo_id: {
+          product_photo: {
             id: productStudioPhoto.products_id,
           },
         });
@@ -250,7 +248,7 @@ export class ProductStudioPhotoService {
           low_resolution_image: Location,
           checked: false,
           order: false,
-          product_photo_id: {
+          product_photo: {
             id: products_id,
           },
         });

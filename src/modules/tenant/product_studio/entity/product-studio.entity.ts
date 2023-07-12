@@ -81,7 +81,7 @@ export class ProductStudio {
 
   @OneToMany(
     () => ProductStudioPhoto,
-    (studioPhoto) => studioPhoto.product_photo_id,
+    (studioPhoto) => studioPhoto.product_photo,
     {
       cascade: true,
       nullable: true,

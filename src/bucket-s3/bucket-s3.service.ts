@@ -179,6 +179,7 @@ export class BucketS3Service {
     for (const file of files) {
       await this.getObject(outputDir, file.url, file.name || file.photo);
     }
+
     await this.zipDirectory(`tmp/${outputDir}`);
     const { filePath } = await this.uploadLocalFileToBucket(
       `zip/photos/photos-${new Date().getTime()}.zip`,

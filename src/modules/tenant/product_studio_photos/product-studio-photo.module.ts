@@ -9,12 +9,13 @@ import { EncryptedService } from '../../../modules/utils/encrypted.service';
 import { ProductStudioService } from '../product_studio/product-studio.service';
 import { ProductStudioDinamicRepository } from '../product_studio/repositories/product-studio.repository';
 import { ImagesService } from '../../../modules/utils/images.service';
+import { ProductsModule } from 'src/modules/master/products/products.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ProductStudioPhoto]),
     CompaniesModule,
-    // ProductModule,
+    ProductsModule,
   ],
   controllers: [ProductStudioPhotoController],
   providers: [
@@ -23,7 +24,7 @@ import { ImagesService } from '../../../modules/utils/images.service';
     BucketS3Service,
     EncryptedService,
     ProductStudioDinamicRepository,
-    ImagesService
+    ImagesService,
   ],
   exports: [ProductStudioPhotoService],
 })
