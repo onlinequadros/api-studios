@@ -27,6 +27,7 @@ import { FinanceModule } from './modules/tenant/finances/finance.module';
 import { WalletProfessionalModule } from './modules/tenant/wallet/wallet.module';
 import { PaymentGetNetModule } from './modules/tenant/paymentGetNet/payment-getnet.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ZipCacheModule } from './modules/tenant/zip-cache/zip-cache.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     FinanceModule,
     WalletProfessionalModule,
     PaymentGetNetModule,
+    ZipCacheModule,
   ],
   controllers: [],
   providers: [],

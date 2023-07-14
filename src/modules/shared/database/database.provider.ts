@@ -12,6 +12,7 @@ import { OrdersExtraItem } from '../../../modules/tenant/orders/entities/orders-
 import { OrdersExtraPhotos } from '../../../modules/tenant/orders/entities/orders_extra_photos.entity';
 import { LinkSharing } from '../../tenant/link_sharing/entity/link-sharing.entity';
 import { Wallet } from '../../tenant/wallet/entities/wallet.entity';
+import { ZipCache } from 'src/modules/tenant/zip-cache/entity/zip-cache.entity';
 
 export class DatabaseProvider {
   async getConnection(
@@ -43,6 +44,7 @@ export class DatabaseProvider {
               OrdersExtraPhotos,
               LinkSharing,
               Wallet,
+              ZipCache,
             ]
           : [],
       ssl: false,

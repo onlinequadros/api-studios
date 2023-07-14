@@ -31,12 +31,19 @@ export class ProductStudioPhotoController {
     return this.productStudioPhotoService.findAll();
   }
 
-  @Get('/link/:studio/:usertype')
+  @Get('/link/:studio/:usertype/:name/:email')
   async getImagesZipUrl(
     @Param('studio') studio: string,
     @Param('usertype') usertype: string,
+    @Param('name') name: string,
+    @Param('email') email: string,
   ) {
-    return this.productStudioPhotoService.getImagesZipUrl(studio, usertype);
+    return this.productStudioPhotoService.getImagesZipUrl(
+      studio,
+      usertype,
+      name,
+      email,
+    );
   }
 
   @Get('/images-high')

@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as bufferImageSize from 'buffer-image-size';
+import { v4 as uuidV4 } from 'uuid';
 import {
   BadGatewayException,
   Injectable,
@@ -70,13 +71,28 @@ export class ProductStudioPhotoService {
     });
   }
 
-  async getImagesZipUrl(studio: string, usertype: string) {
+  async getImagesZipUrl(
+    studio: string,
+    usertype: string,
+    name: string,
+    email: string,
+  ) {
     this.getProductStudioPhotoRepository();
+    const idCache = uuidV4();
+
     const productsStudioPhotosGuest = await this.getImagesBySlug(
       studio,
       usertype,
     );
-    return this.awsS3Service.zipFiles(studio, productsStudioPhotosGuest);
+    void this.awsS3Service.zipFiles(
+      studio,
+      idCache,
+      name,
+      email,
+      productsStudioPhotosGuest,
+    );
+
+    return { id: idCache };
   }
 
   async findAllImagesHigh(imgIds: string[]): Promise<any[]> {

@@ -5,14 +5,26 @@ import { MessagesHelper } from '../helpers/messages.helpers';
 const AmazonS3URI = require('amazon-s3-uri');
 import * as archiver from 'archiver';
 import * as fs from 'fs';
+import { ZipCacheService } from 'src/modules/tenant/zip-cache/zip-cache.service';
+import { CreateZipCacheImageDto } from 'src/modules/tenant/zip-cache/interface/zip-cache.interface';
+import { resolve } from 'path';
+import * as moment from 'moment';
+import { MailsStudioService } from 'src/modules/tenant/mails/mail-studio.service';
 
 @Injectable()
 export class BucketS3Service {
   private readonly s3: S3;
+
+  private zipCacheService: ZipCacheService;
+  private mailsService: MailsStudioService;
+
   constructor() {
     config.getCredentials(function (err) {
       if (err) console.log(err.stack);
     });
+    this.zipCacheService = new ZipCacheService();
+    this.mailsService = new MailsStudioService();
+
     this.s3 = new S3({
       accessKeyId: process.env.AWS_ACCESS_KEY_ID,
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -104,7 +116,6 @@ export class BucketS3Service {
     try {
       return await this.s3.putObject(params).promise();
     } catch (error) {
-      console.error('DEBUG ERROR 02');
       throw new BadRequestException(
         MessagesHelper.FAILED_TO_CREATE_FOLDER,
         error.stack,
@@ -121,7 +132,6 @@ export class BucketS3Service {
     try {
       return await this.s3.deleteObject(params).promise();
     } catch (error) {
-      console.error('DEBUG ERROR 03');
       throw new BadRequestException(
         MessagesHelper.FAILED_REMOVED_FOLDER,
         error.stack,
@@ -175,9 +185,32 @@ export class BucketS3Service {
     }
   }
 
-  async zipFiles(outputDir: string, files: Array<Record<string, any>>) {
+  async createRegisterZipCache(zipFiles: CreateZipCacheImageDto) {
+    await this.zipCacheService.insertZipCache(zipFiles);
+  }
+
+  async updateProgressZipCache(idCache: string, progress: number) {
+    await this.zipCacheService.updateZipCache(idCache, {
+      progress: Math.round(progress),
+    });
+  }
+
+  async zipFiles(
+    outputDir: string,
+    idCache: string,
+    name: string,
+    email: string,
+    files: Array<Record<string, any>>,
+  ) {
+    let count = 0;
+    await this.createRegisterZipCache({
+      id: idCache,
+    });
     for (const file of files) {
       await this.getObject(outputDir, file.url, file.name || file.photo);
+
+      ++count;
+      await this.updateProgressZipCache(idCache, (count / files.length) * 100);
     }
 
     await this.zipDirectory(`tmp/${outputDir}`);
@@ -188,7 +221,32 @@ export class BucketS3Service {
 
     //deletar a pasta temp
     await fs.promises.rm(`tmp`, { recursive: true });
-    return this.getSignedUrl(filePath);
+
+    const url = await this.getSignedUrl(filePath);
+    await this.zipCacheService.insertUrlInZipCache(idCache, url);
+
+    if (url) {
+      const templatePath = resolve(
+        __dirname,
+        '..',
+        '..',
+        'views',
+        'emails',
+        'link-zip-album.hbs',
+      );
+      const nameClient = `${name.toUpperCase()}`;
+      const variables = {
+        name: nameClient,
+        date: moment().format('DD/MM/YYYY'),
+        link: url,
+      };
+      await this.mailsService.sendEmail(
+        email,
+        'Link para baixar seu álbum.',
+        variables,
+        templatePath,
+      );
+    }
   }
 
   public async getSignedUrl(file: string) {
