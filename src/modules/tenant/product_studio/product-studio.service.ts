@@ -20,12 +20,14 @@ import { ProductStudioDinamicRepository } from './repositories/product-studio.re
 import { MessagesHelper } from '../../../helpers/messages.helpers';
 import { checkCompany } from '../../../modules/utils/checkCompany';
 import { UpdateProductStudioDTO } from './dtos/updateProduct.dto';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { DatabaseProvider } from 'src/modules/shared/database/database.provider';
+import { CompaniesService } from 'src/modules/master/companies/companies.service';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
-@Injectable({ scope: Scope.REQUEST })
+@Injectable({ scope: Scope.DEFAULT })
 export class ProductStudioService {
   private productStudioRepository: Repository<ProductStudio>;
+  private productStudioRepository2: Repository<ProductStudio>;
 
   getProductStudioRepository() {
     if (TenantProvider.connection) {
@@ -37,6 +39,7 @@ export class ProductStudioService {
   constructor(
     private readonly productStudioDinamicRepository: ProductStudioDinamicRepository,
     private readonly s3Service: BucketS3Service,
+    private readonly companiesService: CompaniesService,
   ) {
     this.getProductStudioRepository();
   }
@@ -322,8 +325,31 @@ export class ProductStudioService {
     return plainToClass(ReadProductStudioDto, productUpdatted);
   }
 
-  // @Cron(CronExpression.EVERY_10_SECONDS)
-  async sendMessageInAlbumWitchDeadline() {
-    console.log('teste 2');
+  async findAlbumsInStudio(studio: string) {
+    TenantProvider.connection = await new DatabaseProvider().getConnection(
+      studio,
+      true,
+    );
+
+    this.productStudioRepository2 =
+      TenantProvider.connection.getRepository(ProductStudio);
+
+    const response = await this.productStudioRepository2
+      .createQueryBuilder('product_studio')
+      .leftJoinAndSelect('product_studio.users', 'users')
+      .where('product_studio.active_deadline = :activeDeadline', {
+        activeDeadline: true,
+      })
+      .select([
+        'product_studio.id',
+        'product_studio.name',
+        'product_studio.deadline',
+      ])
+      .addSelect(['users.id', 'users.name', 'users.email'])
+      .getMany();
+
+    TenantProvider.connection.close();
+
+    return response;
   }
 }
