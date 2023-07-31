@@ -89,7 +89,7 @@ export class AuthServiceTenant {
     });
 
     if (!user) {
-      return undefined;
+      return { studio: undefined };
     }
 
     return { studio: TenantProvider.connection.name };
