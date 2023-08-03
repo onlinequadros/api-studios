@@ -318,6 +318,7 @@ export class UserService {
         resetPassword: true,
         link: variables.link,
         phone: userExists.phone,
+        email: userExists.email,
       };
     }
   }
