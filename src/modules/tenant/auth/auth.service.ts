@@ -1,6 +1,10 @@
 import { compare } from 'bcryptjs';
 
-import { Injectable } from '@nestjs/common';
+import {
+  BadGatewayException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { ValidateAuthDto } from './dto/validate-auth.dto';
@@ -26,6 +30,10 @@ export class AuthServiceTenant {
     this.getUserRepository();
 
     const user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user.token_isvalid) {
+      return null;
+    }
 
     if (user && (await compare(pass, user.password))) {
       const {

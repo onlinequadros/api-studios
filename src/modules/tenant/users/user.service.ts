@@ -376,6 +376,7 @@ export class UserService {
       const resetCodeForgotPassword = Object.assign(userExists, {
         ...userExists,
         forgot_password: null,
+        token_isvalid: true,
       });
 
       await this.userRepository.save(resetCodeForgotPassword);

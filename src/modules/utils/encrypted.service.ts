@@ -11,4 +11,13 @@ export class EncryptedService {
 
     return encryptedImageName;
   }
+
+  async addExtensionsInImageName(originalname) {
+    const splitNameImage = originalname.split('.');
+    const extension = splitNameImage.pop();
+    const encryptedName = uuidv4(splitNameImage.shift());
+    const encryptedImageName = encryptedName + '.' + extension;
+
+    return encryptedImageName;
+  }
 }

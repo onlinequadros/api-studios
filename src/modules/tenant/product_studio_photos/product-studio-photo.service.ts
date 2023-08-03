@@ -230,6 +230,7 @@ export class ProductStudioPhotoService {
         );
         const encryptedImageName =
           await this.encryptedService.encryptedImageName(element.originalname);
+
         const fileName = `${encryptedImageName.split('.')}.webp`;
 
         const waterMarkImage = checkWaterMark(imageSize);
