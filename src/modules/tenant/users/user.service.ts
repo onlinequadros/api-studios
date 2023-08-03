@@ -314,7 +314,11 @@ export class UserService {
         templatePath,
       );
 
-      return { resetPassword: true };
+      return {
+        resetPassword: true,
+        link: variables.link,
+        phone: userExists.phone,
+      };
     }
   }
 
