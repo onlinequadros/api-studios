@@ -31,7 +31,7 @@ export class AuthServiceTenant {
 
     const user = await this.userRepository.findOne({ where: { email } });
 
-    if (!user.token_isvalid) {
+    if (user.token_isvalid === false) {
       return null;
     }
 
