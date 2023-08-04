@@ -46,7 +46,7 @@ export class ProductStudioService {
 
   // FUNÇÃO PARA BUSCAR TODOS OS PRODUTOS
   async findAll({
-    limit = 10,
+    limit = 100,
     page = 1,
     search = '',
   }: IReadProductsStudioParams): Promise<IResponseProductStudioData> {

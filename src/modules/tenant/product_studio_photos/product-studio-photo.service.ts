@@ -229,9 +229,13 @@ export class ProductStudioPhotoService {
           element.buffer,
         );
         const encryptedImageName =
-          await this.encryptedService.encryptedImageName(element.originalname);
+          await this.encryptedService.addExtensionsInImageName(
+            element.originalname,
+          );
 
-        const fileName = `${encryptedImageName.split('.')}.webp`;
+        const fileName = `${encryptedImageName.split('.')[0]}.webp`;
+
+        console.log('nova nome ', fileName);
 
         const waterMarkImage = checkWaterMark(imageSize);
 
