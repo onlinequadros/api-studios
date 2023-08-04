@@ -1,10 +1,6 @@
 import { compare } from 'bcryptjs';
 
-import {
-  BadGatewayException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { ValidateAuthDto } from './dto/validate-auth.dto';
@@ -31,7 +27,7 @@ export class AuthServiceTenant {
 
     const user = await this.userRepository.findOne({ where: { email } });
 
-    if (user.token_isvalid === false) {
+    if (!user || user.token_isvalid === false) {
       return null;
     }
 
