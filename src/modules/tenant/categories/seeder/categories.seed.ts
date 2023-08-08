@@ -82,4 +82,10 @@ export const categories: CreateCategoryDto[] = [
     name: 'Show',
     sku: 'SH0015',
   },
+
+  {
+    id: uuidv4(),
+    name: 'Ensaio',
+    sku: 'EN0016',
+  },
 ];
