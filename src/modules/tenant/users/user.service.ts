@@ -155,7 +155,7 @@ export class UserService {
         ? Object.assign(user, {
             password: await hash(user.password, 8),
             token: uuidV4().replace('-', ''),
-            token_isvalid: false,
+            token_isvalid: user.token_isvalid ? user.token_isvalid : false,
           })
         : Object.assign(user, {
             token: String(uuidV4()).slice(-12),
