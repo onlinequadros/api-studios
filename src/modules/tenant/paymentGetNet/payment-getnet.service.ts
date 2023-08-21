@@ -265,6 +265,7 @@ export class PaymentGetNetService {
 
         return responsePaymentCredit;
       } catch (err) {
+        console.log('payment card ', err);
         throw new BadRequestException('Erro no pagamento', {
           cause: new Error(),
           description: 'Falha ao realizar o pagamento no cartão',
