@@ -17,6 +17,7 @@ export class getNetCreditCardDTO {
   brand?: string;
   expiration_month: string;
   expiration_year: string;
+  security_code: number;
 
   @IsNotEmptyObject()
   @ValidateNested()

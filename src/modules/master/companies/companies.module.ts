@@ -151,6 +151,8 @@ export class CompaniesModule {
         { path: '/api/getnet/credit-pix', method: RequestMethod.ALL },
         { path: '/api/getnet/homolog-credit-card', method: RequestMethod.ALL },
         { path: '/api/getnet/homolog-credit-pix', method: RequestMethod.ALL },
+        { path: '/api/getnet/prod-credit-card', method: RequestMethod.ALL },
+        { path: '/api/getnet/prod-credit-pix', method: RequestMethod.ALL },
         {
           path: '/api/getnet/homolog-cancel-credit-pix',
           method: RequestMethod.ALL,

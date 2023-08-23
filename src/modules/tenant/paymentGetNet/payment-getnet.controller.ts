@@ -26,6 +26,15 @@ export class PaymentGetNetController {
     );
   }
 
+  @Post('/prod-credit-card')
+  async pagGetNetProdCreditCard(
+    @Body() getnetCreditCardDTO: getNetHomologCreditCardDTO,
+  ) {
+    return this.paymentGetNetService.paymentProdCreditCardGetNet(
+      getnetCreditCardDTO,
+    );
+  }
+
   @Post('/credit-pix')
   async pagGetNetCreditPix(@Body() getnetCreditPixDTO: getNetCreditPixDTO) {
     return this.paymentGetNetService.paymentCreditPixGetNet(getnetCreditPixDTO);
@@ -36,6 +45,15 @@ export class PaymentGetNetController {
     @Body() getnetHomologCreditPixDTO: getNetHomologCreditPixDTO,
   ) {
     return this.paymentGetNetService.paymentHomologCreditPixGetNet(
+      getnetHomologCreditPixDTO,
+    );
+  }
+
+  @Post('/prod-credit-pix')
+  async pagGetNetProdCreditPix(
+    @Body() getnetHomologCreditPixDTO: getNetHomologCreditPixDTO,
+  ) {
+    return this.paymentGetNetService.paymentProdCreditPixGetNet(
       getnetHomologCreditPixDTO,
     );
   }
