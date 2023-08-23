@@ -28,6 +28,15 @@ export class Client {
   phone: string;
 
   @Column({ nullable: true })
+  whatsapp_phone: string;
+
+  @Column({ nullable: true })
+  about_company: string;
+
+  @Column('text', { nullable: true })
+  links: string;
+
+  @Column({ nullable: true })
   sex?: 'Masculino' | 'Feminino';
 
   @Column()

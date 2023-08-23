@@ -199,6 +199,24 @@ export class CreateClientDto {
   @Expose()
   readonly account_pix_bank: string;
 
+  @IsOptional()
+  @IsPhoneNumber('BR')
+  @ApiProperty({ default: '11999999999' })
+  @Expose()
+  readonly whatsapp_phone: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({ default: 'Sobre a Empresa' })
+  @Expose()
+  readonly about_company: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({ default: 'Links' })
+  @Expose()
+  readonly links: string;
+
   @Expose()
   readonly deleted_at?: Date;
 }
