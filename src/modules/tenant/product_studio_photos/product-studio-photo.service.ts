@@ -23,6 +23,7 @@ import { CheckImagesDTO } from './dto/check.dto';
 import * as sharp from 'sharp';
 import { ImagesService } from '../../../modules/utils/images.service';
 import { checkWaterMark } from 'src/modules/utils/checkWaterMark';
+import { BuyImages } from './interface/update-buy.interface';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 @Injectable({ scope: Scope.REQUEST })
@@ -309,6 +310,26 @@ export class ProductStudioPhotoService {
 
     const image = await this.productStudioPhotoRepository.findOne(id);
     image.visible = !image.visible;
+
+    return await this.productStudioPhotoRepository.save(image);
+  }
+
+  // FUNÇÃO PARA ATIVAR UM QUADRO QUANTO FINALIZOU A COMPRA FÍSICA *************
+  async setBuyImageFrame(id: string, buyImages: BuyImages) {
+    this.getProductStudioPhotoRepository();
+
+    const image = await this.productStudioPhotoRepository.findOne(id);
+    image.frame_buy = buyImages.frame_buy;
+
+    return await this.productStudioPhotoRepository.save(image);
+  }
+
+  // FUNÇÃO PARA ATIVAR PORTA RETRATO QUANDO FINALIZOU A COMPRA FÍSICA *********
+  async setBuyImagePictureFrame(id: string, buyImages: BuyImages) {
+    this.getProductStudioPhotoRepository();
+
+    const image = await this.productStudioPhotoRepository.findOne(id);
+    image.picture_frame_buy = buyImages.picture_frame_buy;
 
     return await this.productStudioPhotoRepository.save(image);
   }

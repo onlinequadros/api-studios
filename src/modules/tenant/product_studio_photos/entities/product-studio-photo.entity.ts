@@ -33,6 +33,12 @@ export class ProductStudioPhoto {
   @Column({ default: true })
   visible: boolean;
 
+  @Column({ default: false })
+  frame_buy: boolean;
+
+  @Column({ default: false })
+  picture_frame_buy: boolean;
+
   @Column()
   order: boolean;
 

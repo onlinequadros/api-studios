@@ -19,6 +19,7 @@ import { SetCoverPhotoDTO } from '../product_studio/dtos/setCoverPhoto.dto';
 import { RemoveImagesDTO } from './dto/remove-images.dto';
 import { CheckImagesDTO } from './dto/check.dto';
 import { ProductStudioPhoto } from './entities/product-studio-photo.entity';
+import { BuyImages } from './interface/update-buy.interface';
 
 @Controller('product-studio-photo')
 export class ProductStudioPhotoController {
@@ -98,6 +99,25 @@ export class ProductStudioPhotoController {
   @Patch('/visible-image/:id')
   async setVisibleImage(@Param('id') id: string) {
     return await this.productStudioPhotoService.setOptionVisibleImage(id);
+  }
+
+  @Patch('/buy-image-frame/:id')
+  async setBuyImageFrame(
+    @Param('id') id: string,
+    @Body() buyImages: BuyImages,
+  ) {
+    return await this.productStudioPhotoService.setBuyImageFrame(id, buyImages);
+  }
+
+  @Patch('/buy-image-picture-frame/:id')
+  async setBuyImagePictureFrame(
+    @Param('id') id: string,
+    @Body() buyImages: BuyImages,
+  ) {
+    return await this.productStudioPhotoService.setBuyImagePictureFrame(
+      id,
+      buyImages,
+    );
   }
 
   @Delete()
