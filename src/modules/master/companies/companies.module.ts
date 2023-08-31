@@ -157,6 +157,7 @@ export class CompaniesModule {
           path: '/api/getnet/homolog-cancel-credit-pix',
           method: RequestMethod.ALL,
         },
+        { path: '/api/getnet-notification/pix', method: RequestMethod.ALL },
       )
       .forRoutes('*');
   }

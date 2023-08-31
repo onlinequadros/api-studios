@@ -28,6 +28,7 @@ import { WalletProfessionalModule } from './modules/tenant/wallet/wallet.module'
 import { PaymentGetNetModule } from './modules/tenant/paymentGetNet/payment-getnet.module';
 import { ZipCacheModule } from './modules/tenant/zip-cache/zip-cache.module';
 import { CronSendMessageModule } from './modules/tenant/sendEmailCron/cron-send-message.module';
+import { PaymentGetNetNotificationModule } from './modules/tenant/paymentGetNetNotification/payment-getnet-notification.module';
 
 @Module({
   imports: [
@@ -71,6 +72,7 @@ import { CronSendMessageModule } from './modules/tenant/sendEmailCron/cron-send-
     PaymentGetNetModule,
     ZipCacheModule,
     CronSendMessageModule,
+    PaymentGetNetNotificationModule,
   ],
   controllers: [],
   providers: [],
