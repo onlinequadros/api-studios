@@ -33,5 +33,6 @@ export class PaymentGetNetNotificationService {
     );
 
     console.log('response Pix ', responsePixNotification);
+    return responsePixNotification;
   }
 }
