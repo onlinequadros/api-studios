@@ -8,7 +8,6 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { CheckImagesDTO } from '../product_studio_photos/dto/check.dto';
 import { CreateOrdersDTO } from './dto/createOrder.dto';
 import { UpdateOrdersDTO } from './dto/updateOrder.dto';
 import { UpdateOrderItemsDto } from './dto/updateOrderItems.dto';

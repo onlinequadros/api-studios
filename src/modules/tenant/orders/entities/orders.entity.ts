@@ -23,6 +23,9 @@ export class Orders {
   user_name: string;
 
   @Column()
+  number_order: number;
+
+  @Column()
   receiver_name: string;
 
   @Column()

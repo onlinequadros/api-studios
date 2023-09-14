@@ -236,8 +236,6 @@ export class ProductStudioPhotoService {
 
         const fileName = `${encryptedImageName.split('.')[0]}.webp`;
 
-        console.log('nova nome ', fileName);
-
         const waterMarkImage = checkWaterMark(imageSize);
 
         await this.waterMark(

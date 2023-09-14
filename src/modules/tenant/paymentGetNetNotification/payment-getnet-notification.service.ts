@@ -24,6 +24,7 @@ export class PaymentGetNetNotificationService {
     terminal_nsu,
   }: IPaymentPixParams) {
     // return { ok: true };
+    console.log('01');
     const responsePixNotification = await lastValueFrom(
       this.httpService
         .get(
@@ -32,6 +33,7 @@ export class PaymentGetNetNotificationService {
         .pipe(map((response) => response.data)),
     );
 
+    console.log('02');
     console.log('response Pix ', responsePixNotification);
     return responsePixNotification;
   }

@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
   IsNotEmptyObject,
+  IsNumber,
   IsString,
   ValidateNested,
 } from 'class-validator';
@@ -11,7 +12,6 @@ import { NumberOrderType } from '../types/order.type';
 export class getNetCreditCardDTO {
   @IsString()
   @IsNotEmpty()
-  amount: string;
   card_number: string;
   cardholder_name: string;
   brand?: string;
@@ -28,4 +28,8 @@ export class getNetCreditCardDTO {
   @ValidateNested()
   @Type(() => CustomerPaymentType)
   customer: CustomerPaymentType;
+
+  @IsNumber()
+  @IsNotEmpty()
+  amount: number;
 }

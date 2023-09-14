@@ -158,6 +158,8 @@ export class CompaniesModule {
           method: RequestMethod.ALL,
         },
         { path: '/api/getnet-notification/pix', method: RequestMethod.ALL },
+        { path: '/api/profit-percentage', method: RequestMethod.ALL },
+        { path: '/api/profit-percentage/:id', method: RequestMethod.ALL },
       )
       .forRoutes('*');
   }

@@ -45,7 +45,10 @@ export class OrdersService {
     const { orders_extra_items, orders_extra_photos, orders_photos } =
       createOrdersDTO;
 
+    const countOrders = await this.ordersRepository.count();
+
     const order = await this.ordersRepository.create(createOrdersDTO);
+    order.number_order = countOrders + 1;
     order.orders_extra_items = orders_extra_items;
     order.orders_extra_photos = orders_extra_photos;
     order.orders_photos = orders_photos;

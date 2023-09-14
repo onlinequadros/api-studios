@@ -29,6 +29,7 @@ import { PaymentGetNetModule } from './modules/tenant/paymentGetNet/payment-getn
 import { ZipCacheModule } from './modules/tenant/zip-cache/zip-cache.module';
 import { CronSendMessageModule } from './modules/tenant/sendEmailCron/cron-send-message.module';
 import { PaymentGetNetNotificationModule } from './modules/tenant/paymentGetNetNotification/payment-getnet-notification.module';
+import { ProfitPercentageModule } from './modules/master/profit-percentage/profit-percentage.module';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { PaymentGetNetNotificationModule } from './modules/tenant/paymentGetNetN
     ZipCacheModule,
     CronSendMessageModule,
     PaymentGetNetNotificationModule,
+    ProfitPercentageModule,
   ],
   controllers: [],
   providers: [],

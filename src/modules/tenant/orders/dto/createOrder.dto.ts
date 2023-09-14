@@ -8,7 +8,6 @@ import {
   IsNumber,
   IsIn,
   Validate,
-  IsArray,
 } from 'class-validator';
 import { ValidateCpf } from '../../../custom/decorators/validateCpf';
 

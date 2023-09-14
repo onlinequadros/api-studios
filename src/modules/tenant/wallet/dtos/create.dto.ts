@@ -1,7 +1,13 @@
 import { Expose } from 'class-transformer';
 
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsIn, IsNotEmpty, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsIn,
+  IsNotEmpty,
+  IsBoolean,
+  IsNumber,
+} from 'class-validator';
 
 export class CreateWalletDto {
   @IsString()
@@ -28,6 +34,52 @@ export class CreateWalletDto {
   @Expose()
   readonly value: string;
 
+  @IsNumber()
+  @IsNotEmpty()
+  @Expose()
+  number_order: number;
+
+  @IsString()
+  @IsNotEmpty()
+  @Expose()
+  name_client: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  percentage_studio: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  percentage_photograph: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  value_total_product_fisic: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  value_total_photo_extra: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  commission_studio_in_photo: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  commission_photograph_in_frame: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  value_total_frame_with_discount: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  value_total_photograph_with_discount: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  value_total_photograph_with_frame: number;
+
   @IsBoolean()
   @IsNotEmpty()
   @ApiProperty({ default: false })
@@ -35,8 +87,8 @@ export class CreateWalletDto {
   readonly withdraw_visible: boolean;
 
   @IsString()
-  @IsIn(['ACCOMPLISHED', 'BLOCKED', 'AWAITRELEASE'])
+  @IsIn(['APPROVED', 'ACCOMPLISHED', 'BLOCKED', 'AWAITRELEASE'])
   @ApiProperty({ default: 'Autorização de pagamento' })
   @Expose()
-  readonly payment: 'ACCOMPLISHED' | 'BLOCKED' | 'AWAITRELEASE';
+  readonly payment: 'APPROVED' | 'ACCOMPLISHED' | 'BLOCKED' | 'AWAITRELEASE';
 }
