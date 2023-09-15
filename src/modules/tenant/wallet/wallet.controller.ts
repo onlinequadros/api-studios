@@ -12,6 +12,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { WalletsProfessionalService } from './wallet.service';
 import { IResponseWalletsData } from './interfaces/wallets.interface';
 import { CreateWalletDto, ReadWalletDto, UpdateWalletDto } from './dtos';
+import { UpdateWalletWitdrawDto } from './dtos/update-wallet-witdraw.dto';
 
 @Controller('wallets')
 export class WalletsProfessionalController {
@@ -25,8 +26,16 @@ export class WalletsProfessionalController {
     @Query('limit') limit: number,
     @Query('page') page: number,
     @Query('search') search: string,
+    @Query('from') from: string,
+    @Query('to') to: string,
   ): Promise<IResponseWalletsData> {
-    return this.walletProfessionalService.findAll({ limit, page, search });
+    return this.walletProfessionalService.findAll({
+      limit,
+      page,
+      search,
+      from,
+      to,
+    });
   }
 
   @Get('/admin')
@@ -52,7 +61,9 @@ export class WalletsProfessionalController {
 
   @Patch('/payment')
   @UseGuards(JwtAuthGuard)
-  async pathPayment(@Body() wallet: UpdateWalletDto): Promise<ReadWalletDto> {
+  async pathPayment(
+    @Body() wallet: UpdateWalletWitdrawDto,
+  ): Promise<ReadWalletDto> {
     return this.walletProfessionalService.pathPayment(wallet);
   }
 

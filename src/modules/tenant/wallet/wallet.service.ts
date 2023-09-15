@@ -7,7 +7,7 @@ import {
 import { plainToClass, plainToInstance } from 'class-transformer';
 import * as moment from 'moment';
 import { resolve } from 'path';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { Client } from '../clients/entities/client.entity';
 import { MailsStudioService } from '../mails/mail-studio.service';
 import { Orders } from '../orders/entities/orders.entity';
@@ -18,6 +18,8 @@ import {
   IReadWalletsParams,
   IResponseWalletsData,
 } from './interfaces/wallets.interface';
+import { formatedDateYearMontDay } from 'src/modules/utils/formatedDate';
+import { UpdateWalletWitdrawDto } from './dtos/update-wallet-witdraw.dto';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 @Injectable({ scope: Scope.REQUEST })
@@ -56,12 +58,25 @@ export class WalletsProfessionalService {
     limit = 10,
     page = 1,
     search = '',
+    from,
+    to,
   }: IReadWalletsParams): Promise<IResponseWalletsData> {
     const where = [];
+    const dateFormated = formatedDateYearMontDay(new Date(), true);
 
     if (search) {
       where.push({
-        payment: search,
+        status: search,
+      });
+    }
+
+    if (from || to) {
+      // nesse to está adicionando um dia na data
+      const toDateActual = to
+        ? formatedDateYearMontDay(to, true)
+        : dateFormated;
+      where.push({
+        created_at: Between(from, toDateActual),
       });
     }
 
@@ -167,8 +182,11 @@ export class WalletsProfessionalService {
   }
 
   // FUNÇÃO PARA SOLICITAR UM SAQUE NO ESTADO DA CARTEIRA
-  async pathPayment(updateWalletDTO: UpdateWalletDto): Promise<ReadWalletDto> {
+  async pathPayment(
+    updateWalletDTO: UpdateWalletWitdrawDto,
+  ): Promise<ReadWalletDto> {
     this.getWalletProfessionalRepository();
+
     try {
       const wallet = await this.walletProfessionalRepository.findOne({
         where: { id: updateWalletDTO.id },

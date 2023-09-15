@@ -45,9 +45,6 @@ export class FinanceService {
         .format('YYYY-MM-DD');
       const today = moment().format('YYYY-MM-DD');
 
-      // console.log('future ', futureDateExpiration);
-      // console.log('today ', today);
-
       // Pega o valor da foto e multiplica pela quantidade
       const sumPhotoExtra = Number(valuePhotoExtra) * countPhotosExtrasSelected;
 
