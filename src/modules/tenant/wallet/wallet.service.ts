@@ -20,6 +20,7 @@ import {
 } from './interfaces/wallets.interface';
 import { formatedDateYearMontDay } from 'src/modules/utils/formatedDate';
 import { UpdateWalletWitdrawDto } from './dtos/update-wallet-witdraw.dto';
+import { UpdateConfirmWalletDto } from './dtos/update-confirm-wallet.dto';
 
 //CADA REQUEST QUE SE CHAMA NA APLICAÇÃO ELA VAI CRIAR UMA NOVA INSTANCIA DESSA CLASSE
 @Injectable({ scope: Scope.REQUEST })
@@ -243,7 +244,7 @@ export class WalletsProfessionalService {
 
   // FUNÇÃO PARA ATUALIZAR O ESTADO DA CARTEIRA
   async pathConfirmAccept(
-    updateWalletDTO: UpdateWalletDto,
+    updateWalletDTO: UpdateConfirmWalletDto,
   ): Promise<ReadWalletDto> {
     this.getWalletProfessionalRepository();
     try {
@@ -270,7 +271,7 @@ export class WalletsProfessionalService {
 
   // FUNÇÃO PARA O ADMINISTRADOR FINALIZAR O PAGAMENTO
   async admFinishPayment(
-    updateWalletDTO: UpdateWalletDto,
+    updateWalletDTO: UpdateWalletWitdrawDto,
   ): Promise<ReadWalletDto> {
     this.getWalletProfessionalRepository();
     try {

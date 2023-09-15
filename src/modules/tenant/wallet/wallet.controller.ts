@@ -13,6 +13,7 @@ import { WalletsProfessionalService } from './wallet.service';
 import { IResponseWalletsData } from './interfaces/wallets.interface';
 import { CreateWalletDto, ReadWalletDto, UpdateWalletDto } from './dtos';
 import { UpdateWalletWitdrawDto } from './dtos/update-wallet-witdraw.dto';
+import { UpdateConfirmWalletDto } from './dtos/update-confirm-wallet.dto';
 
 @Controller('wallets')
 export class WalletsProfessionalController {
@@ -70,7 +71,7 @@ export class WalletsProfessionalController {
   @Patch('/confirm-accept')
   // @UseGuards(JwtAuthGuard)
   async pathConfirmAccept(
-    @Body() wallet: UpdateWalletDto,
+    @Body() wallet: UpdateConfirmWalletDto,
   ): Promise<ReadWalletDto> {
     return this.walletProfessionalService.pathConfirmAccept(wallet);
   }
@@ -78,7 +79,7 @@ export class WalletsProfessionalController {
   @Patch('/finish-payment')
   // @UseGuards(JwtAuthGuard)
   async admFinishPayment(
-    @Body() wallet: UpdateWalletDto,
+    @Body() wallet: UpdateWalletWitdrawDto,
   ): Promise<ReadWalletDto> {
     return this.walletProfessionalService.admFinishPayment(wallet);
   }
