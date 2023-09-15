@@ -67,7 +67,7 @@ export class WalletsProfessionalService {
 
     if (search) {
       where.push({
-        status: search,
+        payment: search,
       });
     }
 
