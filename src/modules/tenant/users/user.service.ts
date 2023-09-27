@@ -186,6 +186,7 @@ export class UserService {
           name: nameClient,
           date: moment().format('DD/MM/YYYY'),
           link: `${process.env.URL_PRINCIPAL}/${studio}/${process.env.URL_NEW_PASSWORD}${createdUser.token}&email=${createdUser.email}`,
+          link_login: `${process.env.URL_PRINCIPAL}/${studio}`,
         };
 
         await this.mailsService.sendEmail(
@@ -305,6 +306,7 @@ export class UserService {
         name: nameClient,
         date: moment().format('DD/MM/YYYY'),
         link: `${process.env.URL_PRINCIPAL}/${studio}/${process.env.URL_NEW_PASSWORD}${userExists.token}&email=${userExists.email}`,
+        link_login: `${process.env.URL_PRINCIPAL}/${studio}`,
       };
 
       await this.mailsService.sendEmail(

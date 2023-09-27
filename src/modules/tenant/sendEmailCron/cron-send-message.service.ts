@@ -51,6 +51,7 @@ export class CronSendMessageService {
                 name: nameClient,
                 datelimit: moment(album.deadline).format('DD/MM/YYYY'),
                 namealbum: album.name,
+                link_login: `${process.env.URL_PRINCIPAL}/${studio}`,
               };
               await this.mailsService.sendEmail(
                 user.email,

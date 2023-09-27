@@ -2,13 +2,75 @@
 <html>
   <head>
     <style>
-      .container {
-        width: 800px;
+      *{
         font-family: Arial, Helvetica, sans-serif;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }     
+      .container {
+        width: 100%;        
+      }
+      .header_bar {
+        width: 100%;
+        height: 24px;
+        background-color: #FC8110;
+      }
+      table, th, td {
+        border: none;
+      }
+      table, th, td {
+        border: none;
+        margin: 0;
+        padding: 0;
       }
 
-      span {
-        margin: 10px 0;
+      .box_header{
+        background-color: #26C6F9;  
+        height: 102px;
+        }
+
+        .box_header .box_text_header {
+          width: fit-content;
+          height: fit-content;
+          background-color: transparent;
+          margin: 0 auto;
+        }
+
+        .box_header .box_text_header .img_box_header {
+          width: 242px;
+          height: 100px;
+        }
+
+        .box_header .box_text_header h4 {
+          display: flex;
+          font-size: 22px;
+          color: #FFFFFF;
+          text-align: center;
+        }
+
+      .box_info {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+        align-items: center;  
+        margin: 0 auto;   
+        text-align: center; 
+      }
+
+      .box_info .box_info_content {
+        width: fit-content;
+        height: fit-content;
+        background-color: transparent;
+        margin: 0 auto;
+        padding-top: 20px;
+        padding-bottom: 20px;
+      }
+
+      .box_info .box_info_content .span_info {
+        font-size: 18px;
+        color: #535353;
+        text-align: center;
         display: block;
       }
 
@@ -20,28 +82,183 @@
         font-size: 18px;
         color: #000000;
       }
+
+      .button_reset {
+        width: 180px;
+        height: 48px;
+        background-color: #26C6F9;
+        border: none;
+        border-radius: 5px;
+        color: #FFFFFF;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+
+      .hr_separator {
+        width: 100%;
+        color: #535353;
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }      
+
+      {{!-- TERCEIRO BLOCO  --}}
+      .box_description {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+        align-items: center;  
+        margin: 0 auto;   
+        text-align: center;
+        
+      }
+
+      .box_description .box_description_content {
+        width: fit-content;
+        height: fit-content;
+        background-color: transparent;
+        margin: 0 auto;
+        padding-top: 20px;
+        padding-bottom: 20px;
+      }
+
+      .box_description .box_description_content .span_description {
+        color: #FC8110;
+        font-size: 20px;
+        text-align: center;
+        display: block;
+      }
+      
+      table{  
+        font-size: 16px;
+        text-align: left;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 300;
+        color: #535353;
+      }
+
+      tr {
+        width: 800px;
+        height: 48px
+      }
+
+      #line_text {
+        width: 440px;
+      }
+
+      #line_photo {
+        margin-left: 50px;
+          width: 360px;
+          
+      }
+
+      #img_photo {
+        margin-left: 52px;
+        width: 250px;
+        height: 250px;
+      }
+
+      #icon_check {
+        margin-right:2px;
+          width: 18px;
+          height: 18px
+      }
     </style>
   </head>
   <body>
     <div class="container">
 
-      <span>Prezado cliente {{name}},</span>
+      <div class="header_bar" />
 
-      <br/>
+      {{!-- HEADER  --}}
+      <div class="box_header">
+        <div class="box_text_header">        
+          <table style="width:100%">
+            <tr>
+              <td><img class="img_box_header" src="https://devonlinequadros.s3.amazonaws.com/template_handlebars/BANNER_MAILING_CLIENTES-IMG.png" /></td>
+              <td style="width: 400px;"><h4 style="margin-left: 12%;">ACESSO DO SEU ÁLBUM</h4></td>
+              <td><img class="img_box_header" src="https://devonlinequadros.s3.amazonaws.com/template_handlebars/BANNER_MAILING_CLIENTES-IMG2.png" /></td>
+            </tr>
+          </table>        
+        </div>
+      </div>
 
-      <span>O seu álbum {{namealbum}} está disponível para que você possa avaliar e selecionar as suas melhores fotos, 
+      {{!-- PRIMEIRO BLOCO DE AÇÃO E INFORMATIVO --}}
+      <div class="box_info">
+        <div class="box_info_content">
+          <span class="span_info">Prezado cliente {{name}}.</span>
+          <span class="span_info">O seu álbum {{namealbum}} está disponível para que você possa avaliar e selecionar as suas melhores fotos, 
         dessa forma será possível realizar o download ou comprar um quadro e até um porta retrato!</span>
+          <span class="span_info">O álbum possui um prazo de exibição e está perto da sua data limite 
+            <strong class="code">{{datelimit}}</strong>
+          </span>
+          <br /> 
+          <span>Qualquer dúvida, pode entrar em contato conosco!</span><br />
+          <div >   
+            <a href={{link_login}} target="_blank" style="cursor:pointer; text-decoration: none; margin-left: 10px">
+              <button id="button_reset_pass" style="cursor:pointer" class="button_reset" onclick="abrirLink()">
+                FAZER LOGIN
+              </button>
+            </a>
+          </div>
+          <br /> 
+          <br /> 
+          <span class="span_info">Se o botão não funcionar copie ou clique no link abaixo para recuperar a sua senha. <br />
+            <strong class="link">{{link}}</strong>
+          </span>
+        </div>
+      </div>
 
-      <br/>
+      <hr class="hr_separator" />
 
-      <span>O álbum possui um prazo de exibição e está perto da sua data limite {{datelimit}}<br /> 
-      </span>
+      {{!-- SEGUNDO BLOCO PARA INFORMATIVO --}}
+      <div class="box_description">
+        <div class="box_description_content">
+          <span class="span_description">Acesse agora seu álbum e eternize seus momentos especiais!</span>
+          <br />
+          <table>
+            <tr>
+              <td id="line_text">Além de baixar as fotos em alta resolução, você também pode aproveitar para:</td>
+              <td rowspan="5" id="line_photo"><img id="img_photo" src="https://devonlinequadros.s3.amazonaws.com/template_handlebars/Group+88+(1).png" /></td>
+            </tr>
+            <tr>
+              <td id="line_text"><img id="icon_check" src="https://devonlinequadros.s3.amazonaws.com/template_handlebars/check.png" alt="Check" /> Selecionar, Adquirir e baixar fotos extras</td>
+            </tr>
+            <tr>
+              <td id="line_text"><img id="icon_check" src="https://devonlinequadros.s3.amazonaws.com/template_handlebars/check.png" alt="Check" /> Criar produtos personalizados como quadros fotográficos, porta-retratos e impressões fotográficas</td>
+            </tr>
+            <tr>
+              <td id="line_text"><img id="icon_check" src="https://devonlinequadros.s3.amazonaws.com/template_handlebars/check.png" alt="Check" /> Compartilhar seu álbum com outros usuários para que eles também possam fazer parte de momentos únicos</td>
+            </tr>
+            <tr>
+              <td id="line_text"><img id="icon_check" src="https://devonlinequadros.s3.amazonaws.com/template_handlebars/check.png" alt="Check" /> Finalizar sua compra direto no portal e receber seus produtos onde quiser.</td>
+            </tr>
+          </table>
+        </div>
+      </div>
 
-      <span>Qualquer dúvida, pode entrar em contato conosco!</span><br />
+      <hr class="hr_separator" />
 
-      <strong>Grato,</strong>
+      <div style="width: 100%;">
+        <div style="width: 600px; margin: 0 auto;">
+            <h4 style="color: #334B89; text-align: center; font-size: 22px;">DESPERTE A EMOÇÃO EM CADA CLIQUE COM NOSSOS <br /> PRODUTOS PERSONALIZADOS E APAIXONANTES!</h4>          	
+        </div>
+      </div>
 
-      <h3>Equipe | <strong>Online quadros</strong></h3>
+      <div style="background-color: #4C4E64; width: 100%; height: auto; margin-top: 30px; padding-top: 20px; position: absolute; padding-bottom: 15px;">
+        <div style="width:160px; background: #FFF; margin: 0 auto; border-radius: 4px; margin-bottom: 10px;">
+          <img style="width: 150px; margin-left: 5px" src="https://devonlinequadros.s3.amazonaws.com/template_handlebars/logo-studio.png" />
+        </div>
+        <div style="width: 300px; margin: 0 auto; text-align: center;">
+          <span style="color: #FFF; font-size: 18px;">Transforme suas fotografias em</span>
+          <br/>
+          <span style="color: #FFF; font-size: 18px;">momentos únicos e de recordação!</span>
+        </div>        
+        <hr />
+        <div style="margin: 0 auto; width: 380px; padding-top:10px; text-align: center;">
+          <span style="color: #FFF">@ 2023 Estúdios Online. Todos os direitos reservados.</span>
+        </div>
+      </div>
     </div>
   </body>
 </html>

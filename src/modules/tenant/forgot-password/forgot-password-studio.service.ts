@@ -36,6 +36,7 @@ export class ForgotPasswordStudioService {
       name: user.name,
       code: token,
       link: `${process.env.URL_PRINCIPAL}/${objectPassword.studio}/${process.env.URL_COMPLEMENT}${token}`,
+      link_login: `${process.env.URL_PRINCIPAL}/${objectPassword.studio}`,
     };
 
     try {
