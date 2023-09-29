@@ -52,6 +52,7 @@
     "form-urlencoded": "^6.1.0",
     "handlebars": "^4.7.7",
     "jimp": "^0.9.8",
+    "jsonwebtoken": "^9.0.2",
     "jszip": "^3.10.1",
     "moment": "^2.29.4",
     "nestjs-typeorm-paginate": "^4.0.2",

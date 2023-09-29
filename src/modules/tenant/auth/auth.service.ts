@@ -2,11 +2,13 @@ import { compare } from 'bcryptjs';
 
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import * as jwt from 'jsonwebtoken';
 
 import { ValidateAuthDto } from './dto/validate-auth.dto';
 import { TenantProvider } from '../tenant.provider';
 import { User } from '../users/entities/user.entity';
 import { Repository } from 'typeorm';
+import { config } from 'src/config/configurations';
 
 @Injectable()
 export class AuthServiceTenant {
@@ -97,5 +99,22 @@ export class AuthServiceTenant {
     }
 
     return { studio: TenantProvider.connection.name };
+  }
+
+  async verifyTokenIsExpired(token: string): Promise<boolean> {
+    await this.getUserRepository();
+    try {
+      const decodedToken = jwt.verify(token, config.JWT_CONSTANTS.secret);
+      const currentTimestamp = Math.floor(Date.now() / 1000);
+
+      //   // Verifique se o token não expirou
+      if (decodedToken && decodedToken['exp'] > currentTimestamp) {
+        return true; // O token é válido e não expirou
+      } else {
+        return false; // O token está expirado
+      }
+    } catch (error) {
+      return false; // O token é inválido
+    }
   }
 }

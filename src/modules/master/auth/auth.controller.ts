@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Patch,
   Post,
   Query,
@@ -66,5 +67,10 @@ export class AuthController {
     resendEmailDto: ResendValidationEmailDto,
   ) {
     return await this.authService.resendEmail(resendEmailDto.email);
+  }
+
+  @Get('token-is-valid')
+  async ver(@Query('token') token: string): Promise<boolean> {
+    return await this.authService.verifyTokenIsExpired(token);
   }
 }

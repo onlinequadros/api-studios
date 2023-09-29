@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBody,
   ApiOkResponse,
@@ -38,5 +46,10 @@ export class AuthControllerTenant {
   @Post('/studio-login')
   async verifyUserAndLogin(@Body('email') email: string) {
     return this.authService.verifyUserAndLogin(email);
+  }
+
+  @Get('token-is-valid')
+  async ver(@Query('token') token: string): Promise<boolean> {
+    return await this.authService.verifyTokenIsExpired(token);
   }
 }
