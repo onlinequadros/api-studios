@@ -118,7 +118,7 @@ export class CreateOrdersDTO {
   @Expose()
   external_transaction_id?: string;
 
-  @IsIn(['APPROVED', 'RECUSED'])
+  @IsIn(['APPROVED', 'RECUSED', 'WAITING'])
   @Expose()
-  status?: 'APPROVED' | 'RECUSED';
+  status?: 'APPROVED' | 'RECUSED' | 'WAITING';
 }

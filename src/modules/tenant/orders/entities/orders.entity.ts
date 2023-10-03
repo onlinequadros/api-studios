@@ -83,7 +83,7 @@ export class Orders {
   external_transaction_id?: string;
 
   @Column()
-  status?: 'APPROVED' | 'RECUSED';
+  status?: 'APPROVED' | 'RECUSED' | 'WAITING';
 
   @CreateDateColumn()
   created_at: Date;
