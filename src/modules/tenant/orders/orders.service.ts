@@ -8,10 +8,10 @@ import * as moment from 'moment';
 import { UpdateOrdersDTO } from './dto/updateOrder.dto';
 import { ProductStudioPhoto } from '../product_studio_photos/entities/product-studio-photo.entity';
 import { ProductStudioPhotoService } from '../product_studio_photos/product-studio-photo.service';
-import { CheckImagesDTO } from '../product_studio_photos/dto/check.dto';
 import { UpdateOrderItemsDto } from './dto/updateOrderItems.dto';
 import { ImagesService } from '../../../modules/utils/images.service';
-import * as sharp from 'sharp';
+import { IReadOrderCartParams } from './interface/paginate-orders-cart';
+import { formatedDateYearMontDay } from 'src/modules/utils/formatedDate';
 
 @Injectable()
 export class OrdersService {
@@ -118,6 +118,66 @@ export class OrdersService {
       relations: ['orders_extra_items', 'orders_extra_photos', 'orders_photos'],
     });
     return orders;
+  }
+
+  async ordersInCart({
+    limit = 10,
+    page = 1,
+    search = '',
+    from,
+    to,
+  }: IReadOrderCartParams) {
+    this.getOrdersRepository();
+
+    const where = [];
+    const dateFormated = formatedDateYearMontDay(new Date(), true);
+
+    if (search) {
+      where.push({
+        status: search,
+      });
+    }
+
+    if (from || to) {
+      // nesse to está adicionando um dia na data
+      const toDateActual = to
+        ? formatedDateYearMontDay(to, true)
+        : dateFormated;
+      where.push({
+        created_at: Between(from, toDateActual),
+      });
+    }
+
+    const [orders, count] = await this.ordersRepository.findAndCount({
+      where,
+      order: {
+        updated_at: 'DESC',
+      },
+      relations: ['orders_extra_items', 'orders_extra_photos', 'orders_photos'],
+      take: limit, // aqui pega a quantidade
+      skip: (page - 1) * limit,
+    });
+
+    return {
+      count,
+      totalPages: Math.ceil(count / limit),
+      data: orders
+        .filter((orderFilter) => orderFilter.status !== 'APPROVED')
+        .map((order) => {
+          return {
+            ...order,
+            orders_photos: order.orders_photos.length,
+            orders_extra_photos: order.orders_extra_photos.length,
+            orders_extra_items: order.orders_extra_items.length,
+            orders_extra_items_frame: order.orders_extra_items.filter(
+              (order) => order.type === 'frame',
+            ).length,
+            orders_extra_items_pictureframe: order.orders_extra_items.filter(
+              (order) => order.type === 'pictureFrame',
+            ).length,
+          };
+        }),
+    };
   }
 
   // FUNÇÃO PARA ALTERAR A QUANTIDADE DE ITENS DE UM PRODUTO FÍSICO

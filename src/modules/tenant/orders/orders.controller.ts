@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { CreateOrdersDTO } from './dto/createOrder.dto';
 import { UpdateOrdersDTO } from './dto/updateOrder.dto';
@@ -48,6 +49,17 @@ export class OrdersController {
     @Param('end') end: string,
   ) {
     return this.ordersService.ordersReportFilter(start, end);
+  }
+
+  @Get('/cart/orders-in-cart')
+  async ordersInCart(
+    @Query('from') from: string,
+    @Query('to') to: string,
+    @Query('search') search: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ) {
+    return this.ordersService.ordersInCart({ from, to, search, page, limit });
   }
 
   @Delete('/extra-photo/:id')
