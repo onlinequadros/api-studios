@@ -164,6 +164,34 @@ export class OrdersService {
       data: orders
         .filter((orderFilter) => orderFilter.status !== 'APPROVED')
         .map((order) => {
+          const valuePhotoExtra = order.orders_extra_photos.reduce(
+            (acc, next) => acc + parseFloat(next.price.replace(',', '.')),
+            0,
+          );
+          const discount = order.discount / 100;
+          const valuePhotoExtraWitchDiscount =
+            valuePhotoExtra - valuePhotoExtra * discount;
+
+          const valueItemsExtraFrame = order.orders_extra_items
+            .filter((item) => item.type === 'frame')
+            .reduce(
+              (acc, next) => acc + parseFloat(next.price.replace(',', '.')),
+              0,
+            );
+
+          const valueItemsExtraPictureFrame = order.orders_extra_items
+            .filter((item) => item.type === 'pictureFrame')
+            .reduce(
+              (acc, next) => acc + parseFloat(next.price.replace(',', '.')),
+              0,
+            );
+
+          const valueTotalOrder =
+            order.shipping_value +
+            valuePhotoExtraWitchDiscount +
+            valueItemsExtraFrame +
+            valueItemsExtraPictureFrame;
+
           return {
             ...order,
             orders_photos: order.orders_photos.length,
@@ -175,6 +203,10 @@ export class OrdersService {
             orders_extra_items_pictureframe: order.orders_extra_items.filter(
               (order) => order.type === 'pictureFrame',
             ).length,
+            value_total_photoextra: valuePhotoExtraWitchDiscount,
+            value_total_itemsfisics_picture: valueItemsExtraFrame,
+            value_total_itemsfisics_pictureframe: valueItemsExtraPictureFrame,
+            value_total_order: valueTotalOrder,
           };
         }),
     };
